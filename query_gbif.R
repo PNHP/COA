@@ -1,3 +1,18 @@
+#---------------------------------------------------------------------------------------------
+# Name: query_gbif.R
+# Purpose: 
+# Author: Christopher Tracey
+# Created: 2016-08-11
+# Updated: 2016-08-12
+#
+# Updates:
+# insert date and info
+# * 
+#
+# To Do List/Future Ideas:
+# * 
+#-------
+
 library("rgbif")
 library("maps")
 

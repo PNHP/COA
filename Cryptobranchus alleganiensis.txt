@@ -1,0 +1,2 @@
+"name" "key" "basisOfRecord" "decimalLongitude" "decimalLatitude" "year" "month" "day" "country"
+"Cryptobranchus alleganiensis" 861694380 "PRESERVED_SPECIMEN" -92.2339 36.6553 1982 10 21 "United States"

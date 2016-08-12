@@ -1,5 +1,6 @@
 #---------------------------------------------------------------------------------------------
-# Name: query_gbif.R
+# 
+#Name: query_gbif.R
 # Purpose: 
 # Author: Christopher Tracey
 # Created: 2016-08-11
@@ -17,6 +18,7 @@ library("rgbif")
 library("maps")
 
 sgcn <- c('Piranga olivacea',"Quercus alba") # yeah, these are currently plants
+## a better way to do this would probably be to use something like "LoticOdonates <- readLines("LoticOdonates.csv")" to generate a vector from a csv directly.
 
 #keys <- sapply(sgcn, function(x) name_suggest(x)$key[1], USE.NAMES=FALSE)
 #occ_count(taxonKey=keys, georeferenced = TRUE)

@@ -39,5 +39,14 @@ OS1 <- occ_search(
 
 #OS1 <- occ_search(taxonKey=keys, fields=c('name','key','decimalLatitude','decimalLongitude','country','basisOfRecord','coordinateAccuracy','elevation','elevationAccuracy','year','month','day'), minimal=FALSE,limit=10, return='data')
 
-filenames <- paste(sapply(sapply(OS1, FUN = "[[", "name", simplify = FALSE), unique), ".txt", sep = "")
+filenames <- paste(sapply(sapply(OS1, FUN = "[[", "name", simplify = FALSE), unique), ".csv", sep = "")
 mapply(OS1, filenames, FUN = function(x, y) write.table(x, file = y, row.names = FALSE))
+
+# join the csv files back together
+# http://stackoverflow.com/questions/11433432/importing-multiple-csv-files-into-r
+library(data.table)
+files = list.files(pattern="*.csv")
+DT = do.call(rbind, lapply(files, fread)) # the same using `rbindlist()`
+          
+          
+             

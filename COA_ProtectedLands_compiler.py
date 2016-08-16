@@ -4,6 +4,9 @@
 #              Conservation Easement Dataset) datasets into new feature class
 #              of protected lands and populates planning units with that
 #              protection unit information that intersects it.
+#              Inputs: PAD dataset, NCED dataset, PA county dataset
+#              Outputs: Protected lands feature class, Protected lands planning 
+#                       polygon unit table
 # Author:      Molly Moore
 # Created:     2016-08-12
 # Updated:
@@ -21,13 +24,16 @@ from arcpy.sa import *
 arcpy.env.overwriteOutput = True
 
 ################################################################################
-# Define global variables and functions to be used throughout toolbox
+# Define global variables and functions to be used when running script
 ################################################################################
+# function that combines PAD and NCED features into dataset
 def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
 
     # set local variables in lists to prepare for looping
     ProtectedLands = [PAD, NCED]
     layers = ['pad', 'nced']
+    
+    # create county layer to prepare for selection
     county_lyr = arcpy.MakeFeatureLayer_management(counties, "counties_lyr")
 
     # select protected lands that intersect PA county boundaries and copy - populate
@@ -45,8 +51,7 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
         arcpy.AddField_management(f, "data_src", "TEXT", "", "",
         4, "Data Source", "", "", "")
         expression = '"' + n + '"'
-        arcpy.CalculateField_management(f, "data_src",
-        expression, "PYTHON_9.3")
+        arcpy.CalculateField_management(f, "data_src", expression, "PYTHON_9.3")
 
     # create new, empty feature class to populate with features from PAD, NCED datasets
     spatial_reference = arcpy.Describe(counties).spatialReference
@@ -63,12 +68,15 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
     for name, length, alias in zip(field_name, field_length, field_alias):
         arcpy.AddField_management(newFC, name, "TEXT", "", "", length, alias)
 
+    # define input fields (from PAD) and output fields (in new feature class)
+    # to prepare for creation of fieldmap
     PAD_inputFields = ["Loc_Nm", "Loc_Mang", "Own_Type", "GAP_Sts", "data_src"]
     PAD_outputFields = ["site_nm", "manager", "owner_typ", "gap_stat",
         "data_src"]
     schemaType = "NO_TEST"
     subtype = ""
-
+    
+    # create fieldmap for PAD fields
     fieldmappings = arcpy.FieldMappings()
     for input, output in zip(PAD_inputFields, PAD_outputFields):
         infield1 = input
@@ -85,17 +93,21 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
 
     try:
         print "Appending data. . ."
-        # Process: Append the feature classes into the empty feature class
+        # Process: Append the feature classes into the empty feature class using
+        # fieldmappings to map old fields to new fields
         arcpy.Append_management("in_memory\\pad", newFC, schemaType, fieldmappings, subtype)
 
     except:
         # If an error occurred while running a tool print the messages
         print arcpy.GetMessages()
 
+    # define input fields (from NCED) and output fields (in new feature class)
+    # to prepare for creation of fieldmap
     NCED_inputFields = ["sitename", "esmthldr", "owntype", "gapsts", "data_src"]
     NCED_outputFields = ["site_nm", "manager", "owner_typ", "gap_stat",
         "data_src"]
 
+    # create fieldmap for NCED fields
     fieldmappings = arcpy.FieldMappings()
     for input, output in zip(NCED_inputFields, NCED_outputFields):
         infield1 = input
@@ -119,15 +131,12 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
         # If an error occurred while running a tool print the messages
         print arcpy.GetMessages()
 
-# Import system modules
-import arcpy
-import os
-
-arcpy.env.overwriteOutput = True
-
-# Main function, all functions run in SpatialJoinOverlapsCrossings
+# function to populate planning units with protected lands information
+# only information from protected land with greatest area overlap will be 
+# transferred to planning units
 def SpatialJoinLargestOverlap(target_features, outGDB, outTable):
-    keep_all = "true" # keep all features during join - do not change
+    # set variables to be used throughout function
+    keep_all = "true" # keep all features during join
     spatial_rel = "largest_overlap" # do not change
     join_features = os.path.join(outWorkspace, outName) # protected lands layer
     out_fc = "in_memory\\tempPU" # output planning polygon feature class
@@ -177,15 +186,17 @@ def SpatialJoinLargestOverlap(target_features, outGDB, outTable):
         arcpy.management.JoinField(out_fc, "JOIN_FID", join_features, arcpy.Describe(join_features).OIDFieldName, joinfields)
 
         # create a new fieldmappings and add the two input feature classes as
-        # objects
+        # objects to prepare for table to table conversion
         fieldmappings = arcpy.FieldMappings()
         fieldmappings.addTable(out_fc)
 
+        # remove field map for fields that are not needed
         for field in fieldmappings.fields:
             if field.name not in ["unique_id", "site_nm", "manager", "owner_typ", "gap_stat",
             "cons_purp", "data_src"]:
                 fieldmappings.removeFieldMap(fieldmappings.findFieldMapIndex(field.name))
 
+        # convert to table
         arcpy.TableToTable_conversion(out_fc, outGDB, outTable, "", fieldmappings, "")
 
 
@@ -202,8 +213,8 @@ if __name__ == '__main__':
     protectedlandslayer(PAD, NCED, counties, outWorkspace, outName)
 
     target_features = arcpy.GetParameterAsText(5) # planning polygon unit
-    outGDB = arcpy.GetParameterAsText(6)
-    outTable = arcpy.GetParameterAsText(7)
+    outGDB = arcpy.GetParameterAsText(6) # output database for table 
+    outTable = arcpy.GetParameterAsText(7) # output table name
 
 
     SpatialJoinLargestOverlap(target_features, outGDB, outTable)

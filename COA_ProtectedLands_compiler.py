@@ -31,7 +31,7 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
 
     # set local variables in lists to prepare for looping
     ProtectedLands = [PAD, NCED]
-    layers = ['pad', 'nced']
+    layers = ['PAD', 'NCED']
     
     # create county layer to prepare for selection
     county_lyr = arcpy.MakeFeatureLayer_management(counties, "counties_lyr")
@@ -83,7 +83,7 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
         outfield1 = output
         input1 = arcpy.FieldMap()
 
-        input1.addInputField("in_memory\\pad", infield1)
+        input1.addInputField("in_memory\\PAD", infield1)
 
         output1 = input1.outputField
         output1.name = (outfield1)
@@ -95,7 +95,7 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
         print "Appending data. . ."
         # Process: Append the feature classes into the empty feature class using
         # fieldmappings to map old fields to new fields
-        arcpy.Append_management("in_memory\\pad", newFC, schemaType, fieldmappings, subtype)
+        arcpy.Append_management("in_memory\\PAD", newFC, schemaType, fieldmappings, subtype)
 
     except:
         # If an error occurred while running a tool print the messages
@@ -114,7 +114,7 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
         outfield1 = output
         input1 = arcpy.FieldMap()
 
-        input1.addInputField("in_memory\\nced", infield1)
+        input1.addInputField("in_memory\\NCED", infield1)
 
         output1 = input1.outputField
         output1.name = (outfield1)
@@ -125,7 +125,7 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
     try:
         print "Appending data. . ."
         # Process: Append the feature classes into the empty feature class
-        arcpy.Append_management("in_memory\\nced", newFC, schemaType, fieldmappings, subtype)
+        arcpy.Append_management("in_memory\\NCED", newFC, schemaType, fieldmappings, subtype)
 
     except:
         # If an error occurred while running a tool print the messages

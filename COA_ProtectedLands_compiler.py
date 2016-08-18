@@ -5,7 +5,7 @@
 #              of protected lands and populates planning units with that
 #              protection unit information that intersects it.
 #              Inputs: PAD dataset, NCED dataset, PA county dataset
-#              Outputs: Protected lands feature class, Protected lands planning 
+#              Outputs: Protected lands feature class, Protected lands planning
 #                       polygon unit table
 # Author:      Molly Moore
 # Created:     2016-08-12
@@ -26,13 +26,34 @@ arcpy.env.overwriteOutput = True
 ################################################################################
 # Define global variables and functions to be used when running script
 ################################################################################
+
+exceptions = ["PA", "NE", "NW", "SE", "SW", "US", "SGL", "U.S.", "UPDE", "M.K.", "RAU", "NFG", "MCCD", "DEWA", "APPA", "FCVC"]
+
+# Function to convert attributes from counties, municipalities, usgs quads, and protected lands to title case
+def title_except(s, exceptions):
+    '''Takes a string and a list of exceptions as input. Returns the string in
+    title case, except any words in the exeptions list are not altered.
+    string + Python list = string
+    ROANOKE SW -> Roanoke SW
+    '''
+    # Turn string into a list of words
+    word_list = s.split()
+    # Final is an empty list that words will be appended to
+    final = []
+    # For each word in the list, append to the final list
+    for word in word_list:
+        # If the word is in exceptions, append the word. If not, append the word capitalized.
+        final.append(word in exceptions and word or word.capitalize())
+    # Return the list of final words converted to a string
+    return " ".join(final)
+
 # function that combines PAD and NCED features into dataset
 def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
 
     # set local variables in lists to prepare for looping
     ProtectedLands = [PAD, NCED]
     layers = ['PAD', 'NCED']
-    
+
     # create county layer to prepare for selection
     county_lyr = arcpy.MakeFeatureLayer_management(counties, "counties_lyr")
 
@@ -51,7 +72,8 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
         arcpy.AddField_management(f, "data_src", "TEXT", "", "",
         4, "Data Source", "", "", "")
         expression = '"' + n + '"'
-        arcpy.CalculateField_management(f, "data_src", expression, "PYTHON_9.3")
+        arcpy.CalculateField_management(f, "data_src",
+        expression, "PYTHON_9.3")
 
     # create new, empty feature class to populate with features from PAD, NCED datasets
     spatial_reference = arcpy.Describe(counties).spatialReference
@@ -75,7 +97,7 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
         "data_src"]
     schemaType = "NO_TEST"
     subtype = ""
-    
+
     # create fieldmap for PAD fields
     fieldmappings = arcpy.FieldMappings()
     for input, output in zip(PAD_inputFields, PAD_outputFields):
@@ -93,8 +115,7 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
 
     try:
         print "Appending data. . ."
-        # Process: Append the feature classes into the empty feature class using
-        # fieldmappings to map old fields to new fields
+        # Process: Append the feature classes into the empty feature class
         arcpy.Append_management("in_memory\\PAD", newFC, schemaType, fieldmappings, subtype)
 
     except:
@@ -132,11 +153,10 @@ def protectedlandslayer(PAD, NCED, counties, outWorkspace, outName):
         print arcpy.GetMessages()
 
 # function to populate planning units with protected lands information
-# only information from protected land with greatest area overlap will be 
+# only information from protected land with greatest area overlap will be
 # transferred to planning units
 def SpatialJoinLargestOverlap(target_features, outGDB, outTable):
-    # set variables to be used throughout function
-    keep_all = "true" # keep all features during join
+    keep_all = "false" # keep all features during join - do not change
     spatial_rel = "largest_overlap" # do not change
     join_features = os.path.join(outWorkspace, outName) # protected lands layer
     out_fc = "in_memory\\tempPU" # output planning polygon feature class
@@ -185,6 +205,13 @@ def SpatialJoinLargestOverlap(target_features, outGDB, outTable):
         joinfields = [x.name for x in arcpy.ListFields(join_features) if not x.required]
         arcpy.management.JoinField(out_fc, "JOIN_FID", join_features, arcpy.Describe(join_features).OIDFieldName, joinfields)
 
+        # delete null records (those planning units that do not have protected
+        # lands overlapping)
+        with arcpy.da.UpdateCursor(out_fc, "JOIN_FID") as cursor:
+            for row in cursor:
+                if row[0] == None:
+                    cursor.deleteRow()
+
         # create a new fieldmappings and add the two input feature classes as
         # objects to prepare for table to table conversion
         fieldmappings = arcpy.FieldMappings()
@@ -200,6 +227,44 @@ def SpatialJoinLargestOverlap(target_features, outGDB, outTable):
         arcpy.TableToTable_conversion(out_fc, outGDB, outTable, "", fieldmappings, "")
 
 
+def formatText(protectTable):
+    # create list of coded values and descript values
+    codedValues = ["LOC", "STAT", "NGO", "PVT", "DESG", "UNK", "FED"]
+    descriptValues = ["Local Government", "State",
+    "Non-Governmental Organization", "Private", "Designation", "Unknown",
+    "Federal"]
+
+    # change coded owner type values to descriptive values
+    with arcpy.da.UpdateCursor(protectTable, "owner_typ") as cursor:
+        for row in cursor:
+            for code, descript in zip(codedValues, descriptValues):
+                if row[0] == code:
+                    row[0] = descript
+                else:
+                    pass
+                cursor.updateRow(row)
+
+
+    # change descriptive values to coded values for gap status by taking only
+    # first character
+    with arcpy.da.UpdateCursor(protectTable, "gap_stat") as cursor:
+        for row in cursor:
+            if not row[0] is None:
+                row[0] = row[0][0]
+                cursor.updateRow(row)
+
+    with arcpy.da.UpdateCursor(protectTable, ["manager", "site_nm"]) as cursor:
+        for row in cursor:
+            row[0] = title_except(row[0], exceptions)
+            row[1] = title_except(row[1], exceptions)
+            cursor.updateRow(row)
+
+    with arcpy.da.UpdateCursor(protectTable, "site_nm") as cursor:
+        for row in cursor:
+            if row[0].isdigit() is True:
+                row[0] = "Conservation Easement"
+                cursor.updateRow(row)
+
 # Run the script
 if __name__ == '__main__':
     # Get Parameters
@@ -213,9 +278,12 @@ if __name__ == '__main__':
     protectedlandslayer(PAD, NCED, counties, outWorkspace, outName)
 
     target_features = arcpy.GetParameterAsText(5) # planning polygon unit
-    outGDB = arcpy.GetParameterAsText(6) # output database for table 
-    outTable = arcpy.GetParameterAsText(7) # output table name
+    outGDB = arcpy.GetParameterAsText(6)
+    outTable = arcpy.GetParameterAsText(7)
 
 
     SpatialJoinLargestOverlap(target_features, outGDB, outTable)
+
+    formatText(os.path.join(outGDB, outTable))
+
     print "finished"

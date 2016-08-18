@@ -10,10 +10,11 @@
 # insert date and info
 # * 2016-08-17 - got the code to remove NULL values from the keys to work; 
 #                added the complete list of SGCN to load from a text file;
-#                figured out how to remove records where no occurences we found.
+#                figured out how to remove records where no occurences we found;
+#                make a shapefile of the results  
 #
 # To Do List/Future Ideas:
-# * make a shapefile of the results
+# * 
 #-------
 
 library('rgbif')
@@ -38,18 +39,14 @@ datdf <- ldply(dat)
 # make a map, doesn't work with a lot of species
 #gbifmap(datdf, mapdatabase="state", region="pennsylvania")
 
-
 #create a shapefile
+# based on http://neondataskills.org/R/csv-to-shapefile-R/
 library(rgdal)  # for vector work; sp package should always load with rgdal. 
 library (raster)   # for metadata/attributes- vectors or rasters
-
 # note that the easting and northing columns are in columns 4 and 5
-SGCNgbif <- SpatialPointsDataFrame(datdf[,5:4],
-                                   datdf    #the R object to convert
-                                  )   # assign a CRS  ,proj4string = utm18nCR
-
+SGCNgbif <- SpatialPointsDataFrame(datdf[,5:4],datdf,,proj4string <- CRS("+init=epsg: 4326"))   # assign a CRS  ,proj4string = utm18nCR  #https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/OverviewCoordinateReferenceSystems.pdf
 plot(SGCNgbif,main="Map of SGCN Locations")
-
-
 # write a shapefile
 writeOGR(SGCNgbif, getwd(),"SGCN_FromGBIF", driver="ESRI Shapefile")
+
+

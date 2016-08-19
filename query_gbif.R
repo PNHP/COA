@@ -14,7 +14,12 @@
 #                make a shapefile of the results  
 #
 # To Do List/Future Ideas:
-# * 
+# * check projection
+# * wkt integration
+# * filter the occ_search results on potential data flags -- looks like its pulling 
+#   the coordinates from iNat that are obscured.  
+# * might be a good idea to create seperate reports with obscured records
+
 #-------
 
 library('rgbif')
@@ -30,7 +35,15 @@ keys <- sapply(splist, function(x) name_backbone(name=x)$speciesKey, USE.NAMES=F
 keys=keys[-(which(sapply(keys,is.null),arr.ind=TRUE))]
 #note: the above lnes seems to break, if there is only one item in the list... use for multiple species!
 #searches for occurrences
-dat <- occ_search(taxonKey=keys, limit=10, return='data', hasCoordinate=TRUE,geometry=c(-80.5195, 39.7199, -74.6896, 42.2695),year='1990,2016')
+dat <- occ_search(
+                  taxonKey=keys, 
+                  limit=30000, 
+                  return='data', 
+                  hasCoordinate=TRUE,
+                  geometry=c(-80.5195, 39.7199, -74.6896, 42.2695),
+                  year='1990,2016',
+                  fields=c('name','key','decimalLatitude','decimalLongitude','country','basisOfRecord','coordinateAccuracy','year','month','day')
+                 )
 # deletes the items from the list where no occurences were found.
 dat <-  dat[dat!="no data found, try a different search"]
 # turns the list to a data frame
@@ -44,9 +57,9 @@ datdf <- ldply(dat)
 library(rgdal)  # for vector work; sp package should always load with rgdal. 
 library (raster)   # for metadata/attributes- vectors or rasters
 # note that the easting and northing columns are in columns 4 and 5
-SGCNgbif <- SpatialPointsDataFrame(datdf[,5:4],datdf,,proj4string <- CRS("+init=epsg: 4326"))   # assign a CRS  ,proj4string = utm18nCR  #https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/OverviewCoordinateReferenceSystems.pdf
+SGCNgbif <- SpatialPointsDataFrame(datdf[,5:6],datdf,,proj4string <- CRS("+init=epsg:4326"))   # assign a CRS  ,proj4string = utm18nCR  #https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/OverviewCoordinateReferenceSystems.pdf; the two commas in a row are important due to the slots feature
 plot(SGCNgbif,main="Map of SGCN Locations")
 # write a shapefile
-writeOGR(SGCNgbif, getwd(),"SGCN_FromGBIF", driver="ESRI Shapefile")
+writeOGR(SGCNgbif, getwd(),"SGCN_FromGBIFb", driver="ESRI Shapefile")
 
 

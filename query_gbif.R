@@ -49,6 +49,9 @@ dat <-  dat[dat!="no data found, try a different search"]
 # turns the list to a data frame
 datdf <- ldply(dat)
 
+# Write data frame to csv
+write.csv(datdf,file = "GBIF_Export_8252016.csv")
+
 # make a map, doesn't work with a lot of species
 #gbifmap(datdf, mapdatabase="state", region="pennsylvania")
 

@@ -50,7 +50,30 @@ dat <-  dat[dat!="no data found, try a different search"]
 datdf <- ldply(dat)
 
 # Write data frame to csv
-write.csv(datdf,file = "GBIF_Export_8252016.csv")
+write.csv(datdf,file = "GBIF_Export_8252016.csv") # Should make this filename update with current date
+
+# Load in the SGCN Data Inventory list
+DataInventory <- read.csv("~/R/DataInventory.txt", header=TRUE)
+View(DataInventory)
+
+# Select only the variables to be joined with GBIF data from 
+# the Data Inventory dataset and create a new data.frame as the Join Table
+data(DataInventory)
+str(DataInventory)
+DataInventory <- select(DataInventory,ELCODE,Group_,CommonName,ScientificName,Terrestrial_Aquatic)
+head(DataInventory)
+GBIF_JoinTable <- select(DataInventory,ELCODE,Group_,CommonName,ScientificName,Terrestrial_Aquatic)
+head(GBIF_JoinTable)
+
+# Rename the column for ScientificName to match the GBIF data
+setnames(GBIF_JoinTable,"ScientificName","name")
+head(GBIF_JoinTable)
+
+# Join GBIF_Export with Join Table (adds ELCODE, Common Name, Group, and Environment)
+GBIF_Export_processed <- full_join(GBIF_Export_8252016,GBIF_JoinTable,by="name")
+
+# Write data frame to csv
+write.csv(GBIF_Export_processed,file = "GBIF_Export_processed.csv")
 
 # make a map, doesn't work with a lot of species
 #gbifmap(datdf, mapdatabase="state", region="pennsylvania")

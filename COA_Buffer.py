@@ -1,8 +1,6 @@
 #-------------------------------------------------------------------------------
 # Name:        COA_species_populator
-# Purpose:     Add specified buffer distance to SGCN points and lines and merge
-#              newly created buffers with SGCN polygons to create comprehensive
-#              polygon feature class of SGCNs.
+# Purpose:
 # Author:      Molly Moore
 # Created:     2016-07-18
 # Updated:     N/A

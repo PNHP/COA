@@ -38,7 +38,7 @@ keys=keys[-(which(sapply(keys,is.null),arr.ind=TRUE))]
 #searches for occurrences
 dat <- occ_search(
                   taxonKey=keys, 
-                  limit=30000,
+                  limit=1000,
                   #limit=20, #save this for testing
                   return='data', 
                   hasCoordinate=TRUE,
@@ -66,6 +66,6 @@ library (raster)   # for metadata/attributes- vectors or rasters
 SGCNgbif <- SpatialPointsDataFrame(datdf[,5:6],datdf,,proj4string <- CRS("+init=epsg:4326"))   # assign a CRS  ,proj4string = utm18nCR  #https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/OverviewCoordinateReferenceSystems.pdf; the two commas in a row are important due to the slots feature
 plot(SGCNgbif,main="Map of SGCN Locations")
 # write a shapefile
-writeOGR(SGCNgbif, getwd(),"SGCN_FromGBIFb", driver="ESRI Shapefile")
+writeOGR(SGCNgbif, getwd(),"SGCN_FromGBIF", driver="ESRI Shapefile")
 
 

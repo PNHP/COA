@@ -26,6 +26,9 @@ library('rgbif')
 library('plyr')
 library('maps')
 library('maptools')
+library('dplyr')
+library('tidyr')
+library('data.table')
 
 # genetates a species list of SNAMEs for querying gbif
 splist <- readLines("data_SGCNlist.csv") # alternatively, can go from here: splist <- c("Piranga olivacea","Quercus alba","Ambystoma jeffersonianum","Aneides aeneus","Clonophis kirtlandii","Kinosternon subrubrum","Accipiter gentilis","Glyptemys insculpta","madeuptestname")

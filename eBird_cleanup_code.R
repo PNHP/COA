@@ -23,7 +23,7 @@ test$COMMON.NAME <- factor(test$COMMON.NAME)
 birdseason <- read.csv("birdseason.csv")
 #test$juliandate <- sample(1:365, size = nrow(test), replace = TRUE)
 test$dayofyear <- yday(test$OBSERVATION.DATE)
-
+#some snarky comment
 keeps <- c("COMMON.NAME","dayofyear")
 test <- test[keeps]
 

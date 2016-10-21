@@ -7,7 +7,7 @@ eBird2016clean <- read.delim("eBird2016clean.txt")
 birdnames <- eBirdSGCNList$CommonName
 eBirdclean <- eBird2016clean[eBird2016clean$COMMON.NAME %in% birdnames, ]
 
-write.csv(eBirdclean,"eBirdclean.csv")
+#write.csv(eBirdclean,"eBirdclean.csv")
 
 ### Filter out Personal locations and Hotspots and then by Casual Obs and Stationary Counts
 eBirdclean_filter <- eBirdclean[which(eBirdclean$LOCALITY.TYPE=="P"|eBirdclean$LOCALITY.TYPE=="H"),]
@@ -18,21 +18,25 @@ eBirdclean_traveling <- eBirdclean[which(eBirdclean$PROTOCOL.TYPE=="eBird - Trav
 
 ### Next filter out records by Focal Season for each SGCN using Julian date
 library(lubridate)
-test <- eBirdclean[which(eBirdclean$COMMON.NAME=="Gray Catbird"|eBirdclean$COMMON.NAME=="Red-headed Woodpecker"),]
-test$COMMON.NAME <- factor(test$COMMON.NAME)
 birdseason <- read.csv("birdseason.csv")
-#test$juliandate <- sample(1:365, size = nrow(test), replace = TRUE)
-test$dayofyear <- yday(test$OBSERVATION.DATE)
-#some snarky comment
-keeps <- c("COMMON.NAME","dayofyear")
-test <- test[keeps]
 
+eBirdclean_filter$COMMON.NAME <- factor(eBirdclean_filter$COMMON.NAME)
+
+## Add day of year to eBird dataset
+eBirdclean_filter$dayofyear <- yday(eBirdclean_filter$OBSERVATION.DATE)
 # inspired by http://stackoverflow.com/questions/22475400/r-replace-values-in-data-frame-using-lookup-table
-for (j in 1:nrow(test)){
+for (j in 1:nrow(eBirdclean_filter)){
   for (x in 1:nrow(birdseason)){
-    if (test[j,1]==birdseason[x,1]&test[j,2]>birdseason[x,3]&test[j,2]<birdseason[x,4]){
-      test[j,3]<-birdseason[x,2]
+    if (eBirdclean_filter[j,4]==birdseason[x,1]&eBirdclean_filter[j,45]>birdseason[x,3]&eBirdclean_filter[j,45]<birdseason[x,4]){
+      eBirdclean_filter[j,46]<-birdseason[x,2]
     }
   } 
 }
-setnames(test, "V3", "season")
+library(data.table) #not compatible with lubridate
+#setnames(test, "V3", "season")
+
+
+
+
+keeps <- c("COMMON.NAME","dayofyear")
+test <- test[keeps]

@@ -1,0 +1,324 @@
+Common.name,season,start,stop
+American Bittern,migration,74,135
+American Bittern,migration,258,305
+American Bittern,breeding,153,213
+American Bittern,winter,305,74
+American Black Duck,migration,32,105
+American Black Duck,migration,227,334
+American Black Duck,breeding,122,213
+American Black Duck,winter,334,32
+American Coot,migration,81,121
+American Coot,migration,227,319
+American Coot,breeding,153,213
+American Coot,winter,319,81
+American Kestrel,migration,75,121
+American Kestrel,migration,244,304
+American Kestrel,breeding,136,213
+American Kestrel,winter,304,75
+American Woodcock,migration,46,121
+American Woodcock,migration,227,319
+American Woodcock,breeding,92,197
+American Woodcock,winter,319,46
+Bald Eagle,migration,32,121
+Bald Eagle,migration,182,319
+Bald Eagle,breeding,122,197
+Bald Eagle,winter,319,32
+Bank Swallow,migration,74,152
+Bank Swallow,migration,213,288
+Bank Swallow,breeding,153,182
+Bank Swallow,winter,288,74
+Barn Owl,breeding,111,228
+Black Tern,migration,91,152
+Black Tern,migration,213,288
+Black Tern,breeding,153,197
+Black Tern,winter,288,91
+Black-and-white Warbler,migration,91,152
+Black-and-white Warbler,migration,227,319
+Black-and-white Warbler,breeding,153,213
+Black-and-white Warbler,winter,319,91
+Blackburnian Warbler,migration,91,145
+Blackburnian Warbler,migration,227,305
+Blackburnian Warbler,winter,305,91
+Black-crowned Night-Heron,migration,60,135
+Black-crowned Night-Heron,migration,182,349
+Black-crowned Night-Heron,breeding,153,182
+Black-crowned Night-Heron,winter,349,60
+Blackpoll Warbler,migration,91,152
+Blackpoll Warbler,migration,227,305
+Blackpoll Warbler,breeding,167,228
+Blackpoll Warbler,winter,305,91
+Black-throated Blue Warbler,migration,91,145
+Black-throated Blue Warbler,migration,227,319
+Black-throated Blue Warbler,breeding,153,213
+Black-throated Blue Warbler,winter,319,91
+Black-throated Green Warbler,migration,91,152
+Black-throated Green Warbler,migration,227,305
+Black-throated Green Warbler,breeding,153,213
+Black-throated Green Warbler,winter,305,91
+Blue-winged Teal,migration,61,135
+Blue-winged Teal,migration,227,305
+Blue-winged Teal,breeding,153,213
+Blue-winged Teal,winter,305,61
+Blue-winged Warbler,migration,91,145
+Blue-winged Warbler,migration,213,288
+Blue-winged Warbler,breeding,146,197
+Blue-winged Warbler,winter,288,91
+Bobolink,migration,105,135
+Bobolink,migration,227,288
+Bobolink,breeding,136,182
+Bobolink,winter,288,105
+Broad-winged Hawk,migration,74,121
+Broad-winged Hawk,migration,244,288
+Broad-winged Hawk,breeding,153,213
+Broad-winged Hawk,winter,288,74
+Brown Creeper,migration,75,121
+Brown Creeper,migration,244,305
+Brown Creeper,breeding,136,213
+Brown Creeper,winter,305,75
+Canada Warbler,migration,105,152
+Canada Warbler,migration,213,274
+Canada Warbler,breeding,153,213
+Canada Warbler,winter,274,105
+Cerulean Warbler,migration,91,152
+Cerulean Warbler,migration,227,305
+Cerulean Warbler,breeding,153,213
+Cerulean Warbler,winter,305,91
+Chimney Swift,migration,74,145
+Chimney Swift,migration,227,319
+Chimney Swift,breeding,146,213
+Chimney Swift,winter,319,74
+Common Gallinule,migration,74,135
+Common Gallinule,migration,213,288
+Common Gallinule,breeding,136,244
+Common Gallinule,winter,288,74
+Common Nighthawk,migration,91,152
+Common Nighthawk,migration,219,305
+Common Nighthawk,breeding,157,213
+Common Nighthawk,winter,305,91
+Common Tern,migration,74,152
+Common Tern,migration,227,319
+Common Tern,breeding,157,182
+Common Tern,winter,319,74
+Dickcissel,migration,91,152
+Dickcissel,migration,213,319
+Dickcissel,breeding,153,213
+Dickcissel,winter,319,91
+Eastern Meadowlark,migration,45,135
+Eastern Meadowlark,migration,258,319
+Eastern Meadowlark,breeding,136,213
+Eastern Meadowlark,winter,319,45
+Eastern Towhee,migration,60,145
+Eastern Towhee,migration,227,305
+Eastern Towhee,breeding,153,213
+Eastern Towhee,winter,305,60
+Eastern Whip-poor-will,migration,74,152
+Eastern Whip-poor-will,migration,227,288
+Eastern Whip-poor-will,breeding,153,213
+Eastern Whip-poor-will,winter,288,74
+Field Sparrow,migration,61,130
+Field Sparrow,migration,244,318
+Field Sparrow,breeding,136,228
+Field Sparrow,winter,318,61
+Golden Eagle,migration,46,91
+Golden Eagle,migration,258,349
+Golden Eagle,breeding,146,197
+Golden Eagle,winter,349,46
+Golden-winged Warbler,migration,91,145
+Golden-winged Warbler,migration,213,288
+Golden-winged Warbler,breeding,153,228
+Golden-winged Warbler,winter,288,91
+Grasshopper Sparrow,migration,74,152
+Grasshopper Sparrow,migration,227,319
+Grasshopper Sparrow,breeding,153,213
+Grasshopper Sparrow,winter,319,74
+Gray Catbird,breeding,153,213
+Great Egret,migration,61,152
+Great Egret,migration,182,319
+Great Egret,breeding,153,182
+Great Egret,winter,319,61
+Green-winged Teal,migration,61,135
+Green-winged Teal,migration,227,335
+Green-winged Teal,breeding,153,213
+Green-winged Teal,winter,335,61
+Henslow's Sparrow,migration,91,145
+Henslow's Sparrow,migration,213,305
+Henslow's Sparrow,breeding,146,228
+Henslow's Sparrow,winter,305,91
+Hooded Warbler,migration,91,152
+Hooded Warbler,migration,227,288
+Hooded Warbler,winter,288,91
+Horned Grebe,migration,46,121
+Horned Grebe,migration,288,349
+Horned Grebe,winter,349,46
+Kentucky Warbler,migration,91,145
+Kentucky Warbler,migration,213,288
+Kentucky Warbler,breeding,146,213
+Kentucky Warbler,winter,288,91
+King Rail,migration,91,135
+King Rail,migration,244,288
+King Rail,breeding,136,228
+King Rail,winter,288,91
+Least Bittern,migration,91,135
+Least Bittern,migration,258,305
+Least Bittern,breeding,153,213
+Least Bittern,winter,305,91
+Lesser Scaup,migration,46,105
+Lesser Scaup,migration,274,335
+Lesser Scaup,winter,335,46
+Loggerhead Shrike,migration,32,105
+Loggerhead Shrike,migration,258,335
+Loggerhead Shrike,breeding,122,213
+Loggerhead Shrike,winter,335,32
+Long-eared Owl,migration,61,105
+Long-eared Owl,migration,244,348
+Long-eared Owl,breeding,111,228
+Long-eared Owl,winter,348,61
+Long-tailed Duck,migration,61,121
+Long-tailed Duck,migration,288,349
+Long-tailed Duck,winter,349,61
+Louisiana Waterthrush,migration,74,105
+Louisiana Waterthrush,migration,227,288
+Louisiana Waterthrush,breeding,106,197
+Louisiana Waterthrush,winter,288,74
+Marsh Wren,migration,74,145
+Marsh Wren,migration,227,319
+Marsh Wren,breeding,146,213
+Marsh Wren,winter,319,74
+Nashville Warbler,breeding,146,213
+Northern Goshawk,migration,46,105
+Northern Goshawk,migration,258,349
+Northern Goshawk,breeding,122,213
+Northern Goshawk,winter,349,46
+Northern Harrier,migration,45,135
+Northern Harrier,migration,227,335
+Northern Harrier,breeding,153,213
+Northern Harrier,winter,335,45
+Northern Saw-whet Owl,migration,52,91
+Northern Saw-whet Owl,migration,244,319
+Northern Saw-whet Owl,breeding,111,228
+Northern Saw-whet Owl,winter,319,52
+Northern Waterthrush,migration,91,135
+Northern Waterthrush,migration,227,305
+Northern Waterthrush,breeding,157,197
+Northern Waterthrush,winter,305,91
+Olive-sided Flycatcher,migration,91,152
+Olive-sided Flycatcher,migration,196,288
+Olive-sided Flycatcher,breeding,162,213
+Olive-sided Flycatcher,winter,288,91
+Osprey,migration,60,152
+Osprey,migration,182,335
+Osprey,breeding,153,213
+Osprey,winter,335,60
+Peregrine Falcon,migration,75,121
+Peregrine Falcon,migration,244,335
+Peregrine Falcon,breeding,136,213
+Peregrine Falcon,winter,335,75
+Pied-billed Grebe,migration,46,135
+Pied-billed Grebe,migration,213,0
+Pied-billed Grebe,breeding,153,213
+Pied-billed Grebe,winter,1,46
+Pine Siskin,migration,45,135
+Pine Siskin,migration,227,319
+Pine Siskin,breeding,153,213
+Pine Siskin,winter,319,45
+Prairie Warbler,migration,91,145
+Prairie Warbler,migration,213,305
+Prairie Warbler,breeding,146,213
+Prairie Warbler,winter,305,91
+Prothonotary Warbler,migration,91,145
+Prothonotary Warbler,migration,213,288
+Prothonotary Warbler,breeding,146,197
+Prothonotary Warbler,winter,288,91
+Purple Martin,migration,74,128
+Purple Martin,migration,213,319
+Purple Martin,breeding,146,182
+Purple Martin,winter,319,74
+Red Crossbill,migration,75,130
+Red Crossbill,migration,227,319
+Red Crossbill,breeding,136,213
+Red Crossbill,winter,319,75
+Red Knot,migration,121,166
+Red Knot,migration,213,319
+Red Knot,winter,319,121
+Red-headed Woodpecker,breeding,146,213
+Red-necked Grebe,migration,46,121
+Red-necked Grebe,migration,288,349
+Red-necked Grebe,winter,349,46
+Ruffed Grouse,breeding,92,213
+Rusty Blackbird,migration,46,152
+Rusty Blackbird,migration,244,335
+Rusty Blackbird,winter,335,46
+Savannah Sparrow,breeding,146,228
+Scarlet Tanager,migration,91,152
+Scarlet Tanager,migration,227,305
+Scarlet Tanager,breeding,153,213
+Scarlet Tanager,winter,305,91
+Sedge Wren,migration,105,152
+Sedge Wren,migration,227,305
+Sedge Wren,breeding,153,228
+Sedge Wren,winter,305,105
+Sharp-shinned Hawk,migration,61,135
+Sharp-shinned Hawk,migration,227,335
+Sharp-shinned Hawk,breeding,153,213
+Sharp-shinned Hawk,winter,335,61
+Short-eared Owl,migration,46,110
+Short-eared Owl,migration,274,335
+Short-eared Owl,breeding,111,228
+Short-eared Owl,winter,335,46
+Sora,migration,60,135
+Sora,migration,213,319
+Sora,breeding,136,213
+Sora,winter,319,60
+Spotted Sandpiper,breeding,153,182
+Summer Tanager,migration,105,152
+Summer Tanager,migration,213,335
+Summer Tanager,breeding,153,213
+Summer Tanager,winter,335,105
+Swainson's Thrush,migration,105,152
+Swainson's Thrush,migration,227,305
+Swainson's Thrush,breeding,157,213
+Swainson's Thrush,winter,305,105
+Tundra Swan,migration,46,121
+Tundra Swan,migration,288,335
+Tundra Swan,winter,335,46
+Upland Sandpiper,migration,91,135
+Upland Sandpiper,migration,196,244
+Upland Sandpiper,breeding,136,182
+Upland Sandpiper,winter,244,91
+Vesper Sparrow,migration,60,135
+Vesper Sparrow,migration,244,319
+Vesper Sparrow,breeding,136,228
+Vesper Sparrow,winter,319,60
+Virginia Rail,migration,45,130
+Virginia Rail,migration,244,319
+Virginia Rail,breeding,136,228
+Virginia Rail,winter,319,45
+White-throated Sparrow,breeding,162,228
+Willow Flycatcher,migration,105,152
+Willow Flycatcher,migration,227,288
+Willow Flycatcher,breeding,162,197
+Willow Flycatcher,winter,288,105
+Wilson's Snipe,migration,46,135
+Wilson's Snipe,migration,227,319
+Wilson's Snipe,breeding,136,197
+Wilson's Snipe,winter,319,46
+Winter Wren,migration,75,121
+Winter Wren,migration,244,305
+Winter Wren,breeding,136,228
+Winter Wren,winter,305,75
+Wood Thrush,migration,74,152
+Wood Thrush,migration,227,305
+Wood Thrush,breeding,153,213
+Wood Thrush,winter,305,74
+Yellow-bellied Flycatcher,migration,91,152
+Yellow-bellied Flycatcher,migration,227,288
+Yellow-bellied Flycatcher,breeding,162,197
+Yellow-bellied Flycatcher,winter,288,91
+Yellow-breasted Chat,migration,105,152
+Yellow-breasted Chat,migration,227,288
+Yellow-breasted Chat,breeding,153,213
+Yellow-breasted Chat,winter,288,105
+Yellow-crowned Night-Heron,migration,74,135
+Yellow-crowned Night-Heron,migration,182,305
+Yellow-crowned Night-Heron,breeding,153,182
+Yellow-crowned Night-Heron,winter,305,74

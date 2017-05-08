@@ -101,13 +101,9 @@ def createID(inputHex, counties, IDHex):
     # delete fields
     arcpy.DeleteField_management(IDHex, dropFields)
 
-#inputHex = arcpy.GetParameterAsText(0)
-#counties = arcpy.GetParameterAsText(1)
-#IDHex = arcpy.GetParameterAsText(2)
-
-inputHex = "H:\MMoore\COA_Tool\COA_layers.gdb\PlanningPoly\hex10acre"
-counties = "H:\MMoore\COA_Tool\COA_layers.gdb\County_buffer"
-IDHex = "H:\MMoore\COA_Tool\COA_layers.gdb\PlanningPoly\hex10ac"
+inputHex = arcpy.GetParameterAsText(0)
+counties = arcpy.GetParameterAsText(1)
+IDHex = arcpy.GetParameterAsText(2)
 
 print "Processing started at" + time.strftime("%c") # print start time
 createID(inputHex, counties, IDHex)

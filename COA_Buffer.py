@@ -28,9 +28,6 @@ arcpy.env.overwriteOutput = True
 
 def sgcn_buffer(sgcn_points, point_buff, sgcn_lines, line_buff, sgcn_poly,
     sgcntotal):
-    '''function that buffers SGCN points and lines and combines with SGCN
-    polygons. Dissolves SGCN features based on Data ID field (excludes null
-    values)'''
     # create point buffer to be stored in memory
     pointbuffTEMP = "in_memory" + "\\" + "ptbuff"
     arcpy.Buffer_analysis(sgcn_points, pointbuffTEMP, point_buff, "FULL",
@@ -41,31 +38,24 @@ def sgcn_buffer(sgcn_points, point_buff, sgcn_lines, line_buff, sgcn_poly,
     arcpy.Buffer_analysis(sgcn_lines, linebuffTEMP, line_buff, "FULL",
     "ROUND")
 
-    # use Merge tool to combine buffered and sgcn poly features into single dataset
+    # use Merge tool to move buffered and sgcn poly features into single dataset
     merge = [pointbuffTEMP, linebuffTEMP, sgcn_poly]
     sgcntotalTEMP = "in_memory\\sgcntotalTEMP"
     arcpy.Merge_management(merge, sgcntotalTEMP)
 
-    # make sgcn into feature layer to prepare for selection
     sgcn_lyr = arcpy.MakeFeatureLayer_management(sgcntotalTEMP)
-    # select all features that do not have a null Data ID
     notNULL = arcpy.SelectLayerByAttribute_management(sgcn_lyr, "NEW_SELECTION", "DataID IS NOT NULL")
-    # dissolve all selected features based on Data ID
     polyTEMP = arcpy.Dissolve_management(sgcn_lyr, "in_memory\\polyTEMP", "DataID")
 
-    # join dissolved features with original data to maintain fields
     arcpy.JoinField_management(polyTEMP, "DataID", sgcn_lyr, "DataID")
 
-    # select features with null Data ID field and merge with dissolved features
     sgcn_lyr = arcpy.SelectLayerByAttribute_management(sgcn_lyr, "NEW_SELECTION", "DataID IS NULL")
     arcpy.Merge_management([sgcn_lyr, polyTEMP], sgcntotal)
 
-    # delete unneeded fields
     deleteFields = ["BUFF_DIST", "ORIG_FID", "DataID_1"]
     arcpy.DeleteField_management(sgcntotal, deleteFields)
 
 def delNullValues(inFC, field):
-    '''function that deletes records that have 'No' for data quality'''
     with arcpy.da.cursor(inFC, field) as cursor:
         for row in cursor:
             if row[0] == 'No':
@@ -74,7 +64,6 @@ def delNullValues(inFC, field):
                 pass
 
 def burnCPP(cpp_layer, sgcn_layer):
-    '''function that replaces SGCN features with CPP features if EO IDs match'''
     cpp = {}
     with arcpy.da.SearchCursor(cpp_layer, ["EO_ID", "SHAPE@"]) as sCursor:
         for row in sCursor:

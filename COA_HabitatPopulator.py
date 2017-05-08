@@ -50,6 +50,12 @@ def tabulateHabitat(inFC, zoneField, habitatFC, classField, habitatTable):
                 row[n] = round(row[n] / 100, 3) # dividing percentage by 100 to get proportion
                 cursor.updateRow(row)
 
+##inFC = r'Database Connections\COA.Default.pgh-gis.sde\COA.DBO.PlanningUnits\COA.DBO.PlanningUnit_Hex10acre'
+##zoneField = "unique_id"
+##habitatFC = r'W:\Heritage\Heritage_Projects\1332_PGC_COA\COA_DataToServer.gdb\Habitat_Terrestrial'
+##classField = "HABITAT"
+##habitatTable = r'W:\Heritage\Heritage_Projects\1332_PGC_COA\COA_DataToServer.gdb\Terrestrial_Habitat'
+
 inFC = arcpy.GetParameterAsText(0)
 zoneField = arcpy.GetParameterAsText(1)
 habitatFC = arcpy.GetParameterAsText(2)

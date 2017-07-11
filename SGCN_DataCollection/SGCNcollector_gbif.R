@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------
-# Name: SGCNcollector_gbof.R
+# Name: SGCNcollector_gbif.R
 # Purpose: 
 # Author: Christopher Tracey
 # Created: 2017-07-10

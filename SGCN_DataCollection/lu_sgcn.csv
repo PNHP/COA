@@ -632,7 +632,7 @@ IIPLE1M010,Giant Stone,Attaneuria ruralis,,y,5,6,2,6,G4,SH,,,,N,PFBC,a,IIPLE
 IIPLE1X030,Choctaw Stone,Neoperla choctaw,,y,5,4,4,6,G4,S3S4,,,,N,PFBC,a,IIPLE
 IIPLE1V010,Striped Stone,Perlinella drymo,,y,6,6,3,6,G5,S3S4,,,,N,PFBC,a,IIPLE
 IIHEMN2010,Fringetree Lace Bug,Leptoypha mutica,,y,,6,2,6,GNR,,,,,,,t,inv_trubug
-ARACF14130,Eastern Fence Lizard,Sceloporus undulatus  ,,y,6,4,4,6,G5,S3,,,,Y,PFBC,t,ARAC
+ARACF14130,Eastern Fence Lizard,Sceloporus undulatus,,y,6,4,4,6,G5,S3,,,,Y,PFBC,t,ARAC
 ARACH01011,Northern Coal Skink,Plestiodon anthracinus anthracinus,,y,4,3,4,6,G5T5,S3,,,,Y,PFBC,t,ARAC
 ARACH01080,Broadhead Skink,Plestiodon laticeps,,y,6,5,3,6,G5,S2,,PC,CR,Y,PFBC,t,ARAC
 AMAFB07047,Eastern Fox Squirrel,Sciurus niger vulpinus,,y,3,5,3,6,G5T4T5,S2,,,CR,N,PGC,t,AM

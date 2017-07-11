@@ -118,7 +118,7 @@ gbifdata <-  join(gbifdata,sgcn_query,by=c('SNAME'))
 # create a shapefile
 # based on http://neondataskills.org/R/csv-to-shapefile-R/
 # note that the easting and northing columns are in columns 5 and 6
-SGCNgbif <- SpatialPointsDataFrame(gbifdata[,3:4],gbifdata,,proj4string <- CRS("+init=epsg:4326"))   # assign a CRS, proj4string = utm18nCR  #https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/OverviewCoordinateReferenceSystems.pdf; the two commas in a row are important due to the slots feature
+SGCNgbif <- SpatialPointsDataFrame(gbifdata[,4:5],gbifdata,,proj4string <- CRS("+init=epsg:4326"))   # assign a CRS, proj4string = utm18nCR  #https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/OverviewCoordinateReferenceSystems.pdf; the two commas in a row are important due to the slots feature
 plot(SGCNgbif,main="Map of SGCN Locations")
 # write a shapefile
 writeOGR(SGCNgbif, getwd(),"SGCN_FromGBIF", driver="ESRI Shapefile")

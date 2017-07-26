@@ -226,7 +226,6 @@ def SpatialJoinLargestOverlap(target_fc, outTable):
         # convert to table
         arcpy.TableToTable_conversion(out_fc, os.path.dirname(outTable), os.path.basename(outTable), "", fieldmappings, "")
 
-
 def formatText(protectTable):
     # create list of coded values and descript values
     codedValues = ["FED", "STAT", "LOC", "NGO", "PVT", "DESG", "UNK", "UNK", "UNK", "JOIN", "TRIB" ]
@@ -241,7 +240,6 @@ def formatText(protectTable):
                 else:
                     pass
                 cursor.updateRow(row)
-
 
     # change descriptive values to coded values for gap status by taking only
     # first character

@@ -37,11 +37,11 @@ scratch = arcpy.GetParameterAsText(3) # scratch GDB where temporary/intermediate
 ################################################################################
 
 # Calculate intersection between Target Feature and Join Features and produces output table
-intersect = os.path.join(scratch, "intersectTEMP")
+intersect = outTable
 classFeatures = ["ELCODE", "SeasonCode", "OccProb"]
 arcpy.TabulateIntersection_analysis(target_features, "unique_id", join_features, intersect, classFeatures)
 
-# delete PUs that have less than 10% (4046.86 square meters) of area overlapped by protected lands
+# delete PUs that have less than 10% (4046.86 square meters) of area overlapped by particular species
 # could change this threshold if needed
 with arcpy.da.UpdateCursor(intersect, "PERCENTAGE") as cursor:
             for row in cursor:
@@ -51,12 +51,12 @@ with arcpy.da.UpdateCursor(intersect, "PERCENTAGE") as cursor:
                     cursor.deleteRow()
 
 # add field to combine ELCODE and SeasonCode to have unique pairing to use in pivot table output
-arcpy.AddField_management(intersect, "ELCODE_season", "TEXT", "", "", 50)
+arcpy.AddField_management(intersect, "El_Season", "TEXT", "", "", 50)
 expression = """!ELCODE! + "_" + !SeasonCode!"""
-arcpy.CalculateField_management(intersect, "ELCODE_season", expression, "PYTHON_9.3")
+arcpy.CalculateField_management(intersect, "El_Season", expression, "PYTHON_9.3")
 
 # tabular dissolve to delete records with identical unique id, ELCODE_season, and Occurrence Probability fields
-arcpy.DeleteIdentical_management(intersect, ["unique_id", "ELCODE_season", "OccProb"])
+arcpy.DeleteIdentical_management(intersect, ["unique_id", "El_Season", "OccProb"])
 
 # groupby iterator used to keep records with highest proportion overlap
 case_fields = ["unique_id", "ELCODE", "SeasonCode"] # defining fields within which to create groups
@@ -70,5 +70,5 @@ with arcpy.da.UpdateCursor(intersect, "*", sql_clause=(None, sql_orderby)) as cu
         for extra in group:
             cursor.deleteRow() #delete extra rows in group that are below that with highest proportion/percentage
 
-arcpy.PivotTable_management(intersect, "unique_id", "ELCODE_season", "OccProb", outTable) #pivot table so that EL_season is across the top, filled with OccProb - Take this step out if a flattened table with multiple records per planning code is desired
+#arcpy.PivotTable_management(intersect, "unique_id", "ELCODE_season", "OccProb", outTable) #pivot table so that EL_season is across the top, filled with OccProb - Take this step out if a flattened table with multiple records per planning code is desired
 

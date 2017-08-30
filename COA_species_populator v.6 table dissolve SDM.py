@@ -12,6 +12,7 @@
 #
 # To Do List/Future ideas:
 #-------------------------------------------------------------------------------
+
 # import packages
 import arcpy, os, datetime
 from arcpy import env
@@ -19,49 +20,45 @@ from arcpy.sa import *
 from itertools import groupby
 from operator import itemgetter
 
+print "start time: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+species_type = raw_input("terrestrial or aquatic species? (enter terrestrial or aquatic): ")
+
 # set default to overwrite output datasets with same name
 arcpy.env.overwriteOutput = True
+arcpy.env.workspace = r'H:\Projects\COA_SpeciesData\COA_SGCN_SDM_terrestrial.gdb\SDM'
+if species_type == 'terrestrial':
+    featureclasses = arcpy.ListFeatureClasses(feature_type = "Polygon")
+elif species_type == 'aquatic':
+    featureclasses = arcpy.ListFeatureClasses(feature_type = "Polyline")
 
 # set paths
 target_features = r'C:\Users\mmoore\Documents\ArcGIS\COA_Species.gdb\PlanningUnit_Hex10acre'
-join_features = r'C:\Users\mmoore\Documents\ArcGIS\COA_Species.gdb\SGCN_SDM'
-outTable = r'C:\Users\mmoore\Documents\ArcGIS\COA_Species.gdb'
-pa_county = r'C:\Users\mmoore\Documents\ArcGIS\COA_Species.gdb\PA_County'
+outTable = r'H:\Projects\COA_SpeciesData\COA_SGCN_SDM_Tables.gdb'
 
-# create county and pu feature layers
-county_lyr = arcpy.MakeFeatureLayer_management(pa_county, "county_lyr")
-target_lyr = arcpy.MakeFeatureLayer_management(target_features, "target")
-
-# create list of counties
-with arcpy.da.SearchCursor(pa_county, "COUNTY_NAM") as cursor:
-    county_list = sorted({row[0] for row in cursor})
-counties = [x.encode('UTF8') for x in county_list]
-
-# create list of county paths for later merge
-county_paths = []
+species_intersects = []
 
 # loop for each county
-for c in counties:
-    county = c
-    # select individual county
-    county_selection = arcpy.SelectLayerByAttribute_management(county_lyr, "NEW_SELECTION", '"COUNTY_NAM" = ' + "'%s'" %county)
-    # select all PUs that intersect selected county
-    target_selection = arcpy.SelectLayerByLocation_management(target_lyr, "INTERSECT", county_selection, "", "NEW_SELECTION")
-    # create new feature class with selected PUs
-    target = arcpy.FeatureClassToFeatureClass_conversion(target_selection, outTable, "target")
+for fc in featureclasses:
+    print fc + " started at: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    join_features = os.path.join(arcpy.env.workspace, fc)
     # output path/name
-    intersect = os.path.join(outTable, county)
+    intersect = os.path.join(outTable, fc)
     classFeatures = ["ELCODE", "SeasonCode", "OccProb"]
-    # tabulate intersection between PU and SGCN layers
-    arcpy.TabulateIntersection_analysis(target, "unique_id", join_features, intersect, classFeatures)
 
-    # delete PUs that have less than 10% overlapping SGCN
-    with arcpy.da.UpdateCursor(intersect, "PERCENTAGE") as cursor:
-        for row in cursor:
-            if row[0] > 10:
-                pass
-            else:
-                cursor.deleteRow()
+    # tabulate intersection between PU and SGCN layers
+    arcpy.TabulateIntersection_analysis(target_features, "unique_id", join_features, intersect, classFeatures)
+
+
+    # delete PUs that have less than 10% overlapping SGCN - THIS SHOULD ONLY BE DONE FOR TERRESTRIAL SPECIES. NOT AQUATIC SPECIES.
+    if species_type == 'terrestrial':
+        with arcpy.da.UpdateCursor(intersect, "PERCENTAGE") as cursor:
+            for row in cursor:
+                if row[0] > 10:
+                    pass
+                else:
+                    cursor.deleteRow()
+    else:
+        pass
 
     case_fields = ["unique_id", "ELCODE", "SeasonCode"]
     max_field = "PERCENTAGE"
@@ -75,8 +72,11 @@ for c in counties:
             for extra in group:
                 cursor.deleteRow()
 
-    county_paths.append(intersect)
+    species_intersects.append(intersect)
+    print fc + " finished at: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # merge county SGCNxPU datasets and delete identical
-merge = arcpy.Merge_management(county_paths, os.path.join(outTable, "SGCN_SDMxPU"))
-arcpy.DeleteIdentical_management(merge, ["unique_id", "ELCODE", "SeasonCode", "OccProb"])
+#merge = arcpy.Merge_management(species_intersects, os.path.join(outTable, "SGCN_SDMxPU_", species_type))
+#arcpy.DeleteIdentical_management(merge, ["unique_id", "ELCODE", "SeasonCode", "OccProb"])
+
+print "end time: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

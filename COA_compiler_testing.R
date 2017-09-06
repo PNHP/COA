@@ -18,7 +18,7 @@ options(useFancyQuotes = FALSE)
 PU_area <- 40468.38 # area of full planning unit in square meters
 
 # define parameters to be used in ArcGIS tool
-#planning_units = "X:/coa/coa_Rbridge/test_pu1.shp"
+#   planning_units = "X:/coa/coa_Rbridge/test_pu1.shp"
 project_name = in_params[[1]] # project_name <- "Manual Test Project"
 planning_units = in_params[[2]]
 out_table = in_params[[3]]
@@ -37,18 +37,19 @@ print(area_pu_total)
 # create list of unique ids for selected planning units
 pu_list <- selected_pu$unique_id
 
+# create connection to sqlite database
+db <- dbConnect(SQLite(), dbname = "X:/coa/coa_Rbridge/coa_bridgetest.sqlite")
+
 ############## County Names and Other details
 # get a list of the unique county FIPs from the PUID field
 county_FIPS <- substr(pu_list,1,3)
 # connect to the database and lookup the county name
-db <- dbConnect(SQLite(), dbname = "X:/coa/coa_Rbridge/coa_bridgetest.sqlite")
 SQLquery_county <- paste("SELECT COUNTY_NAM, FIPS_COUNT"," FROM lu_CountyName ","WHERE FIPS_COUNT IN (", paste(toString(sQuote(county_FIPS)), collapse = ", "), ")")
 aoi_county <- dbGetQuery(db, statement = SQLquery_county )
 print(paste(aoi_county$COUNTY_NAM," COUNTY", sep="") )
 ## do we want to add PGC/PFBC district information to the table here???
 
 ############## Natural Boundaries
-db <- dbConnect(SQLite(), dbname = "X:/coa/coa_Rbridge/coa_bridgetest.sqlite")
 SQLquery_luNatBound <- paste("SELECT unique_id, HUC12, PROVINCE, SECTION_, ECO_NAME"," FROM lu_NaturalBoundaries ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 aoi_NaturalBoundaries <- dbGetQuery(db, statement = SQLquery_luNatBound )
 HUC_list <- unique(aoi_NaturalBoundaries$HUC12)
@@ -71,7 +72,6 @@ print(u1)
 print(u2)
 
 ############# Habitats
-db <- dbConnect(SQLite(), dbname = "X:/coa/coa_Rbridge/coa_bridgetest.sqlite")
 SQLquery_HabTerr <- paste("SELECT unique_id, variable, value", # need to change these names
                   " FROM lu_HabTerr ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)),collapse = ", "), ")")
 aoi_HabTerr <- dbGetQuery(db, statement = SQLquery_HabTerr)
@@ -91,7 +91,6 @@ print("Terrestrial and Palustrine Habitats -- ")
 ht <- paste(unique(paste(aoi_HabTerr2$habitat," - ", aoi_HabTerr2$acres, " acres",sep="")) , sep= " ")
 print(ht)
 
-db <- dbConnect(SQLite(), dbname = "X:/coa/coa_Rbridge/coa_bridgetest.sqlite")
 SQLquery_HabLotic <- paste("SELECT unique_id, Shape_Length, SUM_23, DESC_23", # need to change these names
                           " FROM lu_LoticData ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 aoi_HabLotic <- dbGetQuery(db, statement = SQLquery_HabLotic)
@@ -104,7 +103,6 @@ hl <- paste(unique(paste(aoi_HabLotic2$habitat," - ", round(aoi_HabLotic2$length
 print(hl)
 
 ############## PROTECTED LAND ###############
-db <- dbConnect(SQLite(), dbname = "X:/coa/coa_Rbridge/coa_bridgetest.sqlite")
 SQLquery_luProtectedLand <- paste("SELECT unique_id, site_nm, manager, owner_typ", " FROM lu_ProtectedLands_25 ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 aoi_ProtectedLand <- dbGetQuery(db, statement = SQLquery_luProtectedLand )
 print("- - - - - - - - - - - - -")
@@ -113,7 +111,6 @@ z = unique(aoi_ProtectedLand$site_nm)
 print(z)
 
 ############## THREATS ###############
-db <- dbConnect(SQLite(), dbname = "X:/coa/coa_Rbridge/coa_bridgetest.sqlite")
 SQLquery_luThreats <- paste("SELECT unique_id, WindTurbines, WindCapability, ShaleGas,ShaleGasWell,StrImpAg,StrmImpAMD"," FROM lu_threats ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 aoi_Threats <- dbGetQuery(db, statement = SQLquery_luThreats )
 
@@ -133,8 +130,6 @@ if(any(aoi_Threats$ShaleGas=='y')) print("Site overlaps potential shale gas reso
 # add in something about gas wells.
 
 ############## SGCN
-# create connection to sqlite database
-db <- dbConnect(SQLite(), dbname = "X:/coa/coa_Rbridge/coa_bridgetest.sqlite")
 # build query to select planning units within area of interest from SGCNxPU table
 SQLquery <- paste("SELECT unique_id, ELCODE, SeasonCode, OccProb, El_Season, AREA", 
                   " FROM lu_SGCNxPU ",
@@ -154,7 +149,6 @@ aoi_sgcnXpu1 <- aggregate(aoi_sgcnXpu$AREA~El_Season+OccProb,aoi_sgcnXpu,FUN=sum
 aoi_sgcnXpu2 <- do.call(rbind,lapply(split(aoi_sgcnXpu1, aoi_sgcnXpu1$El_Season), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu$AREA`),]))
 colnames(aoi_sgcnXpu2)[colnames(aoi_sgcnXpu2) == 'El_Season'] <- 'ELSeason'
 elcodes <- aoi_sgcnXpu2$ELSeason
-db <- dbConnect(SQLite(), dbname = "X:/coa/coa_Rbridge/coa_bridgetest.sqlite")
 SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, Environment, TaxaGroup, ELSeason",
                              " FROM lu_SGCN ",
                              "WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
@@ -166,8 +160,11 @@ print(paste(aoi_sgcnXpu2$SCOMNAME,"-",aoi_sgcnXpu2$OccProb,"occ. prob.",sep=" ")
 
 
 ############## Actions
-
-
+SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason",
+                             " FROM lu_actions ",
+                             "WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+aoi_actions <- dbGetQuery(db, statement=SQLquery_actions)
+print( paste(aoi_actions$ScientificName,aoi_actions$EditedThreat,aoi_actions$COATool_Action,sep=" - ") )
 
 
 # disconnect the SQL database

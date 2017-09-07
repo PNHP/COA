@@ -77,6 +77,7 @@ SQLquery_HabTerr <- paste("SELECT unique_id, variable, value", # need to change 
 aoi_HabTerr <- dbGetQuery(db, statement = SQLquery_HabTerr)
 #calculate acres of each habitat
 aoi_HabTerr$acres <- as.numeric(aoi_HabTerr$value) * 10 # "10" is the number of acres in a planning unit
+aoi_HabTerr$value <- NULL
 # reduce by removing unique planning units
 aoi_HabTerr1 <- aoi_HabTerr[c(-1)] # drop the puid column
 colnames(aoi_HabTerr1)[colnames(aoi_HabTerr1) == 'variable'] <- 'habitat'
@@ -84,7 +85,14 @@ aoi_HabTerr2 <- aggregate(aoi_HabTerr1$acres, by=list(aoi_HabTerr1$habitat) , FU
 colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'Group.1'] <- 'habitat'
 colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'x'] <- 'acres'
 aoi_HabTerr2 <- aoi_HabTerr2[order(-aoi_HabTerr2$acres),]
-pie(aoi_HabTerr2$acres, labels=aoi_HabTerr2$habitat)
+
+if(nrow(aoi_HabTerr2)>2) {
+  library("RColorBrewer")
+  pielab <- as.list(aoi_HabTerr2$habitat)
+  pie(aoi_HabTerr2$acres,labels=aoi_HabTerr2$acres, col=brewer.pal(nrow(aoi_HabTerr2),"Set1") )
+
+  legend("bottomleft", legend=pielab, cex = 0.8,bty="n", fill=brewer.pal(nrow(aoi_HabTerr2),"Set1") )
+}
 
 print("- - - - - - - - - - - - -")
 print("Terrestrial and Palustrine Habitats -- ")
@@ -131,9 +139,7 @@ if(any(aoi_Threats$ShaleGas=='y')) print("Site overlaps potential shale gas reso
 
 ############## SGCN
 # build query to select planning units within area of interest from SGCNxPU table
-SQLquery <- paste("SELECT unique_id, ELCODE, SeasonCode, OccProb, El_Season, AREA", 
-                  " FROM lu_SGCNxPU ",
-                  "WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
+SQLquery <- paste("SELECT unique_id, ELCODE, SeasonCode, OccProb, El_Season, AREA"," FROM lu_SGCNxPU ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 # create SGCNxPU dataframe containing selected planning units
 aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery)
 
@@ -149,26 +155,24 @@ aoi_sgcnXpu1 <- aggregate(aoi_sgcnXpu$AREA~El_Season+OccProb,aoi_sgcnXpu,FUN=sum
 aoi_sgcnXpu2 <- do.call(rbind,lapply(split(aoi_sgcnXpu1, aoi_sgcnXpu1$El_Season), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu$AREA`),]))
 colnames(aoi_sgcnXpu2)[colnames(aoi_sgcnXpu2) == 'El_Season'] <- 'ELSeason'
 elcodes <- aoi_sgcnXpu2$ELSeason
-SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, Environment, TaxaGroup, ELSeason",
-                             " FROM lu_SGCN ",
-                             "WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, Environment, TaxaGroup, ELSeason"," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
 aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
 # merge species information to the planning units
 aoi_sgcnXpu2 <- merge(aoi_sgcnXpu2, aoi_sgcn, by="ELSeason")
 print("-------------")
 print(paste(aoi_sgcnXpu2$SCOMNAME,"-",aoi_sgcnXpu2$OccProb,"occ. prob.",sep=" "))
 
-
 ############## Actions
-SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason",
-                             " FROM lu_actions ",
-                             "WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
 aoi_actions <- dbGetQuery(db, statement=SQLquery_actions)
 print( paste(aoi_actions$ScientificName,aoi_actions$EditedThreat,aoi_actions$COATool_Action,sep=" - ") )
 
+# create a table version of the actions.
+aoi_actionstable <- aoi_actions[,c("ScientificName","EditedThreat","Sensitive","COATool_Action","ActionPriority")]
+
 
 # disconnect the SQL database
-#dbDisconnect()  #### This seems to be causing a crash.
+# dbDisconnect()  #### This seems to be causing a crash.
 
 ##############  report generation
 #setwd(loc_outMetadata)

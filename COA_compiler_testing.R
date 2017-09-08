@@ -82,15 +82,14 @@ aoi_HabTerr$value <- NULL
 aoi_HabTerr1 <- aoi_HabTerr[c(-1)] # drop the puid column
 colnames(aoi_HabTerr1)[colnames(aoi_HabTerr1) == 'variable'] <- 'habitat'
 aoi_HabTerr2 <- aggregate(aoi_HabTerr1$acres, by=list(aoi_HabTerr1$habitat) , FUN=sum)
+
 colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'Group.1'] <- 'habitat'
 colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'x'] <- 'acres'
 aoi_HabTerr2 <- aoi_HabTerr2[order(-aoi_HabTerr2$acres),]
-
-if(nrow(aoi_HabTerr2)>2) {
+if(nrow(aoi_HabTerr2)>2) {  # need three different ones for the pie char to work
   library("RColorBrewer")
   pielab <- as.list(aoi_HabTerr2$habitat)
   pie(aoi_HabTerr2$acres,labels=aoi_HabTerr2$acres, col=brewer.pal(nrow(aoi_HabTerr2),"Set1") )
-
   legend("bottomleft", legend=pielab, cex = 0.8,bty="n", fill=brewer.pal(nrow(aoi_HabTerr2),"Set1") )
 }
 
@@ -99,16 +98,21 @@ print("Terrestrial and Palustrine Habitats -- ")
 ht <- paste(unique(paste(aoi_HabTerr2$habitat," - ", aoi_HabTerr2$acres, " acres",sep="")) , sep= " ")
 print(ht)
 
+# aquatics 
 SQLquery_HabLotic <- paste("SELECT unique_id, Shape_Length, SUM_23, DESC_23", # need to change these names
                           " FROM lu_LoticData ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 aoi_HabLotic <- dbGetQuery(db, statement = SQLquery_HabLotic)
-aoi_HabLotic1 <- aoi_HabLotic[c(-1)] # drop the puid column
-aoi_HabLotic2 <- aggregate(as.numeric(aoi_HabLotic1$Shape_Length), by=list(aoi_HabLotic1$DESC_23), FUN=sum)
-colnames(aoi_HabLotic2)[colnames(aoi_HabLotic2) == 'Group.1'] <- 'habitat'
-colnames(aoi_HabLotic2)[colnames(aoi_HabLotic2) == 'x'] <- 'length'
-print("Lotic Habitats -- ")
-hl <- paste(unique(paste(aoi_HabLotic2$habitat," - ", round(aoi_HabLotic2$length*0.000621371,2),"miles (",round(aoi_HabLotic2$length/1000,2), "km)",sep="")) , sep= " ")
-print(hl)
+if( nrow(aoi_HabLotic)>0 ) {
+  aoi_HabLotic1 <- aoi_HabLotic[c(-1)] # drop the puid column
+  aoi_HabLotic2 <- aggregate(as.numeric(aoi_HabLotic1$Shape_Length), by=list(aoi_HabLotic1$DESC_23), FUN=sum)
+  colnames(aoi_HabLotic2)[colnames(aoi_HabLotic2) == 'Group.1'] <- 'habitat'
+  colnames(aoi_HabLotic2)[colnames(aoi_HabLotic2) == 'x'] <- 'length'
+  print("Lotic Habitats -- ")
+  hl <- paste(unique(paste(aoi_HabLotic2$habitat," - ", round(aoi_HabLotic2$length*0.000621371,2),"miles (",round(aoi_HabLotic2$length/1000,2), "km)",sep="")) , sep= " ")
+  print(hl)
+} else {
+  print("No mapped streams in the NHD dataset.")
+}
 
 ############## PROTECTED LAND ###############
 SQLquery_luProtectedLand <- paste("SELECT unique_id, site_nm, manager, owner_typ", " FROM lu_ProtectedLands_25 ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")

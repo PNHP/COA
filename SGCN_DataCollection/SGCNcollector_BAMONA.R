@@ -22,7 +22,6 @@
 
 setwd("C:/Users/ctracey/Dropbox (PNHP @ WPC)/coa/COA/SGCN_DataCollection")
 
-library('rgbif')
 library('plyr')
 library('data.table')
 library('rgdal')  # for vector work; sp package should always load with rgdal. 

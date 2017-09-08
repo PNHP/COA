@@ -1,0 +1,686 @@
+ELCODE,SCOMNAME,SNAME,Responsibility,SeasonCode,CAT1_glbl_reg,CAT2_com_sp_com,CAT3_cons_rare_native,CAT4_datagaps,GRANK,SRANK,USESA,SPROT,PBSSTATUS,SENSITV_SP,Agency,Environment,TaxaGroup
+ABNJB02010,Tundra Swan,Cygnus columbianus,y,m,4,1,4,6,G5,S3N,,,,N,PGC,t,AB
+ABNJB10040,American Black Duck,Anas rubripes,,b,5,2,5,6,G5,"S4B,S4N",,,,N,PGC,t,AB
+ABNJB10040,American Black Duck,Anas rubripes,,m,5,2,5,6,G5,"S4B,S4N",,,,N,PGC,t,AB
+ABNJB10040,American Black Duck,Anas rubripes,,w,6,2,6,6,G5,"S4B,S4N",,,,N,PGC,t,AB
+ABNJB10130,Blue-winged Teal,Anas discors,,b,4,6,2,6,G5,S3B,,,,N,PGC,t,AB
+ABNJB10010,Green-winged Teal,Anas crecca,,b,3,5,1,6,G5,"S1S2B,S3N",,,CR,N,PGC,t,AB
+ABNJB11070,Lesser Scaup,Aythya affinis,,m,6,6,6,6,G5,S3N,,,,N,PGC,t,AB
+ABNJB16010,Long-tailed Duck,Clangula hyemalis,,m,4,4,5,6,G5,SNA,,,,N,PGC,t,AB
+ABNJB16010,Long-tailed Duck,Clangula hyemalis,,w,4,4,5,6,G5,SNA,,,,N,PGC,t,AB
+ABNLC11010,Ruffed Grouse,Bonasa umbellus,,b,4,1,5,6,G5,S5,,,,N,PGC,t,AB
+ABNLC11010,Ruffed Grouse,Bonasa umbellus,,w,6,3,5,6,G5,S5,,,,N,PGC,t,AB
+ABNCA02010,Pied-billed Grebe,Podilymbus podiceps,,b,3,4,2,5,G5,"S3B,S4N",,,CR,N,PGC,t,AB
+ABNCA03010,Horned Grebe,Podiceps auritus,,w,6,2,3,5,G5,SNA,,,,N,PGC,t,AB
+ABNCA03020,Red-necked Grebe,Podiceps grisegena,,w,6,3,3,5,G5,SNA,,,,N,PGC,t,AB
+ABNGA01020,American Bittern,Botaurus lentiginosus,,b,3,5,3,6,G4,S1B,,PE,PE,N,PGC,t,AB
+ABNGA02010,Least Bittern,Ixobrychus exilis,,b,4,5,3,6,G5,S1B,,PE,PE,N,PGC,t,AB
+ABNGA04040,Great Egret,Ardea alba,,b,4,6,3,6,G5,S1B,,PE,PE,N,PGC,t,AB
+ABNGA11010,Black-crowned Night-Heron,Nycticorax nycticorax,,b,4,5,3,6,G5,S1B,,PE,PE,N,PGC,t,AB
+ABNGA13010,Yellow-crowned Night-Heron,Nyctanassa violacea,,b,4,5,2,6,G5,S1B,,PE,PE,N,PGC,t,AB
+ABNKC01010,Osprey,Pandion haliaetus,,b,4,1,3,5,G5,S3B,,PT,PT,N,PGC,t,AB
+ABNKC10010,Bald Eagle,Haliaeetus leucocephalus,,b,4,1,3,5,G5,S3B,,DL,PT,N,PGC,t,AB
+ABNKC10010,Bald Eagle,Haliaeetus leucocephalus,,w,6,5,5,5,G5,S3B,,DL,PT,N,PGC,t,AB
+ABNKC11010,Northern Harrier,Circus cyaneus,,b,4,5,3,6,G5,"S2B,S4N",,PT,PT,N,PGC,t,AB
+ABNKC12020,Sharp-shinned Hawk,Accipiter striatus,,b,4,2,4,6,G5,"S4B,S5N",,,,N,PGC,t,AB
+ABNKC12020,Sharp-shinned Hawk,Accipiter striatus,,m,6,5,6,6,G5,"S4B,S5N",,,,N,PGC,t,AB
+ABNKC12060,Northern Goshawk,Accipiter gentilis,,b,5,6,4,6,G5,"S2S3B,S3N",,,CA,Y,PGC,t,AB
+ABNKC12060,Northern Goshawk,Accipiter gentilis,,m,6,6,4,6,G5,"S2S3B,S3N",,,CA,Y,PGC,t,AB
+ABNKC12060,Northern Goshawk,Accipiter gentilis,,w,6,2,5,6,G5,"S2S3B,S3N",,,CA,Y,PGC,t,AB
+ABNKC19050,Broad-winged Hawk,Buteo platypterus,,b,4,1,5,6,G5,S5B,,,,N,PGC,t,AB
+ABNKC19050,Broad-winged Hawk,Buteo platypterus,,m,6,5,6,6,G5,S5B,,,,N,PGC,t,AB
+ABNKC22010,Golden Eagle,Aquila chrysaetos,y,m,4,2,4,5,G5,SNA,,,,N,PGC,t,AB
+ABNKC22010,Golden Eagle,Aquila chrysaetos,,w,4,2,4,5,G5,SNA,,,,N,PGC,t,AB
+ABNME05020,King Rail,Rallus elegans,,b,4,6,3,6,G4,S1B,,PE,PE,Y,PGC,t,AB
+ABNME05030,Virginia Rail,Rallus limicola,,b,4,1,3,5,G5,S3B,,,,N,PGC,t,AB
+ABNME08020,Sora,Porzana carolina,,b,4,1,4,6,G5,S3B,,,CR,N,PGC,t,AB
+ABNME13010,Common Gallinule,Gallinula galeata,,b,4,5,3,6,G5,S3B,,,CA,N,PGC,t,AB
+ABNME14020,American Coot,Fulica americana,,b,4,6,3,6,G5,"S3B,S3N",,,CR,N,PGC,t,AB
+ABNNB03070,Piping Plover,Charadrius melodus,,b,2,5,2,3,G3,SX,LE,,PX,N,PGC,t,AB
+ABNNB03070,Piping Plover,Charadrius melodus,,m,2,5,2,3,G3,SX,LE,,PX,N,PGC,t,AB
+ABNNF04020,Spotted Sandpiper,Actitis macularius,,b,4,1,3,5,G5,S4B,,,,N,PGC,t,AB
+ABNNF06010,Upland Sandpiper,Bartramia longicauda,,b,4,5,3,6,G5,S1B,,PE,PE,Y,PGC,t,AB
+ABNNF11021,Red Knot,Calidris canutus,,m,2,4,2,6,G4,SNA,,,,,PGC,t,AB
+ABNNF18030,Wilson's Snipe,Gallinago delicata,,b,4,1,4,6,G5,"S3B,S3N",,,CR,N,PGC,t,AB
+ABNNF19020,American Woodcock,Scolopax minor,,b,4,1,5,6,G5,S5B,,,,N,PGC,t,AB
+ABNNM10020,Black Tern,Chlidonias niger,,b,4,6,3,6,G4,S1B,,PE,PE,N,PGC,t,AB
+ABNNM08070,Common Tern,Sterna hirundo,,b,5,6,3,3,G5,SXB,,PE,PE,N,PGC,t,AB
+ABNSA01010,Barn Owl,Tyto alba,,b,4,5,3,6,G5,"S2S3B,S2S3N",,,CA,Y,PGC,t,AB
+ABNSB13010,Long-eared Owl,Asio otus,,b,5,6,3,6,G5,"S2B,S2S3N",,PT,PT,Y,PGC,t,AB
+ABNSB13010,Long-eared Owl,Asio otus,,w,6,2,5,6,G5,"S2B,S2S3N",,PT,PT,Y,PGC,t,AB
+ABNSB13040,Short-eared Owl,Asio flammeus,,b,5,6,3,6,G5,"S1B,S3N",,PE,PE,N,PGC,t,AB
+ABNSB13040,Short-eared Owl,Asio flammeus,,w,6,5,5,6,G5,"S1B,S3N",,PE,PE,N,PGC,t,AB
+ABNSB15020,Northern Saw-whet Owl,Aegolius acadicus,,b,4,2,4,6,G5,S4,,,,N,PGC,t,AB
+ABNSB15020,Northern Saw-whet Owl,Aegolius acadicus,,m,6,4,4,6,G5,S4,,,,N,PGC,t,AB
+ABNTA02020,Common Nighthawk,Chordeiles minor,,b,4,1,4,6,G5,S3B,,,CA,N,PGC,t,AB
+ABNTA07070,Eastern Whip-poor-will,Antrostomus vociferus,,b,4,1,4,6,G5,S3B,,,CR,N,PGC,t,AB
+ABNUA03010,Chimney Swift,Chaetura pelagica,,b,4,1,4,6,G5,S5B,,,,N,PGC,t,AB
+ABNYF04040,Red-headed Woodpecker,Melanerpes erythrocephalus,,b,6,3,4,5,G5,"S3B,S4N",,,,N,PGC,t,AB
+ABNKD06020,American Kestrel,Falco sparverius,,b,4,1,5,6,G5,"S4B,S4N",,,,N,PGC,t,AB
+ABNKD06070,Peregrine Falcon,Falco peregrinus,,b,3,5,2,6,G4,"S1B,S1N",,PE,PE,N,PGC,t,AB
+ABPAE32010,Olive-sided Flycatcher,Contopus cooperi,,b,6,6,3,3,G4,SXB,,,PX,N,PGC,t,AB
+ABPAE33010,Yellow-bellied Flycatcher,Empidonax flaviventris,,b,4,6,2,6,G5,S1S2B,,PE,PE,Y,PGC,t,AB
+ABPAE33040,Willow Flycatcher,Empidonax traillii,,b,4,1,5,6,G5,S5B,,,,N,PGC,t,AB
+ABPBR01030,Loggerhead Shrike,Lanius ludovicianus,,b,4,6,3,6,,,,,,,PGC,t,AB
+ABPAU01010,Purple Martin,Progne subis,,b,4,2,4,6,G5,S3B,,,CR,N,PGC,t,AB
+ABPAU08010,Bank Swallow,Riparia riparia,,b,4,1,4,6,G5,S3S4B,,,CR,N,PGC,t,AB
+ABPBA01010,Brown Creeper,Certhia americana,,b,4,1,5,6,G5,"S4B,S5N",,,,N,PGC,t,AB
+ABPBG09050,Winter Wren,Troglodytes hiemalis,,b,4,1,5,6,G5,"S4B,S4N",,,,N,PGC,t,AB
+ABPBG10010,Sedge Wren,Cistothorus platensis,,b,4,5,2,6,G5,S1B,,PE,PE,Y,PGC,t,AB
+ABPBG10020,Marsh Wren,Cistothorus palustris,,b,3,4,2,5,G5,S2S3B,,,CA,N,PGC,t,AB
+ABPBJ18100,Swainson's Thrush,Catharus ustulatus,,b,4,1,4,6,G5,"S2S3B,S5N",,,CR,N,PGC,t,AB
+ABPBJ19010,Wood Thrush,Hylocichla mustelina,y,b,4,1,5,6,G5,S5B,,,,N,PGC,t,AB
+ABPBJ19010,Wood Thrush,Hylocichla mustelina,,m,6,3,5,6,G5,S5B,,,,N,PGC,t,AB
+ABPBK01010,Gray Catbird,Dumetella carolinensis,y,b,6,4,5,5,G5,"S5B,S3N",,,,N,PGC,t,AB
+ABPBX10030,Louisiana Waterthrush,Parkesia motacilla,,b,4,1,4,5,G5,S5B,,,,N,PGC,t,AB
+ABPBX10020,Northern Waterthrush,Parkesia noveboracensis,,b,5,6,4,6,G5,S3B,,,CR,N,PGC,t,AB
+ABPBX01030,Golden-winged Warbler,Vermivora chrysoptera,,b,3,5,3,6,G4,S2S3B,,,CA,N,PGC,t,AB
+ABPBX01020,Blue-winged Warbler,Vermivora cyanoptera,,b,4,1,5,6,G5,S4B,,,,N,PGC,t,AB
+ABPBX05010,Black-and-white Warbler,Mniotilta varia,,b,4,1,5,6,G5,S5B,,,,N,PGC,t,AB
+ABPBX07010,Prothonotary Warbler,Protonotaria citrea,,b,6,3,4,6,G5,S2S3B,,,CR,N,PGC,t,AB
+ABPBX01060,Nashville Warbler,Oreothlypis ruficapilla,,b,4,1,3,5,G5,S3S4B,,,,N,PGC,t,AB
+ABPBX11010,Kentucky Warbler,Geothlypis formosa,,b,4,1,5,6,G5,S4B,,,,N,PGC,t,AB
+ABPBX16010,Hooded Warbler,Setophaga citrina,,m,6,2,4,5,G5,S4B,,,,N,PGC,t,AB
+ABPBX03240,Cerulean Warbler,Setophaga cerulea,y,b,3,1,4,6,G4,S4B,,,,N,PGC,t,AB
+ABPBX03240,Cerulean Warbler,Setophaga cerulea,,m,3,3,5,6,G4,S4B,,,,N,PGC,t,AB
+ABPBX03120,Blackburnian Warbler,Setophaga fusca,,m,6,3,5,6,G5,S4B,,,,N,PGC,t,AB
+ABPBX03230,Blackpoll Warbler,Setophaga striata,,b,4,5,2,6,G5,S1B,,PE,PE,N,PGC,t,AB
+ABPBX03050,Black-throated Blue Warbler,Setophaga caerulescens,,b,4,1,5,6,G5,S4B,,,,N,PGC,t,AB
+ABPBX03190,Prairie Warbler,Setophaga discolor,,b,4,1,4,6,G5,S4B,,,,N,PGC,t,AB
+ABPBX03100,Black-throated Green Warbler,Setophaga virens,,b,4,1,4,6,G5,S5B,,,,N,PGC,t,AB
+ABPBX16030,Canada Warbler,Cardellina canadensis,,b,4,1,4,5,G5,S4B,,,,N,PGC,t,AB
+ABPBX24010,Yellow-breasted Chat,Icteria virens,,b,4,5,3,6,G5,S4B,,,,N,PGC,t,AB
+ABPBX74030,Eastern Towhee,Pipilo erythrophthalmus,,m,6,3,5,6,G5,"S5B,S5N",,,,N,PGC,t,AB
+ABPBX94050,Field Sparrow,Spizella pusilla,,b,4,1,4,6,G5,"S5B,S4N",,,,N,PGC,t,AB
+ABPBX95010,Vesper Sparrow,Pooecetes gramineus,,b,4,5,3,6,G5,S4B,,,,N,PGC,t,AB
+ABPBX99010,Savannah Sparrow,Passerculus sandwichensis,,b,4,2,4,6,G5,"S5B,S2S3N",,,,N,PGC,t,AB
+ABPBXA0020,Grasshopper Sparrow,Ammodramus savannarum,,b,4,1,4,6,G5,S4B,,,,N,PGC,t,AB
+ABPBXA0030,Henslow's Sparrow,Ammodramus henslowii,,b,3,1,4,6,G4,S3B,,,CR,N,PGC,t,AB
+ABPBXA4020,White-throated Sparrow,Zonotrichia albicollis,,b,4,2,4,6,G5,"S3S4B,S5N",,,,N,PGC,t,AB
+ABPBX45030,Summer Tanager,Piranga rubra,,b,5,6,3,6,G5,S3B,,,CA,N,PGC,t,AB
+ABPBX45040,Scarlet Tanager,Piranga olivacea,y,b,4,1,4,5,G5,S5B,,,,N,PGC,t,AB
+ABPBX65010,Dickcissel,Spiza americana,,b,4,1,4,6,G5,S2B,,PE,PE,N,PGC,t,AB
+ABPBXA9010,Bobolink,Dolichonyx oryzivorus,,b,4,1,4,6,G5,S4B,,,,N,PGC,t,AB
+ABPBXB2020,Eastern Meadowlark,Sturnella magna,,b,4,1,4,6,G5,"S4B,S4N",,,,N,PGC,t,AB
+ABPBXB5010,Rusty Blackbird,Euphagus carolinus,,m,3,1,3,6,G4,S3N,,,,N,PGC,t,AB
+ABPBXB5010,Rusty Blackbird,Euphagus carolinus,,w,3,4,5,6,G4,S3N,,,,N,PGC,t,AB
+ABPBY05010,Red Crossbill,Loxia curvirostra,,b,4,5,2,6,G5,SNA,,,CU,N,PGC,t,AB
+ABPBY05010,Red Crossbill,Loxia curvirostra,,w,6,4,4,6,G5,SNA,,,CU,N,PGC,t,AB
+ABPBY06030,Pine Siskin,Spinus pinus,,b,4,1,3,6,G5,SNA,,,CU,N,PGC,t,AB
+AFBAA01010,Ohio Lamprey ,Ichthyomyzon bdellium,,y,3,2,4,6,G3G4,S4,,PC,DL,N,PFBC,a,AF
+AFBAA01030,Northern Brook Lamprey ,Ichthyomyzon fossor,,y,4,6,3,6,G4,S1,,PE,PE,N,PFBC,a,AF
+AFBAA01050,Mountain Brook Lamprey,Ichthyomyzon greeleyi,y,y,3,2,4,5,G3G4,S4,,PT,DL,N,PFBC,a,AF
+AFBAA02010,Least Brook Lamprey ,Lampetra aepyptera,,y,6,2,4,6,G5,S4,,PC,CR,N,PFBC,a,AF
+AFCAA01010,Shortnose Sturgeon,Acipenser brevirostrum,,y,2,5,2,6,G3,S2,LE,PE,PE,Y,PFBC,a,AF
+AFCAA01020,Lake Sturgeon,Acipenser fulvescens,,y,4,5,2,6,G3G4,S1,,PE,PE,N,PFBC,a,AF
+AFCAA01040,Atlantic Sturgeon,Acipenser oxyrhynchus,,y,2,5,3,6,G3,S1,LE,PE,PE,Y,PFBC,a,AF
+AFCAB01010,Paddlefish,Polyodon spathula ,,y,4,6,3,6,G4,SX,,,PX,N,PFBC,a,AF
+AFCBA01010,Spotted Gar,Lepisosteus oculatus,,y,6,6,2,6,G5,S1,,PE,PE,N,PFBC,a,AF
+AFCCA01010,Bowfin,Amia calva,,y,6,2,4,6,G5,S4,,PC,DL,N,PFBC,a,AF
+AFCEA01010,American Eel,Anguilla rostrata,,y,3,5,6,6,G4,S5,,,,N,PFBC,a,AF
+AFCFA01010,Blueback Herring,Alosa aestivalis,,y,2,1,4,6,G5,S3,,,,N,PFBC,a,AF
+AFCFA01040,Hickory Shad,Alosa mediocris,,y,3,5,3,6,G5,S2,,PE,PE,N,PFBC,a,AF
+AFCFA01050,Alewife,Alosa pseudoharengus,,y,4,1,4,6,G5,S3,,,,N,PFBC,a,AF
+AFCFA01060,American Shad,Alosa sapidissima,,y,6,3,5,6,G5,S4,,,,N,PFBC,a,AF
+AFCJB31020,Northern Redbelly Dace,Chrosomus eos,,y,6,6,2,6,G5,S1,,PE,PE,N,PFBC,a,AF
+AFCJB31030,Southern Redbelly Dace,Chrosomus erythrogaster,,y,6,6,3,6,G5,S2,,PT,PT,N,PFBC,a,AF
+AFCJB05010,Redside Dace,Clinostomus elongatus,y,y,3,2,4,5,G3G4,S4,,,,N,PFBC,a,AF
+AFCJB50020,Streamline Chub,Erimystax dissimilis,y,y,5,2,4,5,G4,S4S5,,,,N,PFBC,a,AF
+AFCJB50050,Gravel Chub,Erimystax x-punctatus,,y,6,6,3,3,G4,SU,,PE,PE,N,PFBC,a,AF
+AFCJB12010,Tonguetied Minnow,Exoglossum laurae,y,y,3,2,4,5,G4,S4,,,,N,PFBC,a,AF
+AFCJB12020,Cutlip Minnow,Exoglossum maxillingua,y,y,4,4,5,5,G5,S5,,,,N,PFBC,a,AF
+AFCJB28410,Bigmouth Shiner,Hybopsis dorsalis,,y,6,6,3,6,G5,S2,,PT,PT,N,PFBC,a,AF
+AFCJB52080,Redfin Shiner,Lythrurus umbratilis,,y,6,6,3,6,G5,S2,,PE,PE,N,PFBC,a,AF
+AFCJB54010,Allegheny Pearl Dace,Margariscus margarita,y,y,5,2,4,5,G5,S4,,,,N,PFBC,a,AF
+AFCJB26020,Hornyhead Chub,Nocomis biguttatus,,y,6,6,2,6,G5,S1,,PC,PE,N,PFBC,a,AF
+AFCJB28060,Comely Shiner,Notropis amoenus,y,y,4,3,5,6,G5,S4,,,,N,PFBC,a,AF
+AFCJB28180,Bridle Shiner,Notropis bifrenatus,,y,2,5,2,6,G3,S1,,PE,PE,N,PFBC,a,AF
+AFCJB28190,River Shiner,Notropis blennius,,y,6,6,2,3,G5,SU,,PE,PE,N,PFBC,a,AF
+AFCJB28230,Ghost Shiner,Notropis buchanani,,y,5,5,1,2,G5,SU,,PE,PE,N,PFBC,a,AF
+AFCJB28310,Ironcolor Shiner,Notropis chalybaeus,,y,3,6,2,6,G4,S1,,PE,PE,N,PFBC,a,AF
+AFCJB28520,Blackchin Shiner,Notropis heterodon,,y,6,6,2,6,G5,S1,,PE,PE,N,PFBC,a,AF
+AFCJB28770,Swallowtail Shiner,Notropis procne,y,y,4,3,5,6,G5,S4,,,,N,PFBC,a,AF
+AFCJC02030,Longnose Sucker,Catostomus catostomus,,y,5,6,3,6,G5,S1,,PE,PE,N,PFBC,a,AF
+AFCJC07020,Bigmouth Buffalo,Ictiobus cyprinellus,,y,6,6,2,6,G5,S1,,PE,PE,N,PFBC,a,AF
+AFCJC09010,Spotted Sucker,Minytrema melanops,,y,5,5,2,6,G5,S2,,PT,PT,N,PFBC,a,AF
+AFCKA06020,White Catfish,Ameiurus catus,,y,6,2,4,6,G5,S3,,,,N,PFBC,a,AF
+AFCKA06030,Black Bullhead,Ameiurus melas,,y,6,6,3,3,G5,SU,,PE,PE,N,PFBC,a,AF
+AFCKA01030,Blue Catfish,Ictalurus furcatus,,y,6,6,2,6,G5,SX,,,,N,PFBC,a,AF
+AFCKA02040,Mountain Madtom,Noturus eleutherus,,y,5,3,4,6,G4,S4,,PE,PE,N,PFBC,a,AF
+AFCKA02110,Tadpole Madtom,Noturus gyrinus,,y,5,5,1,6,G5,S1,,PE,PE,N,PFBC,a,AF
+AFCKA02130,Margined Madtom,Noturus insignis,y,y,6,4,5,5,G5,S5,,,,N,PFBC,a,AF
+AFCKA02160,Brindled Madtom,Noturus miurus,,y,3,5,2,6,G5,S2,,PT,PT,N,PFBC,a,AF
+AFCKA02220,Northern Madtom,Noturus stigmosus,,y,3,2,4,6,G3,S4,,PE,PE,N,PFBC,a,AF
+AFCHA01020,Cisco,Coregonus artedi,,y,6,6,3,3,G5,SU,,PE,PE,N,PFBC,a,AF
+AFCHA05030,Brook Trout,Salvelinus fontinalis,,y,6,2,4,6,G5,S4,,,,N,PFBC,a,AF
+AFCHC03010,Central Mudminnow,Umbra limi,,y,6,3,4,6,G5,S4,,PC,CP,N,PFBC,a,AF
+AFCHC03020,Eastern Mudminnow,Umbra pygmaea,,y,4,2,3,6,G5,S3,,PC,CP,N,PFBC,a,AF
+AFCMA01010,Burbot,Lota lota,,y,4,1,3,6,G5,S3,,PE,PE,N,PFBC,a,AF
+AFCMA01010,Allegheny Burbot,Lota sp. cf. lota,y,y,,4,2,5,G5,S3,,PE,PE,N,PFBC,a,AF
+AFCPA02010,Brook Stickleback,Culaea inconstans,,y,6,3,4,6,G5,S4,,PC,CP,N,PFBC,a,AF
+AFCPA03010,Threespine Stickleback,Gasterosteus aculeatus,,y,4,6,2,6,G5,S1,,PE,PE,N,PFBC,a,AF
+AFC4E02330,Checkered Sculpin ,Cottus sp. cf. cognatus,,y,5,5,3,6,G4Q,S2,,,PE,N,PFBC,a,AF
+AFCQB10030,Banded Sunfish,Enneacanthus obesus,,y,6,6,3,6,G5,SH,,PE,PE,N,PFBC,a,AF
+AFCQB11040,Warmouth,Lepomis gulosus,,y,6,2,3,6,G5,S3,,PE,PE,N,PFBC,a,AF
+AFCQB11080,Longear Sunfish,Lepomis megalotis,,y,5,6,3,6,G5,S1,,PE,PE,N,PFBC,a,AF
+AFCQC01060,Eastern Sand Darter,Ammocrypta pellucida,,y,3,5,2,6,G4,S1,,PE,PE,N,PFBC,a,AF
+AFCQC02240,Iowa Darter,Etheostoma exile,,y,6,6,3,6,G5,S2,,PE,PE,N,PFBC,a,AF
+AFCQC02420,Spotted Darter,Etheostoma maculatum,y,y,1,2,4,6,G2,S2,,DL,PT,N,PFBC,a,AF
+AFCQC02540,Tessellated Darter,Etheostoma olmstedi,y,y,6,4,5,5,G5,S5,,,,N,PFBC,a,AF
+AFCQC02800,Tippecanoe Darter,Etheostoma tippecanoe,y,y,3,2,4,5,G3G4,S3S4,,DL,PT,N,PFBC,a,AF
+AFCQC02830,Variegate Darter,Etheostoma variatum,y,y,4,4,5,5,G5,S5,,,,N,PFBC,a,AF
+AFCQC04460,Chesapeake Logperch,Percina bimaculata,y,y,1,5,2,6,G1G2,S1,,PT,,N,PFBC,a,AF
+AFCQC04120,Longhead Darter,Percina macrocephala,y,y,1,2,4,5,G3,S4,,DL,DL,N,PFBC,a,AF
+AFCQC04220,Shield Darter,Percina peltata,y,y,4,4,5,5,G5,S5,,,,N,PFBC,a,AF
+AAABF01040,Eastern Spadefoot,Scaphiopus holbrookii,,y,6,5,3,4,G5,S2S3,,PT,PT,Y,PFBC,t,AAAB
+AAABB01210,Fowler's Toad,Anaxyrus fowleri,,y,6,3,4,5,G5,S3S4,,,,N,PFBC,t,AAAB
+AAABC01030,Northern Cricket Frog,Acris crepitans,,y,4,5,2,6,G5,S1,,PE,PE,Y,PFBC,t,AAAB
+AAABC02050,Cope's Gray Treefrog,Hyla chrysoscelis,,y,6,6,2,6,G5,S1,,,,N,PFBC,t,AAAB
+AAABC05010,Mountain Chorus Frog,Pseudacris brachyphona,,y,4,5,3,6,G5,S2,,,,Y,PFBC,t,AAAB
+AAABC05120,Upland Chorus Frog,Pseudacris feriarum,,y,6,6,2,6,G5,S1,,,,Y,PFBC,t,AAAB
+AAABC05140,New Jersey Chorus Frog,Pseudacris kalmi,,y,3,5,2,6,G4,S1,,PE,PE,Y,PFBC,t,AAAB
+AAABC05150,Western Chorus Frog,Pseudacris triseriata,,y,4,6,2,6,G5,S1,,,,Y,PFBC,t,AAAB
+AAABH01170,Northern Leopard Frog,Lithobates pipiens,,y,6,5,3,4,G5,S2S3,,,,Y,PFBC,t,AAAB
+AAABH01222,Southern Leopard Frog,Lithobates sphenocephalus utricularius,,y,4,6,2,6,G5TNR,S1,,PE,PE,Y,PFBC,t,AAAB
+ICMAL06010,Pennsylvania Cave Amphipod,Crangonyx dearolfi,y,y,1,3,4,6,G2,S1,,,,Y,PFBC,s,inv_amp
+ICMAL05060,Allegheny Cave Amphipod,Stygobromus allegheniensis,y,y,4,1,4,5,G5,S2S3,,,,Y,PFBC,s,inv_amp
+ICMAL05010,Biggers' Cave Amphipod,Stygobromus biggersi,,y,2,6,2,6,G2G4,S1,,,,Y,PFBC,s,inv_amp
+ICMAL05050,Franz's Cave Amphipod,Stygobromus franzi,,y,2,6,2,6,G3G4,SNR,,,,Y,PFBC,s,inv_amp
+ICMAL05020,Shenandoah Valley Cave Amphipod,Stygobromus gracilipes,,y,2,6,2,6,G3G4,S1,,,,Y,PFBC,s,inv_amp
+ICMAL05030,Pizzini's Cave Amphipod,Stygobromus pizzinii,,y,2,6,3,6,G3G4,S1,,,,Y,PFBC,s,inv_amp
+ICMAL05320,Stellmack's Cave Amphipod,Stygobromus stellmacki,,y,1,5,2,6,G1G2,S1,,,,Y,PFBC,s,inv_amp
+ICMAL05042,Potomac Groundwater Amphipod,Stygobromus tenuis potomacus,,y,3,6,2,6,G4T4,S1,,,,Y,PFBC,s,inv_amp
+ICMAL10120,An Amphipod,Gammarus cohabitus,,y,,5,2,2,,,,,,,PFBC,s,inv_amp
+IIHYM24220,Yellow-banded Bumblebee,Bombus terricola,y,y,4,5,2,3,GU,SNR,,,,N,,t,inv_bees
+IIHYM24020,Rusty-patched Bumblebee,Bombus affinis,,y,1,6,2,6,GU,SH,,,,N,,t,inv_bees
+IIHYM24360,Ashton's Cuckoo Bumble Bee,Bombus ashtoni,,y,3,6,2,6,GU,SH,,,,N,,t,IIHYM
+waiting1,Pennsylvania Cave Beetle,Pseudanophthalmus sp. nov.,y,y,,5,2,6,,,,,,,,s,inv_beetgr
+IICOL03010,Six-banded Longhorn Beetle,Dryobius sexnotatus,,y,,6,2,6,GNR,SH,,,,N,,t,inv_beetot
+IICOL42010,American Burying Beetle,Nicrophorus americanus,,y,1,6,2,6,G2G3,SH,LE,,,N,,t,inv_beetot
+IICOL02070,Appalachian Tiger Beetle,Cicindela ancocisconensis,,y,2,5,2,3,G3,S1,,,,N,,t,IICOL
+IICOL02040,Big Sand Tiger Beetle,Cicindela formosa,,y,6,6,2,6,G5,S1,,,,N,,t,IICOL
+IICOL02100,Hairy-necked Tiger Beetle,Cicindela hirticollis,,y,6,6,2,6,G5,S2S3,,,,N,,t,IICOL
+IICOL02250,Ghost Tiger Beetle,Ellipsoptera lepida,,y,4,5,2,6,G3G4,SH,,,,N,,t,IICOL
+IICOL02060,Cobblestone Tiger Beetle,Cicindela marginipennis,,y,1,5,2,6,G2,S1,,,,N,,t,IICOL
+IICOL02230,Northern Barrens Tiger Beetle,Cicindela patruela,,y,4,5,3,5,G3,S2S3,,,,N,,t,IICOL
+IICOL02290,Festive Tiger Beetle,Cicindela scutellaris,,y,6,6,2,6,G5,SH,,,,N,,t,IICOL
+IICOL02320,Splendid Tiger Beetle,Cicindela splendida,,y,6,6,2,4,G5,SH,,,,N,,t,IICOL
+IICOL02310,One-spotted Tiger Beetle,Cicindela unipunctata,,y,5,5,2,3,G4G5,S1,,,,N,,t,IICOL
+IILEP80180,Roadside Skipper,Amblyscirtes vialis,,y,5,6,3,4,G4,S2,,,,N,,t,inv_buttsk
+IILEP79010,Dusted Skipper,Atrytonopsis hianna,,y,5,6,2,2,G4G5,S2,,,,N,,t,inv_buttsk
+IILEP14010,Golden-banded Skipper,Autochton cellus,,y,5,6,2,6,G4,SH,,,,N,,t,inv_buttsk
+IILEP42011,Arctic Skipper,Carterocephalus palaemon mandan,,y,6,4,4,6,G5T5,S2,,,,N,,t,inv_buttsk
+IILEP37140,Columbine Duskywing,Erynnis lucilius,,y,5,6,2,6,G4,S1,,,,N,,t,inv_buttsk
+IILEP37100,Mottled Duskywing,Erynnis martialis,,y,2,6,2,6,G3,SH,,,,N,,t,inv_buttsk
+IILEP37171,Persius Duskywing,Erynnis persius persius,,y,1,6,2,6,G5T1T3,S1,,,,N,,t,inv_buttsk
+IILEP77090,Two-spotted Skipper,Euphyes bimacula,,y,5,6,3,4,G4,S2,,,,N,,t,inv_buttsk
+IILEP77060,Black Dash,Euphyes conspicua,,y,5,4,4,5,G4,S3,,,,N,,t,inv_buttsk
+IILEP77030,Dion Skipper,Euphyes dion,,y,5,4,4,6,G4,S2,,,,N,,t,inv_buttsk
+IILEP65060,Leonard's Skipper,Hesperia leonardus,,y,5,4,4,5,G4,S3,,,,N,,t,inv_buttsk
+IILEP65100,Cobweb Skipper,Hesperia metea,,y,5,6,3,4,G4,S2,,,,N,,t,inv_buttsk
+IILEP65160,Indian Skipper,Hesperia sassacus,,y,5,4,4,5,G4G5,S3,,,,N,,t,inv_buttsk
+IILEP49010,Swarthy Skipper,Nastra lherminier,,y,6,4,4,5,G5,S3,,,,N,,t,inv_buttsk
+IILEP73010,Mulberry Wing,Poanes massasoit,,y,5,6,3,4,G4,S2,,,,N,,t,inv_buttsk
+IILEP73071,Broad-winged Skipper,Poanes viator viator,,y,5,6,3,4,G5T4,S2S3,,,,N,,t,inv_buttsk
+IILEP66080,Long Dash,Polites mystic,,y,6,4,4,5,G5,S4,,,,N,,t,inv_buttsk
+IILEP38090,Appalachian Grizzled Skipper,Pyrgus wyandot,y,y,1,5,2,6,G1G2Q,S1,,,,Y,,t,inv_buttsk
+IILEP16010,Southern Cloudywing,Thorybes bathyllus,,y,6,4,4,6,G5,S4,,,,N,,t,inv_buttsk
+IILEPE2180,Brown Elfin,Callophrys augustinus,,y,6,4,4,5,G5,S3,,,,N,,t,inv_buttsk
+IILEPE2130,Juniper Hairstreak,Callophrys gryneus,,y,6,4,4,5,G5,S3,,,,N,,t,inv_buttsk
+IILEPE2230,Henry's Elfin,Callophrys henrici,,y,6,6,3,4,G5,S3,,,,N,,t,inv_buttsk
+IILEPE2220,Frosted Elfin,Callophrys irus,,y,2,6,2,2,G3,S2,,,,Y,,t,inv_buttsk
+IILEPE2210,Hoary Elfin,Callophrys polios,,y,6,6,2,6,G5,SX,,,,N,,t,inv_buttsk
+IILEPG0030,Appalachian Azure,Celastrina neglectamajor,,y,5,2,4,5,G4,S3,,,,N,,t,inv_buttsk
+IILEPG0020,Dusky Azure,Celastrina nigra,,y,5,6,2,6,G4,SX,,,,N,,t,inv_buttsk
+IILEPF3010,Early Hairstreak,Erora laeta,,y,1,6,2,6,GU,S3,,,,N,,t,inv_buttsk
+IILEPB9010,Harvester,Feniseca tarquinius,,y,5,4,4,5,G4,S3,,,,N,,t,inv_buttsk
+IILEPG4024,Silvery Blue,Glaucopsyche lygdamus nittanyensis ,,y,4,6,2,2,G5T3T4,S1,,,,N,,t,inv_buttsk
+IILEPC1110,Bog Copper,Lycaena epixanthe,,y,3,6,3,6,G4G5,S2,,,,N,,t,inv_buttsk
+IILEPD4030,Acadian Hairstreak,Satyrium acadica,,y,6,6,3,4,G5,S3,,,,N,,t,inv_buttsk
+IILEPD4060,Edwards' Hairstreak,Satyrium edwardsii,,y,3,4,4,5,G4,S3,,,,N,,t,inv_buttsk
+IILEPE9012,Northern Hairstreak,Satyrium favonius ontario,,y,5,2,4,6,G4T4,S3,,,,N,,t,inv_buttsk
+IILEPD4140,Coral Hairstreak,Satyrium titus,,y,6,4,4,5,G4G5,S3,,,,N,,t,inv_buttsk
+IILEPJ7031,Silver-bordered Fritillary,Boloria selene myrina,,y,6,6,3,4,G5T5,S3,,,,N,,t,inv_buttsk
+IILEPJ9150,Harris' Checkerspot,Chlosyne harrisii,,y,5,2,4,6,G4,S3,,,,Y,,t,inv_buttsk
+IILEPJ9140,Silvery Checkerspot,Chlosyne nycteis,,y,6,4,4,5,G5,S3S4,,,,N,,t,inv_buttsk
+IILEPK4060,Baltimore,Euphydryas phaeton,,y,5,2,4,6,G4,S3,,,,N,,t,inv_buttsk
+IILEPK3100,Northern Crescent,Phyciodes cocyta,,y,6,4,4,6,G5,S2,,,,N,,t,inv_buttsk
+IILEPK5040,Green Comma,Polygonia faunus,,y,6,6,2,6,G5,SH,,,,N,,t,inv_buttsk
+IILEPN0010,Eyed Brown,Lethe eurydice,,y,6,6,3,4,G4,S3,,,,N,,t,inv_buttsk
+IILEPJ6110,Atlantis Fritillary,Speyeria atlantis,,y,6,4,4,6,G5,S3,,,,N,,t,inv_buttsk
+IILEPJ6040,Regal Fritillary,Speyeria idalia,y,y,2,5,2,5,G3,S1,,,,Y,,t,inv_buttsk
+IILEP93010,Zebra Swallowtail,Eurytides marcellus,,y,6,4,4,5,G5,S3,,,,N,,t,inv_buttsk
+IILEPA6050,Falcate Orangetip,Anthocharis midea,,y,3,6,3,6,G4G5,S3,,,,N,,t,inv_buttsk
+IILEPA8140,Pink-edged Sulphur,Colias interior,,y,6,6,3,6,G5,SH,,,,N,,t,inv_buttsk
+IILEPA5040,Olympia Marble,Euchloe olympia,,y,5,6,2,6,G4G5,S1,,,,Y,,t,inv_buttsk
+IILEPA2020,West Virginia White,Pieris virginiensis,,y,2,6,3,6,G3?,S2S3,,,,N,,t,inv_buttsk
+IILEPH2020,Northern Metalmark,Calephelis borealis,,y,4,6,2,2,G3G4,S2,,,,Y,,t,inv_buttsk
+IILEPC1070,Bronze Copper,Lycaena hyllus,,y,6,4,4,5,G4G5,S3,,,,N,,t,inv_buttsk
+IILEPP2010,Monarch,Danaus plexippus,,y,5,6,3,3,G5,S5B,,,,N,,t,inv_buttsk
+IITRI22040,Helma's Cheumatopsyche Caddisfly,Cheumatopsyche helma,,y,4,6,2,2,G3,S1,,,,N,,a,IITRI
+IITRI22030,Vannote's Cheumatopsyche Caddisfly,Cheumatopsyche vannotei,y,y,1,6,2,2,GH,SH,,,,N,,a,IITRI
+IITRI47010,A Ring-horn Micro-caddisfly,Leucotrichia pictipes,,y,6,4,4,5,G5,SNR,,,,N,,a,IITRI
+IITRI2A070,Alabama Long-horned Caddisfly,Ceraclea alabamae,,y,3,6,2,2,G1G3,SNR,,,,N,,a,IITRI
+IITRI2A260,White-spotted Long-horned Caddisfly,Ceraclea albosticta,,y,3,4,4,6,GH,SH,,,,N,,a,IITRI
+IITRI19310,A Free-living Caddisfly,Rhyacophila otica,,y,2,6,2,2,G3G4Q,SNR,,,,N,,a,IITRI
+IITRI33100,Beloved Rainbow Caddisfly,Agapetus iridis,,y,6,6,2,2,G5,SNR,,,,N,,a,IITRI
+waiting2,Williams' Crane Fly,Tipula williamsiana,,y,,6,2,3,,,,,,,,a,inv_cranfl
+waiting3,Allen's Crane Fly,Limnophila alleni,,y,,6,2,3,,,,,,,,a,inv_cranfl
+waiting4,Marchand's Crane Fly,Limnophila marchandi,,y,,6,2,3,,,,,,,,a,inv_cranfl
+ICMAL11480,Spinycheek Crayfish,Orconectes limosus,,y,5,6,4,6,G5,S4,,,,N,PFBC,a,ICMAL
+IIODO14030,Mottled Darner,Aeshna clepsydra,,y,5,4,4,6,G4,S2S3,,,,N,PFBC,t,IIODO
+IIODO14040,Lance-tipped Darner,Aeshna constricta,,y,6,4,4,6,G5,S3S4,,,,N,PFBC,t,IIODO
+IIODO14110,Spatterdock Darner,Rhionaeschna mutata,,y,5,4,4,6,G4,S2,,,,N,PFBC,t,IIODO
+IIODO15030,Comet Darner,Anax longipes,,y,6,6,3,5,G5,S1S2,,,,N,PFBC,t,IIODO
+IIODO20010,Taper-tailed Darner,Gomphaeschna antilope,,y,5,6,2,6,G4,SH,,,,N,PFBC,t,IIODO
+IIODO20020,Harlequin Darner,Gomphaeschna furcillata,,y,6,4,4,6,G5,S2,,,,N,PFBC,t,IIODO
+IIODO22010,Cyrano Darner,Nasiaeschna pentacantha,,y,6,6,3,5,G5,S2,,,,N,PFBC,t,IIODO
+IIODO65010,River Jewelwing,Calopteryx aequabilis,,y,6,4,4,6,G5,S2,,,,N,PFBC,a,IIODO
+IIODO65030,Superb Jewelwing,Calopteryx amata,,y,5,4,4,6,G4,S2S3,,,,N,PFBC,a,IIODO
+IIODO65020,Appalachian Jewelwing,Calopteryx angustipennis,,y,5,6,2,6,G4,S1S2,,,,N,PFBC,a,IIODO
+IIODO65040,Sparkling Jewelwing,Calopteryx dimidiata,,y,6,6,2,6,G5,SH,,,,N,PFBC,a,IIODO
+IIODO66020,Smoky Rubyspot,Hetaerina titia,,y,6,6,2,6,G5,S2,,,,N,PFBC,a,IIODO
+IIODO68010,Seepage Dancer,Argia bipunctulata,,y,3,6,2,6,G4,S1,,,,N,PFBC,t,IIODO
+IIODO68070,Blue-ringed Dancer,Argia sedula,,y,6,6,3,6,G5,S1S3,,,,N,PFBC,a,IIODO
+IIODO70010,Taiga Bluet,Coenagrion resolutum,,y,6,6,2,3,G5,S1,,,,N,PFBC,t,IIODO
+IIODO71010,Boreal Bluet,Enallagma boreale,,y,6,6,3,5,G5,S2,,,,N,PFBC,t,IIODO
+IIODO71060,Attenuated Bluet,Enallagma daeckii,,y,5,6,2,6,G4,S2,,,,N,PFBC,t,IIODO
+IIODO71160,Turquoise Bluet,Enallagma divagans,,y,6,4,4,6,G5,S3,,,,N,PFBC,b,IIODO
+IIODO71170,Atlantic Bluet,Enallagma doubledayi,,y,6,6,2,6,G5,S3S4,,,,N,PFBC,t,IIODO
+IIODO71190,Big Bluet,Enallagma durum,,y,6,6,3,6,G5,S3,,,,N,PFBC,b,IIODO
+IIODO71020,New England Bluet,Enallagma laterale,,y,4,6,2,3,G3G4,S1,,,,N,PFBC,t,IIODO
+IIODO72040,Furtive Forktail,Ischnura prognata,,y,5,6,2,6,G4,S1,,,,N,PFBC,t,IIODO
+IIODO72050,Rambur's Forktail,Ischnura ramburii,,y,6,6,2,3,G5,S1,,,,N,PFBC,a,IIODO
+IIODO74010,Southern Sprite,Nehalennia integricollis,,y,6,6,2,6,G5,S1,,,,N,PFBC,t,IIODO
+IIODO03090,Brown Spiketail,Cordulegaster bilineata,,y,6,6,2,3,G5,S1S2,,,,N,PFBC,a,IIODO
+IIODO27010,American Emerald,Cordulia shurtleffii,,y,6,4,4,6,G5,S3S4,,,,N,PFBC,t,IIODO
+IIODO28010,Petite Emerald,Dorocordulia lepida,,y,6,6,3,5,G5,S2,,,,N,PFBC,t,IIODO
+IIODO29040,Slender Baskettail,Epitheca costalis,,y,6,6,2,6,G5,SH,,,,N,PFBC,t,IIODO
+IIODO29080,Spiny Baskettail,Epitheca spinigera,,y,6,6,2,3,G5,S1,,,,N,PFBC,t,IIODO
+IIODO30020,Uhler's Sunfly,Helocordulia uhleri,,y,6,4,4,6,G5,S3,,,,N,PFBC,a,IIODO
+IIODO32050,Ski-tailed Emerald,Somatochlora elongata,,y,6,4,4,6,G5,S2,,,,N,PFBC,t,IIODO
+IIODO32080,Forcipate Emerald,Somatochlora forcipata,,y,4,5,3,6,G5,S2,,,,N,PFBC,t,IIODO
+IIODO32130,Incurvate Emerald,Somatochlora incurvata,,y,5,5,3,6,G4,S1,,,,N,PFBC,t,IIODO
+IIODO32150,Mocha Emerald,Somatochlora linearis,,y,6,6,3,5,G5,S1,,,,N,PFBC,t,IIODO
+IIODO32240,Brush-tipped Emerald,Somatochlora walshii,,y,6,4,4,6,G5,S2,,,,N,PFBC,t,IIODO
+IIODO32260,Williamson's Emerald,Somatochlora williamsoni,,y,4,6,2,6,G5,S1,,,,N,PFBC,t,IIODO
+IIODO81050,Lilypad Clubtail,Arigomphus furcifer,,y,6,4,4,6,G5,S3,,,,N,PFBC,t,IIODO
+IIODO08410,Spine-crowned Clubtail,Gomphus abbreviatus,,y,5,6,3,5,G3G4,S2,,,,N,PFBC,a,IIODO
+IIODO08420,Moustached Clubtail,Gomphus adelphus,,y,5,4,4,6,G4,S3,,,,N,PFBC,a,IIODO
+IIODO08120,Midland Clubtail,Gomphus fraternus,,y,6,6,3,4,G5,S2S3,,,,N,PFBC,a,IIODO
+IIODO08140,Splendid Clubtail,Gomphus lineatifrons,,y,5,6,2,6,G4,SH,,,,N,PFBC,a,IIODO
+IIODO08380,Rapids Clubtail,Gomphus quadricolor,,y,4,6,3,5,G3G4,S1S2,,,,N,PFBC,a,IIODO
+IIODO08180,Sable Clubtail,Gomphus rogersi,,y,5,4,4,6,G4,S2,,,,N,PFBC,a,IIODO
+IIODO08191,Septima's Clubtail,Gomphus septima delawarensis,y,y,3,5,2,2,GNR,S1,,,,N,PFBC,a,IIODO
+IIODO08210,Skillet Clubtail,Gomphus ventricosus,,y,4,6,2,6,G3,SH,,,,N,PFBC,a,IIODO
+IIODO08460,Green-faced Clubtail,Gomphus viridifrons,,y,4,6,3,6,G3G4,S1S2,,,,N,PFBC,a,IIODO
+IIODO12020,Extra-striped Snaketail,Ophiogomphus anomalus,,y,5,6,3,6,G4,S1,,,,N,PFBC,a,IIODO
+IIODO12060,Riffle Snaketail,Ophiogomphus carolus,,y,6,4,4,6,G5,S2S3,,,,N,PFBC,a,IIODO
+IIODO12090,Pygmy Snaketail,Ophiogomphus howei,,y,4,6,2,6,G3,S1,,,,N,PFBC,a,IIODO
+IIODO12102,Appalachian Snaketail,Ophiogomphus incurvatus incurvatus,,y,3,6,2,6,,,,,,,PFBC,a,IIODO
+IIODO12110,Maine Snaketail,Ophiogomphus mainensis,,y,5,4,4,6,G4,S2S3,,,,N,PFBC,a,IIODO
+IIODO13060,Common Sanddragon,Progomphus obscurus,,y,6,6,2,3,G5,S2,,,,N,PFBC,b,IIODO
+IIODO80010,Riverine Clubtail,Stylurus amnicola,,y,5,6,2,6,G4,SH,,,,N,PFBC,a,IIODO
+IIODO80050,Elusive Clubtail,Stylurus notatus,,y,4,6,2,3,G3,SH,,,,N,PFBC,a,IIODO
+IIODO80070,Russet-tipped Clubtail,Stylurus plagiatus,,y,6,6,3,5,G5,S1,,,,N,PFBC,a,IIODO
+IIODO80090,Zebra Clubtail,Stylurus scudderi,,y,5,4,4,6,G4,S1,,,,N,PFBC,a,IIODO
+IIODO67020,Emerald Spreadwing,Lestes dryas,,y,6,4,4,6,G5,S3,,,,N,PFBC,t,IIODO
+IIODO67060,Amber-winged Spreadwing,Lestes eurinus,,y,5,4,4,6,G4,S3,,,,N,PFBC,t,IIODO
+IIODO37060,Martha's Pennant,Celithemis martha,,y,5,6,2,6,G4,S1S2,,,,N,PFBC,t,IIODO
+IIODO40030,Seaside Dragonlet,Erythrodiplax berenice,,y,6,6,2,6,G5,S1,,,,N,PFBC,t,IIODO
+IIODO40110,Little Blue Dragonlet,Erythrodiplax minuscula,,y,6,6,2,6,G5,S1S2,,,,N,PFBC,t,IIODO
+IIODO45210,Blue Corporal,Ladona deplanata,,y,6,4,4,6,G5,S1,,,,N,PFBC,t,IIODO
+IIODO45180,White Skimmer,Ladona exusta,,y,5,6,2,6,G4,S1,,,,N,PFBC,t,IIODO
+IIODO44030,Crimson-ringed Whiteface,Leucorrhinia glacialis,,y,6,4,4,6,G5,S3S4,,,,N,PFBC,t,IIODO
+IIODO44070,Belted Whiteface,Leucorrhinia proxima,,y,6,6,3,5,G5,S2,,,,N,PFBC,t,IIODO
+IIODO45010,Golden-winged Skimmer,Libellula auripennis,,y,6,6,3,5,G5,S1,,,,N,PFBC,t,IIODO
+IIODO45020,Bar-winged Skimmer,Libellula axilena,,y,6,6,2,3,G5,S1,,,,N,PFBC,t,IIODO
+IIODO45070,Yellow-sided Skimmer,Libellula flavida,,y,6,6,2,6,G5,S1,,,,N,PFBC,t,IIODO
+IIODO45110,Needham's Skimmer,Libellula needhami,,y,6,6,2,3,G5,S1,,,,N,PFBC,t,IIODO
+IIODO50010,Elfin Skimmer,Nannothemis bella,,y,5,6,2,3,G4,S1,,,,N,PFBC,t,IIODO
+IIODO61010,Blue-faced Meadowhawk,Sympetrum ambiguum,,y,6,6,2,3,G5,S1,,,,N,PFBC,t,IIODO
+IIODO61040,Saffron-winged Meadowhawk,Sympetrum costiferum,,y,6,6,2,6,G5,S1,,,,N,PFBC,t,IIODO
+IIODO61070,Cherry-faced Meadowhawk,Sympetrum internum,,y,6,6,2,3,G5,S1?,,,,N,PFBC,t,IIODO
+IIODO61130,Band-winged Meadowhawk,Sympetrum semicinctum,,y,6,4,4,6,G5,S3S4,,,,N,PFBC,t,IIODO
+IIODO26010,Allegheny River Cruiser,Macromia alleghaniensis,,y,5,6,2,3,G4,S1,,,,N,PFBC,a,IIODO
+IIODO01010,Gray Petaltail,Tachopteryx thoreyi,,y,5,4,4,6,G4,S3,,,,N,PFBC,a,IIODO
+IIODO14070,Variable Darner,Aeshna interrupta,,y,6,4,4,6,G5,S3,,,,N,PFBC,t,IIODO
+IIODO71050,Tule Bluet,Enallagma carunculatum,,y,6,6,2,3,G5,S3,,,,N,PFBC,b,IIODO
+IIODO03040,Tiger Spiketail,Cordulegaster erronea,,y,5,4,4,6,G4,S3,,,,N,PFBC,a,IIODO
+IIODO03070,Arrowhead Spiketail,Cordulegaster obliqua,,y,5,4,4,6,G4,S3,,,,N,PFBC,a,IIODO
+IIODO08230,Beaverpond Clubtail,Gomphus borealis,,y,5,4,4,6,G4,S3,,,,N,PFBC,t,IIODO
+IIODO26100,Royal River Cruiser,Macromia taeniolata,,y,6,6,3,5,G5,S1,,,,N,PFBC,b,IIODO
+IIODO37050,Banded Pennant,Celithemis fasciata,,y,6,6,3,5,G5,S1,,,,N,PFBC,t,IIODO
+IIODO71280,River Bluet,Enallagma anna,,y,6,6,2,3,G5,S1,,,,N,PFBC,b,IIODO
+IIODO72020,Lilypad Forktail,Ischnura kellicotti,,y,6,6,2,3,G5,S1,,,,N,PFBC,t,IIODO
+IPTUR04050,Refton Cave Planarian,Sphalloplana pricei,y,y,3,5,2,6,G2G3,S1,,,,Y,,s,inv_flatwm
+IIORT11020,Appalachian Grasshopper,Appalachia hebardi,y,y,3,5,2,6,GH,SNR,,,,N,,t,IIORT
+ICMAL01020,Franz's Cave Isopod,Caecidotea franzi,y,y,2,5,2,6,G2G4,S1,,,,Y,,s,inv_isopod
+ICMAL01140,An Isopod,Caecidotea kenki,y,y,2,5,3,4,G3,S1,,,,N,,s,inv_isopod
+ICMAL01010,Price's Cave Isopod,Caecidotea pricei,y,y,4,1,4,5,G5,S2S3,,,,Y,,s,inv_isopod
+IIEPH15090,A Brown Dun,Ameletus browni,,y,4,6,2,2,G3G4,SNR,,,,N,PFBC,a,IIEPH
+IIEPH34030,A Mayfly,Anafroptilum semirufum,,y,2,6,3,6,G3G4,SNR,,,,N,PFBC,a,IIEPH
+IIEPH28160,Two-colored Chocolate Dun,Eurylophella bicoloroides,,y,4,4,4,5,G3,SNR,,,,N,PFBC,a,IIEPH
+IIEPH28180,Poconos Chocolate Dun,Eurylophella poconoensis,,y,3,4,4,5,G1G2,SNR,,,,N,PFBC,a,IIEPH
+IIEPH38060,A Mayfly,Heptagenia culacantha,,y,3,4,5,6,G2G3,SNR,,,,N,PFBC,a,IIEPH
+IIEPH16110,A Mayfly,Isonychia hoffmani,,y,3,6,3,4,G1G3,SNR,,,,N,PFBC,a,IIEPH
+IIEPH11060,A Mayfly,Ephemerella floripara,,y,4,6,2,2,G5,SNR,,,,N,PFBC,a,IIEPH
+IIEPH11120,Pale Morning Dun,Ephemerella excrucians,,y,6,6,2,2,,,,,,,PFBC,a,IIEPH
+IIEPH11060,A Mayfly,Ephemerella inconstans,,y,6,6,2,2,G5,SNR,,,,N,PFBC,a,IIEPH
+IIEPH21020,A Mayfly,Siphloplecton basale,,y,6,4,4,6,,,,,,,PFBC,a,IIEPH
+IIEPH15020,A Brown Dun,Ameletus cryptostimulus,,y,3,6,3,4,,,,,,,PFBC,a,IIEPH
+IIEPH72010,A Mayfly,Neoephemera purpurea,,y,6,6,2,2,,,,,,,PFBC,a,IIEPH
+IIEPH61010,A Mayfly,Arthroplea bipunctata,,y,6,6,2,2,,,,,,,PFBC,a,IIEPH
+IIEPH11110,A Mayfly,Ephemerella aurivillii,,y,6,4,4,5,G5,SNR,,,,N,PFBC,a,IIEPH
+IIEPH58010,A Mayfly,Choroterpes basalis,,y,4,6,3,4,,,,,,,PFBC,a,IIEPH
+IILEK0E020,Lilac borer,Podosesia syringae,,y,,6,2,6,,,,,,,,t,inv_mothcw
+IILEYAR030,Doll's Merolonche,Acronicta dolli,,y,4,6,2,2,G3G4,S1,,,,N,,t,inv_mothdg
+IILEY45060,Twin-dotted Macrochilo,Macrochilo hypocritalis,,y,5,4,4,6,G4,SU,,,,N,,t,inv_mother
+IILEY4W010,Masked Parahypenodes,Parahypenodes quadralis,,y,5,6,3,4,G4,SU,,,,N,,t,inv_mother
+IILEY6T030,An Oak Moth,Phoberia ingenua,,y,4,6,3,6,G3G4,S3,,,,N,,t,inv_mother
+IILEY43110,Pine Barrens Zanclognatha,Zanclognatha martha,,y,5,4,4,5,G4,S1S2,,,,N,,t,inv_mother
+IILEQ08040,Black-waved Flannel Moth,Lagoa crispata,,y,6,4,4,6,G5,S1,,,,N,,t,IILEQ
+IILEU24010,New Jersey Tea Inchworm,Apodrepanulatrix liberaria,,y,4,6,2,2,G3,S1S3,,,,N,,t,IILEU
+IILEU3N080,Southern Pine Looper Moth,Caripeta aretaria,,y,5,6,3,4,G4,S1S2,,,,N,,t,IILEU
+IILEU28030,Broad-lined Erastria Moth,Erastria coloraria,,y,4,6,2,2,G3G4,S1,,,,N,,t,IILEU
+IILEU0S060,Blueberry Gray,Glena cognataria,,y,5,4,4,6,G4,S1,,,,N,,t,IILEU
+IILEU06030,Rare Spring Moth,Heliomata infulata,,y,4,4,4,6,G3G4,SNR,,,,N,,t,IILEU
+IILEU1T020,Esther Moth,Hypagyrtis esther,,y,6,4,4,5,G5,S2S3,,,,N,,t,IILEU
+IILEU56150,Straw Wave Moth,Idaea eremiata,,y,5,6,3,6,G4,S1,,,,N,,t,IILEU
+IILEU56200,A Wave Moth,Idaea violacearia,,y,5,6,3,6,G4,S1,,,,N,,t,IILEU
+IILEU09X10,Barrens Itame,Speranza exonerata,,y,4,6,3,4,G3G4,S1,,,,N,,t,IILEU
+IILEU1S030,Twilight Moth,Lycia rachelae,,y,5,6,2,2,G4G5,S1,,,,N,,t,IILEU
+IILEU0D060,Promiscuous Angle,Macaria promiscuata,,y,5,4,4,6,G4,S1,,,,N,,t,IILEU
+IILEU3C110,Barrens Metarranthis Moth,Metarranthis apiciaria,,y,3,6,2,6,G1G3,SH,,,,N,,t,IILEU
+IILEU3C021,Early Metarranthis Moth,Metarranthis sp. near duaria,,y,,4,4,6,GNRTNR,SNR,,,,N,,t,IILEU
+IILEU4N150,Tuscarora Emerald,Nemoria tuscarora,,y,3,6,2,6,,,,,,,,t,IILEU
+IILEU6F010,Shiny Gray Carpet Moth,Stamnodes gibbicostata,,y,5,6,2,2,G4,SU,,,,N,,t,IILEU
+IILEU3G020,Purple Plagodis,Plagodis kuetzingi,,y,4,6,2,6,G5,SNR,,,,N,,t,IILEU
+IILEW0K010,Spiny Oakworm Moth,Anisota stigma,,y,6,4,4,6,G5,S1S2,,,,N,,t,inv_mothsi
+IILEW0G030,Pine Devil,Citheronia sepulcralis,,y,5,4,4,5,G4,S2S4,,,,N,,t,inv_mothsi
+IILEW0M040,Barrens Buckmoth,Hemileuca maia,,y,6,6,3,6,G5,S1S2,,,,N,,t,inv_mothsi
+IILEYBB010,A Cutworm Moth,Apamea burgessi,,y,5,6,2,6,G4,SH,,,,N,,t,inv_mothnc
+IILEYB9070,Crested Apamea,Apamea cristata,,y,5,4,4,6,G4,SU,,,,N,,t,inv_mothnc
+IILEYGR010,Toothed Apharata,Sympistis dentata,,y,5,6,3,4,G4,S2,,,,N,,t,inv_mothnc
+IILEYM1010,A Noctuid Moth,Aplectoides condita,,y,5,4,4,5,G4,S2S3,,,,N,,t,inv_mothnc
+IILEYAG020,Straight Lined Mallow Moth,Bagisara rectifascia,,y,5,6,3,4,G4,SU,,,,N,,t,inv_mothnc
+IILEYG6010,Boreal Fan Moth,Brachionycha borealis,,y,5,6,3,4,G4,SH,,,,N,,t,inv_mothnc
+IILEY9Q010,Curved Halter Moth,Capis curvata,,y,5,4,4,6,G4,SNR,,,,N,,t,inv_mothnc
+IILEY9S010,A Bird-dropping Moth,Cerma cora,,y,4,6,2,6,G3G4,SH,,,,N,,t,inv_mothnc
+IILEYFM010,A Sallow Moth,Chaetaglaea cerata,,y,4,6,3,4,G3G4,S2S3,,,,N,,t,inv_mothnc
+IILEYFM020,Barrens Chaetaglaea,Chaetaglaea tremula,,y,6,6,2,2,G5,S1,,,,N,,t,inv_mothnc
+IILEYCB020,Marvel Moth,Chytonix sensilis,,y,5,6,3,4,G4,S1,,,,N,,t,inv_mothnc
+IILEYLC020,Red Dart Moth,Diarsia rubifera,,y,6,6,3,4,G5,SU,,,,N,,t,inv_mothnc
+IILEYDE060,George's Midget Moth,Elaphria georgei,,y,5,6,3,3,G4,SH,,,,N,,t,inv_mothnc
+IILEYFL020,Pointed Sallow,Epiglaea apiata,,y,6,4,4,5,G5,S3S4,,,,N,,t,inv_mothnc
+IILEYCY010,Marsh Fern Moth,Fagitana littera,,y,5,6,2,6,G4,SH,,,,N,,t,inv_mothnc
+IILEYJE050,The Pink Streak,Dargida rubripennis,,y,4,6,3,6,,,,,,,,t,inv_mothnc
+IILEYLX020,Sundew Cutworm Moth,Hemipachnobia monochromatea,,y,5,6,3,4,G4,S2S3,,,,N,,t,inv_mothnc
+IILEYBL010,Fingered Lemmeria,Lemmeria digitalis,y,y,5,3,4,6,G4,S2S4,,,,N,,t,inv_mothnc
+IILEYFB011,Goldenrod Brindle,Lithomoia germana,,y,6,4,4,6,G5T5,S3S4,,,,N,,t,inv_mothnc
+IILEYFE470,Franclemont's Pinion Moth,Lithophane franclemonti,,y,4,6,2,6,G2G4,SH,,,,N,,t,inv_mothnc
+IILEYFE440,Thaxter's Pinion Moth,Lithophane thaxteri,,y,5,6,2,6,G4,SH,,,,N,,t,inv_mothnc
+IILEYBG110,Northern Brocade Moth,Neoligia semicana,,y,4,6,2,2,G2G4,S1,,,,N,,t,inv_mothnc
+IILEYD9010,Rare Sand Quaker,Caradrina meralis,,y,5,6,3,6,G4,S1,,,,N,,t,inv_mothnc
+IILEYCKX20,A Noctuid Moth ,Properigea costa,,y,5,6,3,4,G4,S1,,,,N,,t,inv_mothnc
+IILEYFN010,Pink Sallow,Psectraglaea carnosa,,y,4,6,3,4,G3,S1,,,,N,,t,inv_mothnc
+IILEYMK010,Aureolaria Seed Borer,Pyrrhia aurantiago,,y,4,6,2,6,G3G4,SH,,,,N,,t,inv_mothnc
+IILEYL1020,A Noctuid Moth 182,Dichagyris acclivis,,y,5,4,4,6,G4G5,S1S2,,,,N,,t,inv_mothnc
+IILEYL1010,A Noctuid Moth 183,Dichagyris grotei,,y,5,6,2,6,G4,S1,,,,N,,t,inv_mothnc
+IILEYHL040,Maroonwing Moth,Sideridis maryx,,y,5,6,3,4,G4,S1S3,,,,N,,t,inv_mothnc
+IILEYG0010,Private Sallow Moth,Sutyna privata,,y,6,4,4,5,G5,S2S4,,,,N,,t,inv_mothnc
+IILEY8T030,Pirate Looper Moth,Syngrapha epigaea,,y,6,6,3,4,G5,S1,,,,N,,t,inv_mothnc
+IILEYLN260,Southern Variable Dart Moth,Xestia elimata,,y,6,4,4,6,G5,S2S3,,,,N,,t,inv_mothnc
+IILEYFX010,Broad Sallow Moth,Xylotype capax,,y,5,4,4,6,G4,S3,,,,N,,t,inv_mothnc
+IILEYM9370,Yankee Dart,Abagrotis brunneipennis,,y,5,6,3,4,G4,SU,,,,N,,t,inv_mothnc
+IILEYGB010,Grote's Sallow,Copivaleria grotei,,y,4,6,2,6,G5,SNR,,,,N,,t,inv_mothnc
+IILEY02100,Post-burn Datana Moth,Datana ranaeceps,,y,4,6,3,6,G3G4,S1,,,,N,,t,inv_mothnt
+IILEY10060,Plain Schizura,Schizura apicalis,,y,4,6,2,6,,,,,,,,t,inv_mothnt
+IILEC01050,Gold-Spotted Ghost Moth,Sthenopis auratus,,y,4,6,2,2,G3G4,SNR,,,,N,,t,inv_mothot
+IILEW02010,The Angel,Olceclostera angelica,,y,4,6,2,6,G5,SNR,,,,N,,t,inv_mothot
+IILER4L100,Splendid Palpita,Palpita magniferalis,,y,,6,2,6,GNR,SNR,,,,N,,t,inv_mothot
+IILEYN0040,Hop Vine Borer,Hydraecia immanis,,y,5,6,2,6,G4,SU,,,,N,,t,inv_mothpa
+IILEYN0070,Figwort Borer Moth,Hydraecia stramentosa,,y,5,6,2,2,G4,SU,,,,N,,t,inv_mothpa
+IILEYC0140,Yellow Stoneroot Borer Moth,Papaipema astuta,,y,4,6,2,6,G2G3,SNR,,,,N,,t,inv_mothpa
+IILEYC0360,Dark Stoneroot Borer Moth,Papaipema duplicata,y,y,4,5,2,2,G2G4,SNR,,,,N,,t,inv_mothpa
+IILEYC0290,Brick-red Borer Moth,Papaipema marginidens,,y,5,6,2,2,G4,SU,,,,N,,t,inv_mothpa
+IILEYC0370,Maritime Sunflower Borer Moth,Papaipema maritima,,y,4,6,2,6,G3,SNR,,,,N,,t,inv_mothpa
+IILEYC0X10,Flypoison Borer Moth,Papaipema sp. 1,y,y,3,5,3,4,G2G3,S2,,,,N,,t,inv_mothpa
+IILEYC0X20,Ostrich Fern Borer,Papaipema sp. 2 nr. pterisii,,y,4,6,2,2,G3G4,SNR,,,,N,,t,inv_mothpa
+IILEYBZ010,Buffalo Moth,Parapamea buffaloensis,,y,5,6,2,2,,,,,,,,t,inv_mothpa
+IILEYC0220,Indigo Stem Borer,Papaipema baptisiae,,y,5,4,4,5,G4,SNR,,,,N,,t,inv_mothpa
+IILEYC0010,Golden Borer,Papaipema cerina,,y,4,6,2,2,G2G4,SNR,,,,N,,t,inv_mothpa
+IILEYC0380,Joe-Pye-Weed Borer,Papaipema eupatorii,,y,5,2,4,6,G4,SNR,,,,N,,t,inv_mothpa
+IILEYC0320,Ash-tip Borer,Papaipema furcata,,y,1,6,2,6,G4,SNR,,,,N,,t,inv_mothpa
+IILEYC0440,Vernonia Borer Moth,Papaipema limpida,,y,4,6,2,6,G4,SNR,,,,N,,t,inv_mothpa
+IILEYC0160,Loosestife Borer,Papaipema lysimachiae,,y,5,4,4,6,G4,SNR,,,,N,,t,inv_mothpa
+IILEYC0340,Sunflower Borer Moth,Papaipema necopina,,y,5,6,2,6,G4?,SNR,,,,N,,t,inv_mothpa
+IILEYC0390,Coneflower Borer,Papaipema nelita,,y,5,4,4,6,G4,SNR,,,,N,,t,inv_mothpa
+IILEYC0270,Turtlehead Borer,Papaipema nepheleptena,,y,5,6,3,4,G4,SNR,,,,N,,t,inv_mothpa
+IILEYC0210,Mayapple Borer,Papaipema rutila,,y,5,4,4,6,G4,SNR,,,,N,,t,inv_mothpa
+IILEV03010,Melsheimer's Sack Bearer,Cicinnus melsheimeri,,y,3,4,4,5,G4,S1,,,,N,,t,inv_mothsa
+IILEX0W020,Graceful Clearwing,Hemaris gracilis,,y,4,6,3,4,G3G4,SH,,,,N,,t,IILEX0B
+IILEX0B150,Franck's Sphinx Moth,Sphinx franckii,,y,5,6,2,6,G4,SH,,,,N,,t,IILEX0B
+IILEX0B170,Apple Sphinx,Sphinx gordius,,y,5,4,4,5,G4,S1S3,,,,N,,t,IILEX0B
+IILEX04090,Ash Sphinx,Manduca jasminearum,,y,3,6,2,6,,,,,,,,t,IILEX0B
+IILEX0B090,Great Ash Sphinx,Sphinx chersis,,y,1,6,2,6,G4G5,SNR,,,,N,,t,IILEX0B
+IILEW07010,Dot-lined White Moth,Artace cribraria,,y,6,4,4,5,G5,S1,,,,N,,t,inv_mothte
+IILEW05050,Tolype Moth,Tolype notialis,,y,5,4,4,6,G4G5,S1,,,,N,,t,inv_mothte
+IILEY1N140,Packard's Lichen Moth,Cisthene packardii,,y,6,4,4,5,G5,S1S3,,,,N,,t,inv_mothtg
+IILEY1N090,Lead Colored Lichen Moth,Cisthene plumbea,,y,6,4,4,6,G5,S1,,,,N,,t,inv_mothtg
+IILEY1H110,Pure Lichen Moth,Crambidia pura,,y,5,6,3,6,G4,SU,,,,N,,t,inv_mothtg
+IILEY2R260,Phyllira Tiger Moth,Grammia phyllira,,y,5,6,2,6,G4,SH,,,,N,,t,inv_mothtg
+IILEY24010,Joyful Holomelina Moth,Virbia laeta,,y,5,6,3,6,G4,S1S2,,,,N,,t,inv_mothtg
+IILEY24060,Blackish Tiger Moth,Virbia nigricans,,y,3,6,2,6,GH,SH,,,,N,,t,inv_mothtg
+IILEY89A40,Sweet Underwing,Catocala dulciola,,y,4,6,2,6,G3,SH,,,,N,,t,IILEY89
+IILEY89870,Miranda Underwing,Catocala miranda,,y,4,6,3,4,G3G4,SU,,,,N,,t,IILEY89
+IILEY89X10,Pine Woods Underwing,Catocala sp. 1 nr. jair,,y,6,6,3,4,G5,S1,,,,N,,t,IILEY89
+IILEY89B70,Shadow Underwing,Catocala umbrosa,,y,6,6,2,6,G5,S1,,,,N,,t,IILEY89
+IILEY89140,Angus' Underwing,Catocala angusi,,y,5,6,2,6,G4,SNR,,,,N,,t,IILEY89
+IILEY89210,Dejected Underwing,Catocala dejecta,,y,5,6,2,6,G4,SH,,,,N,,t,IILEY89
+IILEY89110,Robinson's Underwing,Catocala robinsonii,,y,5,6,2,6,G4,S1S3,,,,N,,t,IILEY89
+IILEY7P260,Black-eyed Zale,Zale curema,,y,5,4,4,6,G3G4,S1,,,,N,,t,IILEY7P
+IILEY7P300,Oblique Zale Moth,Zale lunifera,,y,6,6,3,4,G5,SNR,,,,N,,t,IILEY7P
+IILEY7P160,Pine Barrens Zale,Zale obliqua,,y,4,6,3,4,G5,S1,,,,N,,t,IILEY7P
+IILEY7P170,Gray-banded Zale,Zale squamularis,,y,5,6,3,4,G4,S2S3,,,,N,,t,IILEY7P
+IILEY7P190,Gray Spring Zale,Zale submediana,,y,5,6,3,4,G4,S2,,,,N,,t,IILEY7P
+IMBIV27030,Eastern Pearlshell,Margaritifera margaritifera,,y,3,5,2,3,G4,S1,,PE,PE,Y,PFBC,a,IMBIV
+IMBIV02030,Dwarf Wedgemussel,Alasmidonta heterodon,,y,1,5,2,6,G1G2,S1,LE,PE,PE,Y,PFBC,a,IMBIV
+IMBIV02090,Triangle Floater,Alasmidonta undulata,,y,3,2,4,6,G4,S3,,,N,N,PFBC,a,IMBIV
+IMBIV02100,Brook Floater,Alasmidonta varicosa,,y,2,5,3,6,G3,S1S2,,,PE,N,PFBC,a,IMBIV
+IMBIV03020,Three-ridge,Amblema plicata,,y,4,6,3,5,G5,S2S3,,,PT,N,PFBC,a,IMBIV
+IMBIV04080,Alewife Floater,Anodonta implicata,,y,4,1,4,6,G5,S3,,,CU,N,PFBC,a,IMBIV
+IMBIV04130,Flat Floater,Anodonta suborbiculata,,y,6,6,2,6,G5,S1,,,N,N,PFBC,a,IMBIV
+IMBIV05010,Cylindrical Papershell,Anodontoides ferussacianus,,y,6,3,4,6,G5,S2S3,,,CR,N,PFBC,a,IMBIV
+IMBIV09010,Purple Wartyback,Cyclonaias tuberculata,,y,6,6,2,6,G5,SH,,,PX,N,PFBC,a,IMBIV
+IMBIV10020,Fanshell,Cyprogenia stegaria,,y,1,6,2,6,G1Q,SH,LE,,PX,N,PFBC,a,IMBIV
+IMBIV13010,Butterfly,Ellipsaria lineolata,,y,5,6,2,6,G4G5,SH,,,CU,N,PFBC,a,IMBIV
+IMBIV14080,Elephant Ear,Elliptio crassidens,,y,6,6,2,6,G5,SH,,,CU,N,PFBC,a,IMBIV
+IMBIV14120,Northern Spike,Elliptio fisheriana,,y,3,5,2,6,G4,S1,,,CU,N,PFBC,a,IMBIV
+IMBIV16184,Northern Riffleshell,Epioblasma torulosa rangiana,y,y,1,5,3,6,G2T2,S2,LE,PE,PE,Y,PFBC,a,IMBIV
+IMBIV16190,Snuffbox,Epioblasma triquetra,,y,2,6,3,6,G3,S2,LE,PE,PE,Y,PFBC,a,IMBIV
+IMBIV17070,Wabash Pigtoe,Fusconaia flava,,y,4,6,3,5,G5,S2S3,,,PE,N,PFBC,a,IMBIV
+IMBIV17120,Long-solid,Fusconaia subrotunda,,y,2,6,3,6,G3,S2,,,PE,N,PFBC,a,IMBIV
+IMBIV21110,Pink Mucket,Lampsilis abrupta,,y,1,6,2,6,G2,SH,LE,,PX,N,PFBC,a,IMBIV
+IMBIV21050,Yellow Lampmussel,Lampsilis cariosa,,y,2,1,4,6,G3G4,S4,,,CU,N,PFBC,a,IMBIV
+IMBIV21130,Pocketbook,Lampsilis ovata,,y,4,5,3,5,G5,S2S3,,,N,N,PFBC,a,IMBIV
+IMBIV21160,Eastern Lampmussel,Lampsilis radiata,,y,4,5,2,6,G5,S1,,,CU,N,PFBC,a,IMBIV
+IMBIV22012,White Heelsplitter,Lasmigona complanata,,y,4,6,2,3,G5,S1S2,,,PE,N,PFBC,a,IMBIV
+IMBIV22020,Creek Heelsplitter,Lasmigona compressa,,y,4,5,3,6,G5,S2,,,CR,N,PFBC,a,IMBIV
+IMBIV22060,Green Floater,Lasmigona subviridis,,y,2,5,3,5,G3,S2S3,,,CU,N,PFBC,a,IMBIV
+IMBIV24010,Fragile Papershell,Leptodea fragilis,,y,6,5,3,5,G5,S2S3,,,CR,N,PFBC,a,IMBIV
+IMBIV24030,Tidewater Mucket,Leptodea ochracea,,y,2,5,2,6,G3G4,S1,,,PX,N,PFBC,a,IMBIV
+IMBIV26010,Eastern Pondmussel,Ligumia nasuta,,y,3,5,2,3,G4,S2S3,,,N,N,PFBC,a,IMBIV
+IMBIV30010,Threehorn Wartyback,Obliquaria reflexa,,y,6,4,4,6,G5,S3,,,PX,N,PFBC,a,IMBIV
+IMBIV31020,Hickorynut,Obovaria olivaria,,y,5,6,2,6,G4,SH,,,PX,N,PFBC,a,IMBIV
+IMBIV31050,Round Hickorynut,Obovaria subrotunda,,y,3,6,2,6,G4,S1,,PE,PE,N,PFBC,a,IMBIV
+IMBIV34020,Orange-foot Pimpleback,Plethobasus cooperianus,,y,1,6,2,6,G1,SH,LE,,PX,N,PFBC,a,IMBIV
+IMBIV34030,Sheepnose,Plethobasus cyphyus,,y,2,6,2,3,G3,S1,LE,PT,PE,Y,PFBC,a,IMBIV
+IMBIV35060,Clubshell,Pleurobema clava,y,y,1,5,3,6,G1G2,S2,LE,PE,PE,Y,PFBC,a,IMBIV
+IMBIV35090,Ohio Pigtoe,Pleurobema cordatum,,y,5,6,2,6,G4,SH,,,PE,N,PFBC,a,IMBIV
+IMBIV35240,Rough Pigtoe,Pleurobema plenum,,y,1,6,2,6,G1,SH,LE,,PX,N,PFBC,a,IMBIV
+IMBIV35250,Pyramid Pigtoe,Pleurobema rubrum,,y,3,6,2,6,G2G3,SH,,,PX,N,PFBC,a,IMBIV
+IMBIV35070,Round Pigtoe,Pleurobema sintoxia,,y,3,6,3,5,G4G5,S3S4,,,PE,N,PFBC,a,IMBIV
+IMBIV39041,Rabbitsfoot,Quadrula cylindrica cylindrica,,y,2,6,2,3,G3G4T3,S1S2,LT,PE,,N,PFBC,a,IMBIV
+IMBIV39080,Monkeyface,Quadrula metanevra,,y,5,6,2,6,G4,SH,,,PX,N,PFBC,a,IMBIV
+IMBIV39110,Pimpleback,Quadrula pustulosa,,y,4,6,2,6,G5,S1,,,PX,N,PFBC,a,IMBIV
+IMBIV39120,Mapleleaf,Quadrula quadrula,,y,6,4,4,6,G5,S3,,,PT,N,PFBC,a,IMBIV
+IMBIV41010,Salamander Mussel,Simpsonaias ambigua,,y,2,6,2,6,G3,S1,,PE,PT,Y,PFBC,a,IMBIV
+IMBIV43050,Lilliput,Toxolasma parvum,,y,6,6,3,5,G5,S1S2,,,PE,N,PFBC,a,IMBIV
+IMBIV44010,Pistolgrip,Quadrula verrucosa,,y,3,6,2,6,G4G5,S1,,PE,PE,N,PFBC,a,IMBIV
+IMBIV45020,Fawnsfoot,Truncilla donaciformis,,y,4,6,2,6,G5,S1,,,CU,N,PFBC,a,IMBIV
+IMBIV45040,Deertoe,Truncilla truncata,,y,4,5,2,6,G5,S1,,,PX,N,PFBC,a,IMBIV
+IMBIV47050,Rayed Bean,Villosa fabalis,y,y,1,5,2,3,G2,S1S2,LE,PE,PE,Y,PFBC,a,IMBIV
+IMBIV47060,Rainbow,Villosa iris,,y,4,1,4,6,G5Q,S3,,,PE,N,PFBC,a,IMBIV
+IMBIV02040,Elktoe,Alasmidonta marginata,,y,5,3,4,6,G4,S3S4,,,N,N,PFBC,a,IMBIV
+IMBIV37070,Pink Papershell,Potamilus ohiensis,,y,6,6,2,6,G5,S1,,,,N,PFBC,a,IMBIV
+IICOL03010,Black-headed Ash Sawfly,Tethida barda,,y,,6,2,6,GNR,SH,,,,N,,a,inv_sawfly
+IMGASF4060,A Freshwater Snail,Amnicola decisus,y,y,3,5,2,6,G1Q,SNR,,,,N,PFBC,a,inv_snailf
+IMGASG5040,Watercress Snail,Fontigens nickliniana,,y,4,6,3,6,G5,S1S2,,,,N,PFBC,a,inv_snailf
+IMGASG5050,Blue Ridge Springsnail,Fontigens orolibas,,y,2,6,2,2,G3,S1,,,,N,PFBC,a,inv_snailf
+IMGASJ2210,Shale Pebblesnail,Somatogyrus pennsylvanicus,,y,4,6,3,4,G3,S1S3,,,,N,PFBC,a,inv_snailf
+IMGASF4060,Moss Bladder Snail,Aplexa hypnorum,,y,6,4,4,6,G1Q,SNR,,,,N,PFBC,a,inv_snailf
+IMGASM5030,Flexed Gyro,Gyraulus deflectus,,y,6,4,4,5,G5,S5,,,,N,PFBC,a,inv_snailf
+IMGASN1010,Sharp Sprite,Promenetus exacuous,,y,6,4,4,5,G5,SNR,,,,N,PFBC,a,inv_snailf
+IMGASE5080,Three-ridge Valvata,Valvata tricarinata,,y,6,6,2,2,G5,SNR,,,,N,PFBC,a,inv_snailf
+IMGASJ0920,Boreal Marstonia,Marstonia lustrica,,y,6,4,4,5,G5,SNR,,,,N,PFBC,a,inv_snailf
+IMGAS20290,Sprite Elimia,Pleurocera proxima,,y,4,5,2,2,G5,S2S3,,,,N,PFBC,a,inv_snailf
+IMGASH3030,Henscomb Hydrobe,Littoridinops tenuipes,,y,6,6,2,2,,,,,,,PFBC,a,inv_snailf
+IMGASL9030,Vernal Physa,Physa vernalis,,y,4,6,3,4,G3,SNR,,,,N,PFBC,a,inv_snailf
+IMGASF7010,Globe Siltsnail,Birgella subglobosa,,y,5,6,3,4,G4,SNR,,,,N,PFBC,a,inv_snailf
+IMGASL2020,Great Pondsnail,Lymnaea stagnalis,,y,6,6,2,2,G5,SNR,,,,N,PFBC,a,inv_snailf
+IMGAS76010,Woodland Pondsnail,Lymnaea catascopium,,y,6,6,3,4,G5,S3,,,,N,PFBC,a,inv_snailf
+IMGASJ2170,Ohio Pebblesnail,Somatogyrus integra,,y,4,6,3,4,G3,S2S4,,,,N,PFBC,a,inv_snailf
+IMGAS07050,File Thorn,Carychium nannodes,,y,6,6,2,6,G5,S1,,,,N,,t,inv_snailt
+IMGASJ9060,Slender Walker,Pomatiopsis lapidaria,,y,6,6,3,6,G5,S1S3,,,,N,,t,inv_snailt
+IMGAS03010,Cherrystone Drop,Hendersonia occulta,,y,5,6,3,6,G4,S2,,,,N,,t,inv_snailt
+IMGAS53030,Coastal Plain Disc,Anguispira fergusoni,,y,5,6,2,6,G4,S2,,,,N,,t,inv_snailt
+IMGAS53070,Banded Globe,Anguispira kochi,,y,6,4,4,6,G5,S2,,,,N,,t,inv_snailt
+IMGAS70030,Toothed Hive,Euconulus dentatus,,y,6,6,2,6,G5,S1,,,,N,,t,inv_snailt
+IMGAS70020,Brown Hive,Euconulus fulvus,,y,6,4,4,6,G5,S3S4,,,,N,,t,inv_snailt
+IMGAS63100,Severed Mantleslug,Pallifera secreta,,y,5,6,3,6,G4,SU,,,,N,,t,inv_snailt
+IMGAS91020,Broad-banded Forestsnail,Allogona profunda,,y,6,6,3,6,G5,S2S3,,,,N,,t,inv_snailt
+IMGASA1160,Baffled Three-tooth,Triodopsis fraudulenta,,y,5,4,4,6,G4,S3S4,,,,N,,t,inv_snailt
+IMGASA1390,Dished Three-tooth,Triodopsis vulgata,,y,6,4,4,6,G5,S2S3,,,,N,,t,inv_snailt
+IMGASA1250,Striped Whitelip,Webbhelix multilineata,,y,6,6,2,6,G5,S1S2,,,,N,,t,inv_snailt
+IMGAS15060,Bark Snaggletooth,Gastrocopta corticaria,,y,6,4,4,6,G5,S2S3,,,,N,,t,inv_snailt
+IMGAS20080,Delicate Vertigo,Vertigo bollesiana,,y,5,4,4,6,G4,S2,,,,N,,t,inv_snailt
+IMGAS20200,Blade Vertigo,Vertigo milium,,y,6,6,2,6,G5,S2S3,,,,N,,t,inv_snailt
+IMGAS20250,Ovate Vertigo,Vertigo ovata,,y,6,6,3,6,G5,S3S4,,,,N,,t,inv_snailt
+IMGAS20290,Pygmy Vertigo,Vertigo pygmaea,,y,6,4,4,6,G5,S2S3,,,,N,,t,inv_snailt
+IMGAS20330,Honey Vertigo,Vertigo tridentata,,y,6,4,4,6,G5,S2S3,,,,N,,t,inv_snailt
+IMGAS20340,Five-tooth Vertigo,Vertigo ventricosa,,y,6,4,4,6,G5,S2,,,,N,,t,inv_snailt
+IMGAS86040,Eastern Glass-snail,Vitrina angelicae,,y,6,6,3,6,G5,S2S3,,,,N,,t,inv_snailt
+IMGAS72020,Brown Bellytooth,Gastrodonta interna,,y,6,6,2,6,G5,S1,,,,N,,t,inv_snailt
+IMGAS73160,Maryland Glyph,Glyphyalinia raderi,,y,3,6,3,6,G2,S1S2,,,,N,,t,inv_snailt
+IMGAS76010,Blue Glass Snail,Nesovitrea binneyana,,y,6,6,3,6,G5,S3,,,,N,,t,inv_snailt
+IMGAS82200,Split-tooth Dome,Ventridens virginicus,,y,5,4,4,6,G4,S2S3,,,,N,,t,inv_snailt
+IMGAS07020,Obese Thorn,Carychium exiguum,,y,6,4,4,6,G5,S3S4,,,,N,,t,inv_snailt
+IMGAS53010,Flamed Tigersnail,Anguispira alternata,,y,6,4,4,6,G5,S3S4,,,,N,,t,inv_snailt
+IMGAS54030,Angular Disc,Discus catskillensis,,y,6,4,4,6,G5,S4,,,,N,,t,inv_snailt
+IMGAS54090,Domed Disc,Discus patulus,,y,6,4,4,6,G5,S3,,,,N,,t,inv_snailt
+IMGAS87040,Meadow Slug,Deroceras laeve,,y,6,4,4,6,G5,S5,,,,N,,t,inv_snailt
+IMGASQ0010,Changeable Mantleslug,Megapallifera mutabilis,,y,6,4,4,6,G5,S4,,,,N,,t,inv_snailt
+IMGAS95320,Spike-lip Crater,Appalachina sayana,,y,6,6,3,6,G5,S2S3,,,,N,,t,inv_snailt
+IMGAS94050,Lowland Pill Snail,Euchemotrema leai,,y,6,6,3,6,G5,S4,,,,N,,t,inv_snailt
+IMGAS95380,Toothed Globe,Mesodon zaletus,,y,6,4,4,6,G5,S4S5,,,,N,,t,inv_snailt
+IMGAS95260,Proud Globelet,Patera pennsylvanica,,y,5,6,3,6,G4,S1S2,,,,N,,t,inv_snailt
+IMGAS98030,Bristled Slitmouth,Stenotrema barbatum,,y,6,4,4,6,G5,S3S4,,,,N,,t,inv_snailt
+IMGASA1200,Atlantic Threetooth,Triodopsis juxtidens,,y,6,6,2,6,G5,SNR,,,,N,,t,inv_snailt
+IMGAS15010,Armed Snaggletooth,Gastrocopta armifera,,y,6,4,4,6,G5,S4,,,,N,,t,inv_snailt
+IMGAS15190,White Snaggletooth,Gastrocopta tappaniana,,y,6,6,2,6,G5,S2S3,,,,N,,t,inv_snailt
+IMGAS16010,White-lip Dagger,Pupoides albilabris,,y,6,6,3,6,G5,S3,,,,N,,t,inv_snailt
+IMGAS24040,Maze Pinecone,Strobilops labyrinthicus,,y,6,4,4,6,G5,S4S5,,,,N,,t,inv_snailt
+IMGAS24050,Southern Pinecone,Strobilops texasianus,,y,6,4,4,6,G5,SNR,,,,N,,t,inv_snailt
+IMGAS85060,Black Gloss,Zonitoides nitidus,,y,6,4,4,6,G5,S4,,,,N,,t,inv_snailt
+IMGAS13040,Toothless Column Snail,Columella columella,,y,6,6,2,6,,,,,,,,t,inv_snailt
+IMGAS63030,Foster Mantleslug,Pallifera fosteri,,y,6,4,4,6,G5,SNR,,,,N,,t,inv_snailt
+IMGAS63070,Redfoot Mantleslug,Pallifera ohioensis,,y,6,4,4,6,,,,,,,,t,inv_snailt
+IMGAS63110,Variable Mantleslug,Pallifera varia,,y,4,4,4,6,,,,,,,,t,inv_snailt
+IMGAS17030,Moss Chrysalis Snail,Pupilla muscorum,,y,6,6,2,6,G5,S1S2,,,,N,,t,inv_snailt
+IMGAS20450,Crested Vertigo,Vertigo cristata,,y,6,4,4,6,,,,,,,,t,inv_snailt
+ILARA46010,Weyer's Sheetweb Cave Spider,Bathyphantes weyeri,,y,5,6,2,3,G4,SNR,,,,N,,t,ILARA
+IMGAS63030,A Ghost Spider,Arachosia cubana,,y,,6,2,3,G5,SNR,,,,N,,t,ILARA
+ILARA75010,A Striped Orbweaver,Singa eugeni,,y,,6,3,4,GNR,SNR,,N,,N,,t,ILARA
+ILARA28010,Subterranean Sheetweb Spider,Phanetta subterranea,,y,6,6,2,3,G5,SNR,,,,N,,t,ILARA
+ILARA21010,Appalachian Cave Spider,Porrhomma cavernicola,,y,6,6,2,3,G5,SNR,,,,N,,t,ILARA
+ILARA76010,Beach Wolf Spider,Arctosa littoralis,,y,,6,2,3,GNR,SNR,,N,,N,,t,ILARA
+ILARA10030,Beatty's Sheetweb Cave Spider,Oreonetides beattyi,,y,,6,2,3,,,,,,,,t,ILARA
+ILARA46010,Wright's Burrowing Wolf Spider,Geolycosa wrighti,,y,,6,2,3,G4,SNR,,,,N,,t,ILARA
+ILARA28010,Turret Spider,Geolycosa turricola,,y,,6,2,3,G5,SNR,,,,N,,t,ILARA
+IZSPN05010,Pennsylvania Sponge,Heteromeyenia longistylus,,y,3,6,2,2,G1G3,SNA,,,,N,,a,IZSPN
+IICLL20020,Heller Cave Springtail,Typhlogastrura helleri,,y,,6,2,6,GNR,S1,,,,N,,a,IICLL
+IIPLE01310,Spatulate Snowfly,Allocapnia simmonsi,,y,4,6,3,6,G2,S2,,,,N,PFBC,a,IIPLE
+IIPLE11030,Aracoma Sallfly,Alloperla aracoma,,y,4,4,4,6,G3,S3,,,,N,PFBC,a,IIPLE
+IIPLE11290,Scotia Sallfly,Alloperla vostoki,,y,4,6,3,6,G3,S3,,,,N,PFBC,a,IIPLE
+IIPLE1D010,Gaspe Sallfly,Utaperla gaspesiana,,y,4,4,4,6,G3,S2,,,,N,PFBC,a,IIPLE
+IIPLE0G020,Shenandoah Needlefly,Megaleuctra flinti,,y,3,6,2,6,G2,S2,,,,N,PFBC,a,IIPLE
+IIPLE0M050,Bent Forestfly,Ostrocerca prolongata,,y,4,6,2,6,G3,S2,,,,N,PFBC,a,IIPLE
+IIPLE0S090,Powdermill ForestflyR,Soyedina merritti,,y,3,5,2,6,G2,S2,,,,N,PFBC,a,IIPLE
+IIPLE1L030,Elegant Stone,Acroneuria arida,,y,4,6,2,6,G3,SU,,,,N,PFBC,a,IIPLE
+IIPLE1S010,Appalachian Stone,Hansonoperla appalachia,,y,4,4,4,6,G3,S2,,,,N,PFBC,a,IIPLE
+IIPLE11050,Dusky Sallfly,Alloperla biserrata,,y,4,6,3,6,G3,S3,,,,N,PFBC,a,IIPLE
+IIPLE11310,Duckhead Sallfly,Alloperla concolor,,y,6,6,3,6,G5,S3,,,,N,PFBC,a,IIPLE
+IIPLE11140,Vernal Sallfly,Alloperla idei,,y,4,6,3,6,G3,S3,,,,N,PFBC,a,IIPLE
+IIPLE19320,Shenandoah Sallfly,Sweltsa palearata,,y,3,4,4,6,G2G3,S2,,,,N,PFBC,a,IIPLE
+IIPLE0B250,Variable Needlefly,Leuctra variabilis,,y,5,4,4,6,G4,S3,,,,N,PFBC,a,IIPLE
+IIPLE0L050,Three-spined Forestfly,Nemoura trispinosa,,y,6,6,3,6,G5,S3,,,,N,PFBC,a,IIPLE
+IIPLE01100,Stonyfork Snowfly,Allocapnia harperi,,y,5,6,3,6,G4,S3,,,,N,PFBC,a,IIPLE
+IIPLE1L020,Eastern Stone,Acroneuria arenosa,,y,6,6,3,6,G5,S3S4,,,,N,PFBC,a,IIPLE
+IIPLE1L100,Lobed Stone,Acroneuria internata,,y,5,6,2,6,G4,SH,,,,N,PFBC,a,IIPLE
+IIPLE1M010,Giant Stone,Attaneuria ruralis,,y,5,6,2,6,G4,SH,,,,N,PFBC,a,IIPLE
+IIPLE1X030,Choctaw Stone,Neoperla choctaw,,y,5,4,4,6,G4,S3S4,,,,N,PFBC,a,IIPLE
+IIPLE1V010,Striped Stone,Perlinella drymo,,y,6,6,3,6,G5,S3S4,,,,N,PFBC,a,IIPLE
+IIHEMN2010,Fringetree Lace Bug,Leptoypha mutica,,y,,6,2,6,GNR,,,,,,,t,inv_trubug
+ARACF14130,Eastern Fence Lizard,Sceloporus undulatus,,y,6,4,4,6,G5,S3,,,,Y,PFBC,t,ARAC
+ARACH01011,Northern Coal Skink,Plestiodon anthracinus anthracinus,,y,4,3,4,6,G5T5,S3,,,,Y,PFBC,t,ARAC
+ARACH01080,Broadhead Skink,Plestiodon laticeps,,y,6,5,3,6,G5,S2,,PC,CR,Y,PFBC,t,ARAC
+AMAFB07047,Eastern Fox Squirrel,Sciurus niger vulpinus,,y,3,5,3,6,G5T4T5,S2,,,CR,N,PGC,t,AM
+AMAFB09020,Northern Flying Squirrel,Glaucomys sabrinus,,y,4,6,2,6,G5,S1,,PE,,Y,PGC,t,AM
+AMAFF11090,Rock Vole,Microtus chrotorrhinus,,y,5,4,4,6,G4,S3,,,CA,N,PGC,t,AM
+AMAFF08100,Allegheny Woodrat,Neotoma magister,,y,2,5,3,6,G3G4,S2,,PT,PT,N,PGC,t,AM
+AMAFF03042,Praire Deer Mouse,Peromyscus maniculatus bairdii,,y,6,2,4,5,G5T5,S3S4,,,,N,PGC,t,AM
+AMAEB01090,Appalachian Cottontail,Sylvilagus obscurus,,y,3,5,2,3,G4,S1S2,,,,Y,PGC,t,AM
+AMABA04010,North American Least Shrew,Cryptotis parva,,y,4,5,2,6,G5,S1,,PE,PE,Y,PGC,t,AM
+AMABA01210,Long-tailed Shrew,Sorex dispar,,y,3,2,4,5,G4,S4,,,,N,PGC,t,AM
+AMABA01153,Northern Water Shrew,Sorex palustris albibarbis,,y,4,1,4,6,G5T5,S3,,,CR,N,PGC,t,AM
+AMABA01151,West Virginia Water Shrew,Sorex palustris punctulatus,,y,2,5,3,6,G5T3,S2,,PT,PT,N,PGC,t,AM
+AMABA01270,Maryland Shrew,Sorex cinereus fontinalis,,y,3,5,6,6,G4Q,S5,,,,N,PGC,t,AM
+AMACC04010,Big Brown Bat,Eptesicus fuscus,,b,4,5,3,4,G5,S2S3,,,,N,PGC,t,AM
+AMACC03020,Tricolored Bat,Perimyotis subflavus,,w,2,5,2,6,G5,S1,,,,N,PGC,s,AM
+AMACC01150,Northern Long-eared Bat,Myotis septentrionalis,,y,1,5,2,6,G4,S1,LT,,CR,Y,PGC,t,AM
+AMACC01130,Eastern Small-footed Bat,Myotis leibii,,y,2,5,3,6,G3,S2,,PT,PT,N,PGC,t,AM
+AMACC01100,Indiana Bat,Myotis sodalis,,w,2,6,3,6,G2,S1,LE,PE,PE,Y,PGC,t,AM
+AMACC01010,Little Brown Bat,Myotis lucifugus,,w,2,5,2,6,G5,S1,,,,N,PGC,s,AM
+AMACC02010,Silver-haired Bat,Lasionycteris noctivagans,,y,6,5,2,6,G5,S1,,,CR,N,PGC,t,AM
+AMAJF05010,Eastern Spotted Skunk,Spilogale putorius,,y,3,6,4,6,G5,S2,,,PE,N,PGC,t,AM
+AAAAC01011,Eastern Hellbender,Cryptobranchus alleganiensis alleganiensis,,y,2,5,3,4,G3G4T3T4,S2S3,,,,Y,PFBC,a,AAAA
+AAAAE01040,Mudpuppy,Necturus maculosus,,y,6,3,4,6,G5,S3,,,,Y,PFBC,a,AAAA
+AAAAD12390,Northern Ravine Salamander,Plethodon electromorphus,,y,6,6,3,5,G5,S2S3,,,,N,PFBC,t,AAAA
+AAAAD13014,Eastern Mud Salamander,Pseudotriton montanus montanus,,y,6,6,3,6,G5T5,S1,,PE,PE,Y,PFBC,t,AAAA
+AAAAA01050,Jefferson Salamander,Ambystoma jeffersonianum,,y,6,3,4,6,G4,S3,,,,Y,PFBC,t,AAAA
+AAAAA01060,Blue-spotted Salamander,Ambystoma laterale,,y,4,5,2,6,G5,S1,,PE,PE,Y,PFBC,t,AAAA
+AAAAA01100,Marbled Salamander,Ambystoma opacum,,y,6,3,4,6,G5,S3,,,,Y,PFBC,t,AAAA
+AAAAD01010,Green Salamander,Aneides aeneus,,y,2,5,3,6,G3G4,S2,,PT,PT,Y,PFBC,t,AAAA
+ARADB02011,Eastern Worm Snake,Carphophis amoenus amoenus,,y,6,6,3,6,G5T5,S2,,,,Y,PFBC,t,ARAD
+ARADB06010,Kirtland's Snake,Clonophis kirtlandii,,y,3,5,2,6,G2,SH,,PE,PE,Y,PFBC,t,ARAD
+ARADB17020,Eastern Hognose Snake,Heterodon platirhinos,,y,6,3,4,5,G5,S3S4,,,,Y,PFBC,t,ARAD
+ARADB23010,Rough Green Snake,Opheodrys aestivus,,y,4,5,2,3,G5,S1S2,,PE,PE,Y,PFBC,t,ARAD
+ARADB27040,Queen Snake,Regina septemvittata,,y,6,3,4,5,G5,S3S4,,,,Y,PFBC,a,ARAD
+ARADB36120,Eastern Ribbonsnake,Thamnophis sauritus,,y,6,3,4,6,G5,S3,,,,Y,PFBC,t,ARAD
+ARADB36010,Shorthead Garter Snake,Thamnophis brachystoma,,y,3,3,5,6,G4,S4,,,,Y,PFBC,t,ARAD
+ARADB39023,Eastern Smooth Earth Snake,Virginia valeriae valeriae,,y,6,6,2,6,G5T5,S1,,,,Y,PFBC,t,ARAD
+ARADB39022,Mountain Earth Snake,Virginia valeria pulchra,,y,2,3,4,6,G5T3T4,S3,,,,Y,PFBC,t,ARAD
+ARADE01010,Copperhead,Agkistrodon contortrix,,y,6,3,4,5,G5,S3S4,,,,Y,PFBC,t,ARAD
+ARADE02040,Timber Rattlesnake,Crotalus horridus,,y,3,1,4,5,G4,S3S4,,PC,DL,Y,PFBC,t,ARAD
+ARADE03011,Eastern Massasauga,Sistrurus catenatus catenatus,,y,2,6,2,6,G3G4T3Q,S1,PT,PE,PE,Y,PFBC,t,ARAD
+ARAAE01053,Eastern Mud Turtle,Kinosternon subrubrum subrubrum,,y,5,6,3,6,G5T5,S1,,PE,PE,Y,PFBC,t,ARAA
+ARAAD02010,Spotted Turtle,Clemmys guttata,,y,4,2,3,5,G5,S3S4,,,,Y,PFBC,t,ARAA
+ARAAD02020,Wood Turtle,Glyptemys insculpta,,y,2,1,4,5,G3,S3S4,,,,Y,PFBC,t,ARAA
+ARAAD02040,Bog Turtle,Glyptemys muhlenbergii,,y,2,5,3,6,G3,S2,LT,PE,PE,Y,PFBC,t,ARAA
+ARAAD04010,Blanding's Turtle,Emydoidea blandingii,,y,3,5,2,6,G4,S1,,PC,CR,Y,PFBC,t,ARAA
+ARAAD07050,Eastern Redbelly Turtle,Pseudemys rubriventris,,y,4,5,3,4,G5,S2S3,,PT,PT,Y,PFBC,t,ARAA
+ARAAD08012,Eastern Box Turtle,Terrapene carolina carolina,,y,4,1,3,5,G5T5,S3S4,,,,Y,PFBC,t,ARAA
+AMACC04010,Big Brown Bat,Eptesicus fuscus,,w,4,5,3,4,G5,S2S3,,,,N,PGC,s,AM
+AMACC01100,Indiana Bat,Myotis sodalis,,b,2,6,3,6,G2,S1,LE,PE,PE,Y,PGC,t,AM
+AMACC01010,Little Brown Bat,Myotis lucifugus,,b,2,5,2,6,G5,S1,,,,N,PGC,t,AM

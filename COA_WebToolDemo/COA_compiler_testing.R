@@ -1,4 +1,4 @@
-tool_exec <- function(in_params, out_params)
+tool_exec <- function(in_params, out_params)  #
 {
 #library(arcgisbinding)
 #arc.check_product()
@@ -18,10 +18,10 @@ options(useFancyQuotes = FALSE)
 PU_area <- 40468.38 # area of full planning unit in square meters
 
 # define parameters to be used in ArcGIS tool
-#   planning_units = "X:/coa/coa_Rbridge/test_pu1.shp"
+#   planning_units = "E:/coa2/test_pu1.shp"
 project_name = in_params[[1]] # project_name <- "Manual Test Project"
 planning_units = in_params[[2]]
-out_table = in_params[[3]]
+#out_table = in_params[[3]]
 
 print(paste("Project Name: ",project_name, sep=""))
 print(date())
@@ -38,7 +38,7 @@ print(area_pu_total)
 pu_list <- selected_pu$unique_id
 
 # create connection to sqlite database
-db <- dbConnect(SQLite(), dbname = "X:/coa/coa_Rbridge/coa_bridgetest.sqlite")
+db <- dbConnect(SQLite(), dbname = "E:/coa2/coa_bridgetest.sqlite")
 
 ############## County Names and Other details
 # get a list of the unique county FIPs from the PUID field
@@ -46,7 +46,9 @@ county_FIPS <- substr(pu_list,1,3)
 # connect to the database and lookup the county name
 SQLquery_county <- paste("SELECT COUNTY_NAM, FIPS_COUNT"," FROM lu_CountyName ","WHERE FIPS_COUNT IN (", paste(toString(sQuote(county_FIPS)), collapse = ", "), ")")
 aoi_county <- dbGetQuery(db, statement = SQLquery_county )
-print(paste(aoi_county$COUNTY_NAM," COUNTY", sep="") )
+counties <-  paste(aoi_county$COUNTY_NAM," COUNTY", sep="") 
+print(counties)
+
 ## do we want to add PGC/PFBC district information to the table here???
 
 ############## Natural Boundaries
@@ -82,6 +84,7 @@ aoi_HabTerr$value <- NULL
 aoi_HabTerr1 <- aoi_HabTerr[c(-1)] # drop the puid column
 colnames(aoi_HabTerr1)[colnames(aoi_HabTerr1) == 'variable'] <- 'habitat'
 aoi_HabTerr2 <- aggregate(aoi_HabTerr1$acres, by=list(aoi_HabTerr1$habitat) , FUN=sum)
+#aoi_HabTerr2$acres <- round(as.numeric(aoi_HabTerr2$acres,2))
 
 colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'Group.1'] <- 'habitat'
 colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'x'] <- 'acres'
@@ -95,7 +98,7 @@ if(nrow(aoi_HabTerr2)>2) {  # need three different ones for the pie char to work
 
 print("- - - - - - - - - - - - -")
 print("Terrestrial and Palustrine Habitats -- ")
-ht <- paste(unique(paste(aoi_HabTerr2$habitat," - ", aoi_HabTerr2$acres, " acres",sep="")) , sep= " ")
+ht <- paste(unique(paste(aoi_HabTerr2$habitat," - ", round(aoi_HabTerr2$acres,2), " acres",sep="")) , sep= " ")
 print(ht)
 
 # aquatics 
@@ -107,7 +110,7 @@ if( nrow(aoi_HabLotic)>0 ) {
   aoi_HabLotic2 <- aggregate(as.numeric(aoi_HabLotic1$Shape_Length), by=list(aoi_HabLotic1$DESC_23), FUN=sum)
   colnames(aoi_HabLotic2)[colnames(aoi_HabLotic2) == 'Group.1'] <- 'habitat'
   colnames(aoi_HabLotic2)[colnames(aoi_HabLotic2) == 'x'] <- 'length'
-  print("Lotic Habitats -- ")
+  print("Streams and Rivers -- ")
   hl <- paste(unique(paste(aoi_HabLotic2$habitat," - ", round(aoi_HabLotic2$length*0.000621371,2),"miles (",round(aoi_HabLotic2$length/1000,2), "km)",sep="")) , sep= " ")
   print(hl)
 } else {
@@ -119,8 +122,12 @@ SQLquery_luProtectedLand <- paste("SELECT unique_id, site_nm, manager, owner_typ
 aoi_ProtectedLand <- dbGetQuery(db, statement = SQLquery_luProtectedLand )
 print("- - - - - - - - - - - - -")
 print("Protected Land")
-z = unique(aoi_ProtectedLand$site_nm)
-print(z)
+if( nrow(aoi_ProtectedLand)>0 ) {
+  z = unique(aoi_ProtectedLand$site_nm)
+  print(z)
+} else {
+  print("No mapped protected land in the project area.")
+}
 
 ############## THREATS ###############
 SQLquery_luThreats <- paste("SELECT unique_id, WindTurbines, WindCapability, ShaleGas,ShaleGasWell,StrImpAg,StrmImpAMD"," FROM lu_threats ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
@@ -143,7 +150,7 @@ if(any(aoi_Threats$ShaleGas=='y')) print("Site overlaps potential shale gas reso
 
 ############## SGCN
 # build query to select planning units within area of interest from SGCNxPU table
-SQLquery <- paste("SELECT unique_id, ELCODE, SeasonCode, OccProb, El_Season, AREA"," FROM lu_SGCNxPU ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
+SQLquery <- paste("SELECT unique_id, El_Season, OccProb,AREA"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 # create SGCNxPU dataframe containing selected planning units
 aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery)
 
@@ -158,13 +165,18 @@ print(y)
 aoi_sgcnXpu1 <- aggregate(aoi_sgcnXpu$AREA~El_Season+OccProb,aoi_sgcnXpu,FUN=sum)
 aoi_sgcnXpu2 <- do.call(rbind,lapply(split(aoi_sgcnXpu1, aoi_sgcnXpu1$El_Season), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu$AREA`),]))
 colnames(aoi_sgcnXpu2)[colnames(aoi_sgcnXpu2) == 'El_Season'] <- 'ELSeason'
+# drop all the low occurence probability values from the table
+##aoi_sgcnXpu2 <- aoi_sgcnXpu2[ which(aoi_sgcnXpu2$OccProb!="Low"), ]
+
 elcodes <- aoi_sgcnXpu2$ELSeason
-SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, Environment, TaxaGroup, ELSeason"," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, Environment, TaxaGroup, ELSeason"," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
 aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
 # merge species information to the planning units
 aoi_sgcnXpu2 <- merge(aoi_sgcnXpu2, aoi_sgcn, by="ELSeason")
+aoi_sgcnXpu2 <- aoi_sgcnXpu2[order(aoi_sgcnXpu2$TaxaGroup),]
+
 print("-------------")
-print(paste(aoi_sgcnXpu2$SCOMNAME,"-",aoi_sgcnXpu2$OccProb,"occ. prob.",sep=" "))
+print(paste(aoi_sgcnXpu2$SCOMNAME,"-",aoi_sgcnXpu2$SeasonCode,"-",aoi_sgcnXpu2$OccProb,"occ. prob.",sep=" "))
 
 ############## Actions
 SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
@@ -179,9 +191,9 @@ aoi_actionstable <- aoi_actions[,c("ScientificName","EditedThreat","Sensitive","
 # dbDisconnect()  #### This seems to be causing a crash.
 
 ##############  report generation
-#setwd(loc_outMetadata)
-#loc_scripts <- "X:/coa/coa_Rbridge"
+setwd("E:/coa2/COA/COA_WebToolDemo")
+loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
 
-#knit2pdf(paste(loc_scripts,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
+knit2pdf(paste(loc_scripts,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
 
 }

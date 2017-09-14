@@ -14,7 +14,6 @@ if (!requireNamespace("data.table", quietly = TRUE))
   install.packages("data.table")
 require(data.table)
 
-  
 # options   
 options(useFancyQuotes = FALSE)
 
@@ -112,8 +111,9 @@ HabCodeList <- aoi_HabTerr2$Code
 SQLquery_NamesHabTerr <- paste("SELECT Code, Habitat, Class, Macrogroup, MODIFIER, PATTERN, FORMATION, type ", # need to change these names
                           " FROM lu_HabitatName ","WHERE Code IN (", paste(toString(sQuote(HabCodeList)),collapse = ", "), ")")
 aoi_NamesHabTerr <- dbGetQuery(db, statement = SQLquery_NamesHabTerr)
-
 aoi_HabTerr2 <- merge(aoi_HabTerr2, aoi_NamesHabTerr, by="Code")
+
+aoi_HabTerr2 <- aoi_HabTerr2[order(aoi_HabTerr2$type, -aoi_HabTerr2$acres),]
 
 # make a chart of the habitats. Just for kicks!
 if(nrow(aoi_HabTerr2)>2&&nrow(aoi_HabTerr2)<9 ) {  # need three different ones for the pie chart to work, the color scheme also wont work above 8 types
@@ -201,6 +201,7 @@ colnames(aoi_sgcnXpu2)[colnames(aoi_sgcnXpu2) == 'El_Season'] <- 'ELSeason'
 # drop all the low occurence probability values from the table
 ##aoi_sgcnXpu2 <- aoi_sgcnXpu2[ which(aoi_sgcnXpu2$OccProb!="Low"), ]
 
+# join SGCN name data sgcn_aoi table
 elcodes <- aoi_sgcnXpu2$ELSeason
 SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, SENSITV_SP, Environment, TaxaGroup, ELSeason, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
 aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
@@ -211,11 +212,11 @@ setDT(aoi_sgcn)[SENSITV_SP=="Y", SNAME:=paste0("{{ ",SNAME," }}")]
 aoi_sgcn[, "CAT_min"] <- apply(aoi_sgcn[, 10:13], 1, min) # get the minumum across categories
 aoi_sgcn$CAT_Weight <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse
 # merge species information to the planning units
-aoi_sgcnXpu2 <- merge(aoi_sgcnXpu2, aoi_sgcn, by="ELSeason")
+aoi_sgcnXpu2 <- merge(aoi_sgcnXpu2, aoi_sgcn) #, by="ELSeason"
 aoi_sgcnXpu2 <- aoi_sgcnXpu2[order(aoi_sgcnXpu2$TaxaGroup),]
 # add a weight based on the Occurence probability
-aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="Low"] <- 0.5
-aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="Medium"] <- 0.75
+aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="Low"] <- 0.6
+aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="Medium"] <- 0.8
 aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="High"] <- 1
 
 # Calcuate species priority

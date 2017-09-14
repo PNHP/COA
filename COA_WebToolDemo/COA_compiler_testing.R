@@ -49,6 +49,17 @@ aoi_county <- dbGetQuery(db, statement = SQLquery_county )
 counties <-  paste(aoi_county$COUNTY_NAM," COUNTY", sep="") 
 print(counties)
 
+SQLquery_muni <- paste("SELECT unique_id, FIPS_MUN_P"," FROM lu_muni ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
+aoi_muni <- dbGetQuery(db, statement = SQLquery_muni )
+aoi_muni$unique_id <- NULL
+aoi_muni1 <-  unique(aoi_muni)
+aoi_muni1 <- as.vector(aoi_muni1$FIPS_MUN_P)
+SQLquery_muni_name <- paste("SELECT FIPS_MUN_P, Name_Proper_Type"," FROM lu_muni_names ","WHERE FIPS_MUN_P IN (", paste(toString(sQuote(aoi_muni1)), collapse = ", "), ")")
+aoi_muni_name <- dbGetQuery(db, statement = SQLquery_muni_name )
+
+munis <- paste(aoi_muni_name$Name_Proper_Type, sep=",")
+print(munis)
+
 ## do we want to add PGC/PFBC district information to the table here???
 
 ############## Natural Boundaries
@@ -89,7 +100,7 @@ aoi_HabTerr2 <- aggregate(aoi_HabTerr1$acres, by=list(aoi_HabTerr1$habitat) , FU
 colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'Group.1'] <- 'habitat'
 colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'x'] <- 'acres'
 aoi_HabTerr2 <- aoi_HabTerr2[order(-aoi_HabTerr2$acres),]
-if(nrow(aoi_HabTerr2)>2) {  # need three different ones for the pie char to work
+if(nrow(aoi_HabTerr2)>2) {  # need three different ones for the pie chart to work
   library("RColorBrewer")
   pielab <- as.list(aoi_HabTerr2$habitat)
   pie(aoi_HabTerr2$acres,labels=aoi_HabTerr2$acres, col=brewer.pal(nrow(aoi_HabTerr2),"Set1") )
@@ -130,7 +141,7 @@ if( nrow(aoi_ProtectedLand)>0 ) {
 }
 
 ############## THREATS ###############
-SQLquery_luThreats <- paste("SELECT unique_id, WindTurbines, WindCapability, ShaleGas,ShaleGasWell,StrImpAg,StrmImpAMD"," FROM lu_threats ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
+SQLquery_luThreats <- paste("SELECT unique_id, WindTurbines, WindCapability, ShaleGas,ShaleGasWell,StrImpAg,StrImpAMD"," FROM lu_threats ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 aoi_Threats <- dbGetQuery(db, statement = SQLquery_luThreats )
 
 data_wind <- table(aoi_Threats$WindCapability)
@@ -144,19 +155,20 @@ if(max(aoi_Threats$WindCapability)>2) { # selected '2' as class 3 and above are 
 } else {
   print("No significant wind resources known at this site.")
 }
-# add in something about wind turbines
+# wind turbines
+if(any(aoi_Threats$WindTurbines =='y')) print("Shale gas wells present within the AOI.")
+# shale gas
 if(any(aoi_Threats$ShaleGas=='y')) print("Site overlaps potential shale gas resource.")
-# add in something about gas wells.
+# gas wells
+if(any(aoi_Threats$ShaleGasWell=='y')) print("Shale gas wells present within the AOI.")
 
 ############## SGCN
 # build query to select planning units within area of interest from SGCNxPU table
 SQLquery <- paste("SELECT unique_id, El_Season, OccProb,AREA"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 # create SGCNxPU dataframe containing selected planning units
 aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery)
-
 aoi_sgcnXpu$AREA <- round(as.numeric(aoi_sgcnXpu$AREA),5)
 # report on number of records in dataframe
-print("")
 print("- - - - - - - - - - - - -")
 y = paste(nrow(aoi_sgcnXpu), "records in SGCNxPU dataframe", sep= " ")
 print(y)
@@ -169,14 +181,24 @@ colnames(aoi_sgcnXpu2)[colnames(aoi_sgcnXpu2) == 'El_Season'] <- 'ELSeason'
 ##aoi_sgcnXpu2 <- aoi_sgcnXpu2[ which(aoi_sgcnXpu2$OccProb!="Low"), ]
 
 elcodes <- aoi_sgcnXpu2$ELSeason
-SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, Environment, TaxaGroup, ELSeason"," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, Environment, TaxaGroup, ELSeason, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
 aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
+# before the merge, set the priority for the SGCN based on the highest value in a number of categories
+aoi_sgcn[, "CAT_min"] <- apply(aoi_sgcn[, 10:13], 1, min) # get the minumum across categories
+aoi_sgcn$CAT_Weight <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse
 # merge species information to the planning units
 aoi_sgcnXpu2 <- merge(aoi_sgcnXpu2, aoi_sgcn, by="ELSeason")
 aoi_sgcnXpu2 <- aoi_sgcnXpu2[order(aoi_sgcnXpu2$TaxaGroup),]
+# add a weight based on the Occurence probability
+aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="Low"] <- 0.5
+aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="Medium"] <- 0.75
+aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="High"] <- 1
 
+# Calcuate species priority
+aoi_sgcnXpu2$SGCNpriority <- aoi_sgcnXpu2$CAT_Weight * aoi_sgcnXpu2$OccWeight
+aoi_sgcnXpu2 <- aoi_sgcnXpu2[order(-aoi_sgcnXpu2$SGCNpriority),]
 print("-------------")
-print(paste(aoi_sgcnXpu2$SCOMNAME,"-",aoi_sgcnXpu2$SeasonCode,"-",aoi_sgcnXpu2$OccProb,"occ. prob.",sep=" "))
+print(paste(aoi_sgcnXpu2$SCOMNAME,"-",aoi_sgcnXpu2$SeasonCode,"-",aoi_sgcnXpu2$OccProb,"prob."," - SGCNprob = ",round(aoi_sgcnXpu2$SGCNpriority,2),sep=" "))
 
 ############## Actions
 SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
@@ -195,5 +217,7 @@ setwd("E:/coa2/COA/COA_WebToolDemo")
 loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
 
 knit2pdf(paste(loc_scripts,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
+
+
 
 }

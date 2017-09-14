@@ -112,8 +112,9 @@ HabCodeList <- aoi_HabTerr2$Code
 SQLquery_NamesHabTerr <- paste("SELECT Code, Habitat, Class, Macrogroup, MODIFIER, PATTERN, FORMATION, type ", # need to change these names
                           " FROM lu_HabitatName ","WHERE Code IN (", paste(toString(sQuote(HabCodeList)),collapse = ", "), ")")
 aoi_NamesHabTerr <- dbGetQuery(db, statement = SQLquery_NamesHabTerr)
-
 aoi_HabTerr2 <- merge(aoi_HabTerr2, aoi_NamesHabTerr, by="Code")
+
+aoi_HabTerr2 <- aoi_HabTerr2[order(aoi_HabTerr2$type, -aoi_HabTerr2$acres),]
 
 # make a chart of the habitats. Just for kicks!
 if(nrow(aoi_HabTerr2)>2&&nrow(aoi_HabTerr2)<9 ) {  # need three different ones for the pie chart to work, the color scheme also wont work above 8 types

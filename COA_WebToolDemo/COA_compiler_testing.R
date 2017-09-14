@@ -10,6 +10,10 @@ require(RSQLite)
 if (!requireNamespace("knitr", quietly = TRUE))
   install.packages("knitr")
 require(knitr)
+if (!requireNamespace("data.table", quietly = TRUE))
+  install.packages("data.table")
+require(data.table)
+
   
 # options   
 options(useFancyQuotes = FALSE)
@@ -85,31 +89,44 @@ print(u1)
 print(u2)
 
 ############# Habitats
-SQLquery_HabTerr <- paste("SELECT unique_id, variable, value", # need to change these names
+SQLquery_HabTerr <- paste("SELECT unique_id, Code, PERCENTAGE", # need to change these names
                   " FROM lu_HabTerr ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)),collapse = ", "), ")")
 aoi_HabTerr <- dbGetQuery(db, statement = SQLquery_HabTerr)
 #calculate acres of each habitat
-aoi_HabTerr$acres <- as.numeric(aoi_HabTerr$value) * 10 # "10" is the number of acres in a planning unit
-aoi_HabTerr$value <- NULL
+aoi_HabTerr$acres <- as.numeric(aoi_HabTerr$PERCENTAGE) * 10 # "10" is the number of acres in a planning unit
+aoi_HabTerr$PERCENTAGE <- NULL
 # reduce by removing unique planning units
 aoi_HabTerr1 <- aoi_HabTerr[c(-1)] # drop the puid column
-colnames(aoi_HabTerr1)[colnames(aoi_HabTerr1) == 'variable'] <- 'habitat'
-aoi_HabTerr2 <- aggregate(aoi_HabTerr1$acres, by=list(aoi_HabTerr1$habitat) , FUN=sum)
+#colnames(aoi_HabTerr1)[colnames(aoi_HabTerr1) == 'variable'] <- 'habitat'
+aoi_HabTerr2 <- aggregate(aoi_HabTerr1$acres, by=list(aoi_HabTerr1$Code) , FUN=sum)
 #aoi_HabTerr2$acres <- round(as.numeric(aoi_HabTerr2$acres,2))
 
-colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'Group.1'] <- 'habitat'
+colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'Group.1'] <- 'Code'
 colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'x'] <- 'acres'
 aoi_HabTerr2 <- aoi_HabTerr2[order(-aoi_HabTerr2$acres),]
-if(nrow(aoi_HabTerr2)>2) {  # need three different ones for the pie chart to work
+
+## updated habitat information
+# 1 get the habitats
+HabCodeList <- aoi_HabTerr2$Code
+# 2 get the names for the habitats
+SQLquery_NamesHabTerr <- paste("SELECT Code, Habitat, Class, Macrogroup, MODIFIER, PATTERN, FORMATION, type ", # need to change these names
+                          " FROM lu_HabitatName ","WHERE Code IN (", paste(toString(sQuote(HabCodeList)),collapse = ", "), ")")
+aoi_NamesHabTerr <- dbGetQuery(db, statement = SQLquery_NamesHabTerr)
+
+aoi_HabTerr2 <- merge(aoi_HabTerr2, aoi_NamesHabTerr, by="Code")
+
+# make a chart of the habitats. Just for kicks!
+if(nrow(aoi_HabTerr2)>2&&nrow(aoi_HabTerr2)<9 ) {  # need three different ones for the pie chart to work, the color scheme also wont work above 8 types
   library("RColorBrewer")
-  pielab <- as.list(aoi_HabTerr2$habitat)
+  pielab <- as.list(aoi_HabTerr2$Habitat)
   pie(aoi_HabTerr2$acres,labels=aoi_HabTerr2$acres, col=brewer.pal(nrow(aoi_HabTerr2),"Set1") )
-  legend("bottomleft", legend=pielab, cex = 0.8,bty="n", fill=brewer.pal(nrow(aoi_HabTerr2),"Set1") )
+  legend("bottomleft", legend=pielab, cex=0.8,bty="n", fill=brewer.pal(nrow(aoi_HabTerr2),"Set1") )
 }
 
+# make a table of the results
 print("- - - - - - - - - - - - -")
 print("Terrestrial and Palustrine Habitats -- ")
-ht <- paste(unique(paste(aoi_HabTerr2$habitat," - ", round(aoi_HabTerr2$acres,2), " acres",sep="")) , sep= " ")
+ht <- paste(unique(paste(aoi_HabTerr2$Habitat," - ", round(aoi_HabTerr2$acres,2), " acres",sep="")) , sep= " ")
 print(ht)
 
 # aquatics 
@@ -158,7 +175,11 @@ if(max(aoi_Threats$WindCapability)>2) { # selected '2' as class 3 and above are 
 # wind turbines
 if(any(aoi_Threats$WindTurbines =='y')) print("Shale gas wells present within the AOI.")
 # shale gas
-if(any(aoi_Threats$ShaleGas=='y')) print("Site overlaps potential shale gas resource.")
+if(any(aoi_Threats$ShaleGas=='y')) {
+  print("Site overlaps potential shale gas resource.")
+} else {
+  print("No known shale resource within this AOI.")
+}
 # gas wells
 if(any(aoi_Threats$ShaleGasWell=='y')) print("Shale gas wells present within the AOI.")
 
@@ -181,8 +202,11 @@ colnames(aoi_sgcnXpu2)[colnames(aoi_sgcnXpu2) == 'El_Season'] <- 'ELSeason'
 ##aoi_sgcnXpu2 <- aoi_sgcnXpu2[ which(aoi_sgcnXpu2$OccProb!="Low"), ]
 
 elcodes <- aoi_sgcnXpu2$ELSeason
-SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, Environment, TaxaGroup, ELSeason, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, SENSITV_SP, Environment, TaxaGroup, ELSeason, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
 aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
+# deal with sensitive species
+setDT(aoi_sgcn)[SENSITV_SP=="Y", SNAME:=paste0("{{ ",SNAME," }}")]
+
 # before the merge, set the priority for the SGCN based on the highest value in a number of categories
 aoi_sgcn[, "CAT_min"] <- apply(aoi_sgcn[, 10:13], 1, min) # get the minumum across categories
 aoi_sgcn$CAT_Weight <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse

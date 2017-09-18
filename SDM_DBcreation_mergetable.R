@@ -26,4 +26,4 @@ dflist <- list(WoodTurtle,ABDU_b,ABDU_w,AlleghenyWoodrat,AmericanKestrel,AMWO,Ba
 
 library(data.table)
 sptable <- rbindlist(dflist)
-write.csv(sptable,"SGCN_medlow_Xpu.csv")
+write.csv(sptable,"SGCN_medlow_Xpu20170918.csv")

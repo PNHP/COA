@@ -13,7 +13,10 @@ require(knitr)
 if (!requireNamespace("data.table", quietly = TRUE))
   install.packages("data.table")
 require(data.table)
-
+if (!requireNamespace("xtable", quietly = TRUE))
+  install.packages("xtable")
+require(xtable)
+  
 # options   
 options(useFancyQuotes = FALSE)
 
@@ -173,7 +176,7 @@ if(max(aoi_Threats$WindCapability)>2) { # selected '2' as class 3 and above are 
   print("No significant wind resources known at this site.")
 }
 # wind turbines
-if(any(aoi_Threats$WindTurbines =='y')) print("Shale gas wells present within the AOI.")
+if(any(aoi_Threats$WindTurbines =='y')) print("Wind turbines present within the AOI.")
 # shale gas
 if(any(aoi_Threats$ShaleGas=='y')) {
   print("Site overlaps potential shale gas resource.")
@@ -181,22 +184,22 @@ if(any(aoi_Threats$ShaleGas=='y')) {
   print("No known shale resource within this AOI.")
 }
 # gas wells
-if(any(aoi_Threats$ShaleGasWell=='y')) print("Shale gas wells present within the AOI.")
+if(any(aoi_Threats$ShaleGasWell=='y')) print("Shale gas well pads present within the AOI.")
 
 ############## SGCN
 # build query to select planning units within area of interest from SGCNxPU table
-SQLquery <- paste("SELECT unique_id, El_Season, OccProb,AREA"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
+SQLquery <- paste("SELECT unique_id, El_Season, OccProb, PERCENTAGE"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 # create SGCNxPU dataframe containing selected planning units
 aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery)
-aoi_sgcnXpu$AREA <- round(as.numeric(aoi_sgcnXpu$AREA),5)
+aoi_sgcnXpu$PERCENTAGE <- round(as.numeric(aoi_sgcnXpu$PERCENTAGE),5)
 # report on number of records in dataframe
 print("- - - - - - - - - - - - -")
 y = paste(nrow(aoi_sgcnXpu), "records in SGCNxPU dataframe", sep= " ")
 print(y)
 
 # dissolve table based on elcode and season, keeping records with highest summed area within group
-aoi_sgcnXpu1 <- aggregate(aoi_sgcnXpu$AREA~El_Season+OccProb,aoi_sgcnXpu,FUN=sum)
-aoi_sgcnXpu2 <- do.call(rbind,lapply(split(aoi_sgcnXpu1, aoi_sgcnXpu1$El_Season), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu$AREA`),]))
+aoi_sgcnXpu1 <- aggregate(aoi_sgcnXpu$PERCENTAGE~El_Season+OccProb,aoi_sgcnXpu,FUN=sum)
+aoi_sgcnXpu2 <- do.call(rbind,lapply(split(aoi_sgcnXpu1, aoi_sgcnXpu1$El_Season), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu$PERCENTAGE`),]))
 colnames(aoi_sgcnXpu2)[colnames(aoi_sgcnXpu2) == 'El_Season'] <- 'ELSeason'
 # drop all the low occurence probability values from the table
 ##aoi_sgcnXpu2 <- aoi_sgcnXpu2[ which(aoi_sgcnXpu2$OccProb!="Low"), ]
@@ -223,7 +226,10 @@ aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="High"] <- 1
 aoi_sgcnXpu2$SGCNpriority <- aoi_sgcnXpu2$CAT_Weight * aoi_sgcnXpu2$OccWeight
 aoi_sgcnXpu2 <- aoi_sgcnXpu2[order(-aoi_sgcnXpu2$SGCNpriority),]
 print("-------------")
-print(paste(aoi_sgcnXpu2$SCOMNAME,"-",aoi_sgcnXpu2$SeasonCode,"-",aoi_sgcnXpu2$OccProb,"prob."," - SGCNprob = ",round(aoi_sgcnXpu2$SGCNpriority,2),sep=" "))
+print(paste(aoi_sgcnXpu2$SCOMNAME,"-",aoi_sgcnXpu2$SeasonCode,"-",aoi_sgcnXpu2$OccProb,"prob."," - SGCN Priority = ",round(aoi_sgcnXpu2$SGCNpriority,2),sep=" "))
+
+keeps <- c("SCOMNAME","SNAME","OccProb")
+aoi_sgcn_results <- aoi_sgcnXpu2[keeps]
 
 ############## Actions
 SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")

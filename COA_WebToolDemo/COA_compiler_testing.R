@@ -191,16 +191,35 @@ if(any(aoi_Threats$ShaleGasWell=='y')) print("Shale gas well pads present within
 SQLquery <- paste("SELECT unique_id, El_Season, OccProb, PERCENTAGE"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 # create SGCNxPU dataframe containing selected planning units
 aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery)
-aoi_sgcnXpu$PERCENTAGE <- round(as.numeric(aoi_sgcnXpu$PERCENTAGE),5)
+colnames(aoi_sgcnXpu)[colnames(aoi_sgcnXpu) == 'El_Season'] <- 'ELSeason'
+aoi_sgcnXpu$AREA <- round((as.numeric(aoi_sgcnXpu$PERCENTAGE) * 0.1),4) # used 0.1 because the percentate ranges from 0-100 so this works to convert to 10acres
 # report on number of records in dataframe
 print("- - - - - - - - - - - - -")
 y = paste(nrow(aoi_sgcnXpu), "records in SGCNxPU dataframe", sep= " ")
 print(y)
+print( paste( length(which(aoi_sgcnXpu$OccProb== "High")), " High SGCN records in the AOI",sep="") )
+print( paste( length(which(aoi_sgcnXpu$OccProb== "Medium")), " Medium SGCN records in the AOI",sep="") )
+print( paste( length(which(aoi_sgcnXpu$OccProb== "Low")), " High SGCN records in the AOI",sep="") )
 
-# dissolve table based on elcode and season, keeping records with highest summed area within group
-aoi_sgcnXpu1 <- aggregate(aoi_sgcnXpu$PERCENTAGE~El_Season+OccProb,aoi_sgcnXpu,FUN=sum)
-aoi_sgcnXpu2 <- do.call(rbind,lapply(split(aoi_sgcnXpu1, aoi_sgcnXpu1$El_Season), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu$PERCENTAGE`),]))
-colnames(aoi_sgcnXpu2)[colnames(aoi_sgcnXpu2) == 'El_Season'] <- 'ELSeason'
+
+# dissolve table based on elcode and season, keeping all High records  and then med/low with highest summed area within group
+# subset the high values out of the DF
+aoi_sgcnXpu_High <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb=="High",]
+aoi_sgcnXpu_High1 <- aggregate(aoi_sgcnXpu_High$AREA~ELSeason+OccProb,aoi_sgcnXpu_High,FUN=sum)
+colnames(aoi_sgcnXpu_High1)[colnames(aoi_sgcnXpu_High1) == 'aoi_sgcnXpu_High$AREA'] <- 'AREA'
+# pick the highest area out of medium and low probabilities
+aoi_sgcnXpu_MedLow <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb!="High",]
+aoi_sgcnXpu_MedLow1 <- aggregate(aoi_sgcnXpu_MedLow$AREA~ELSeason+OccProb,aoi_sgcnXpu_MedLow,FUN=sum)
+aoi_sgcnXpu_MedLow2 <- do.call(rbind,lapply(split(aoi_sgcnXpu_MedLow1, aoi_sgcnXpu_MedLow1$ELSeason), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu_MedLow$AREA`),]))
+#colnames(aoi_sgcnXpu_MedLow2)[colnames(aoi_sgcnXpu_MedLow2) == 'El_Season'] <- 'ELSeason'
+colnames(aoi_sgcnXpu_MedLow2)[colnames(aoi_sgcnXpu_MedLow2) == 'aoi_sgcnXpu_MedLow$AREA'] <- 'AREA'
+# merge the two together
+aoi_sgcnXpu_MedLow2 <- aoi_sgcnXpu_MedLow2[!(aoi_sgcnXpu_MedLow2$ELSeason %in% aoi_sgcnXpu_High1$El_Season),]
+aoi_sgcnXpu_final <- rbind(aoi_sgcnXpu_High1,aoi_sgcnXpu_MedLow2)
+aoi_sgcnXpu_final <- aoi_sgcnXpu_final[ order( aoi_sgcnXpu_final$OccProb, -aoi_sgcnXpu_final$AREA ),
+  ]
+
+
 # drop all the low occurence probability values from the table
 ##aoi_sgcnXpu2 <- aoi_sgcnXpu2[ which(aoi_sgcnXpu2$OccProb!="Low"), ]
 

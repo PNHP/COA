@@ -21,6 +21,7 @@ require(xtable)
 options(useFancyQuotes = FALSE)
 
 # variables
+databasename = "E:/coa2/coa_bridgetest.sqlite"
 PU_area_m2 <- 40468.38 # area of full planning unit in square meters
 
 # define parameters to be used in ArcGIS tool
@@ -44,7 +45,7 @@ print(area_pu_total)
 pu_list <- selected_pu$unique_id
 
 # create connection to sqlite database
-db <- dbConnect(SQLite(), dbname = "E:/coa2/coa_bridgetest.sqlite")
+db <- dbConnect(SQLite(), dbname = databasename)
 
 ############## County Names and Other details ########################
 # get a list of the unique county FIPs from the PUID field
@@ -185,7 +186,7 @@ y = paste(nrow(aoi_sgcnXpu), "records in SGCNxPU dataframe", sep= " ")
 print(y)
 print(paste( length(which(aoi_sgcnXpu$OccProb=="High"))," High SGCN records in the AOI",sep="") )
 print(paste( length(which(aoi_sgcnXpu$OccProb=="Medium"))," Medium SGCN records in the AOI",sep="") )
-print(paste( length(which(aoi_sgcnXpu$OccProb=="Low"))," High SGCN records in the AOI",sep="") )
+print(paste( length(which(aoi_sgcnXpu$OccProb=="Low"))," Low SGCN records in the AOI",sep="") )
 
 # dissolve table based on elcode and season, keeping all High records  and then med/low with highest summed area within group
 # pick the highest area out of medium and low probabilities

@@ -58,9 +58,9 @@ print(counties)
 SQLquery_muni <- paste("SELECT unique_id, FIPS_MUN_P"," FROM lu_muni ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 aoi_muni <- dbGetQuery(db, statement = SQLquery_muni )
 aoi_muni$unique_id <- NULL
-aoi_muni1 <-  unique(aoi_muni)
-aoi_muni1 <- as.vector(aoi_muni1$FIPS_MUN_P)
-SQLquery_muni_name <- paste("SELECT FIPS_MUN_P, Name_Proper_Type"," FROM lu_muni_names ","WHERE FIPS_MUN_P IN (", paste(toString(sQuote(aoi_muni1)), collapse = ", "), ")")
+aoi_muni <-  unique(aoi_muni)
+aoi_muni <- as.vector(aoi_muni$FIPS_MUN_P)
+SQLquery_muni_name <- paste("SELECT FIPS_MUN_P, Name_Proper_Type"," FROM lu_muni_names ","WHERE FIPS_MUN_P IN (", paste(toString(sQuote(aoi_muni)), collapse = ", "), ")")
 aoi_muni_name <- dbGetQuery(db, statement = SQLquery_muni_name )
 
 munis <- paste(aoi_muni_name$Name_Proper_Type, sep=",")
@@ -73,12 +73,8 @@ SQLquery_luNatBound <- paste("SELECT unique_id, HUC12, PROVINCE, SECTION_, ECO_N
 aoi_NaturalBoundaries <- dbGetQuery(db, statement = SQLquery_luNatBound )
 HUC_list <- unique(aoi_NaturalBoundaries$HUC12)
 # HUC Name lookup
-SQLquery_HUC <- paste("SELECT HUC8, HUC12, HUC8name, HUC12name", 
-                             " FROM lu_HUCname ",
-                             "WHERE HUC12 IN (", paste(toString(sQuote(HUC_list)), collapse = ", "), ")")
+SQLquery_HUC <- paste("SELECT HUC8, HUC12, HUC8name, HUC12name"," FROM lu_HUCname ","WHERE HUC12 IN (", paste(toString(sQuote(HUC_list)), collapse = ", "), ")")
 aoi_HUC <- dbGetQuery(db, statement = SQLquery_HUC )
-
-#aoi_NaturalBoundaries <- merge(aoi_NaturalBoundaries,)
 print("- - - - - - - - - - - - -")
 w = paste("Physiographic Province -- ",unique(paste(aoi_NaturalBoundaries$PROVINCE,aoi_NaturalBoundaries$SECTION,sep=" - ")) , sep= " ")
 print(w)
@@ -98,51 +94,50 @@ aoi_HabTerr <- dbGetQuery(db, statement = SQLquery_HabTerr)
 aoi_HabTerr$acres <- as.numeric(aoi_HabTerr$PERCENTAGE) * 10 # "10" is the number of acres in a planning unit
 aoi_HabTerr$PERCENTAGE <- NULL
 # reduce by removing unique planning units
-aoi_HabTerr1 <- aoi_HabTerr[c(-1)] # drop the puid column
+aoi_HabTerr <- aoi_HabTerr[c(-1)] # drop the puid column
 #colnames(aoi_HabTerr1)[colnames(aoi_HabTerr1) == 'variable'] <- 'habitat'
-aoi_HabTerr2 <- aggregate(aoi_HabTerr1$acres, by=list(aoi_HabTerr1$Code) , FUN=sum)
-#aoi_HabTerr2$acres <- round(as.numeric(aoi_HabTerr2$acres,2))
+aoi_HabTerr <- aggregate(aoi_HabTerr$acres, by=list(aoi_HabTerr$Code) , FUN=sum)
 
-colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'Group.1'] <- 'Code'
-colnames(aoi_HabTerr2)[colnames(aoi_HabTerr2) == 'x'] <- 'acres'
-aoi_HabTerr2 <- aoi_HabTerr2[order(-aoi_HabTerr2$acres),]
+colnames(aoi_HabTerr)[colnames(aoi_HabTerr) == 'Group.1'] <- 'Code'
+colnames(aoi_HabTerr)[colnames(aoi_HabTerr) == 'x'] <- 'acres'
+aoi_HabTerr <- aoi_HabTerr[order(-aoi_HabTerr$acres),]
 
 ## updated habitat information
 # 1 get the habitats
-HabCodeList <- aoi_HabTerr2$Code
+HabCodeList <- aoi_HabTerr$Code
 # 2 get the names for the habitats
 SQLquery_NamesHabTerr <- paste("SELECT Code, Habitat, Class, Macrogroup, MODIFIER, PATTERN, FORMATION, type ", # need to change these names
                           " FROM lu_HabitatName ","WHERE Code IN (", paste(toString(sQuote(HabCodeList)),collapse = ", "), ")")
 aoi_NamesHabTerr <- dbGetQuery(db, statement = SQLquery_NamesHabTerr)
-aoi_HabTerr2 <- merge(aoi_HabTerr2, aoi_NamesHabTerr, by="Code")
+aoi_HabTerr <- merge(aoi_HabTerr, aoi_NamesHabTerr, by="Code")
 
-aoi_HabTerr2 <- aoi_HabTerr2[order(aoi_HabTerr2$type, -aoi_HabTerr2$acres),]
+aoi_HabTerr <- aoi_HabTerr[order(aoi_HabTerr$type, -aoi_HabTerr$acres),]
 
 # make a chart of the habitats. Just for kicks!
-if(nrow(aoi_HabTerr2)>2&&nrow(aoi_HabTerr2)<9 ) {  # need three different ones for the pie chart to work, the color scheme also wont work above 8 types
+if(nrow(aoi_HabTerr) > 2 && nrow(aoi_HabTerr) < 9 ) {  # need three different ones for the pie chart to work, the color scheme also wont work above 8 types
   library("RColorBrewer")
-  pielab <- as.list(aoi_HabTerr2$Habitat)
-  pie(aoi_HabTerr2$acres,labels=aoi_HabTerr2$acres, col=brewer.pal(nrow(aoi_HabTerr2),"Set1") )
-  legend("bottomleft", legend=pielab, cex=0.8,bty="n", fill=brewer.pal(nrow(aoi_HabTerr2),"Set1") )
+  pielab <- as.list(aoi_HabTerr$Habitat)
+  pie(aoi_HabTerr$acres,labels=aoi_HabTerr$acres, col=brewer.pal(nrow(aoi_HabTerr),"Set1") )
+  legend("bottomleft", legend=pielab, cex=0.8,bty="n", fill=brewer.pal(nrow(aoi_HabTerr),"Set1") )
 }
 
 # make a table of the results
 print("- - - - - - - - - - - - -")
 print("Terrestrial and Palustrine Habitats -- ")
-ht <- paste(unique(paste(aoi_HabTerr2$Habitat," - ", round(aoi_HabTerr2$acres,2), " acres",sep="")) , sep= " ")
+ht <- paste(unique(paste(aoi_HabTerr$Habitat," - ",round(aoi_HabTerr$acres,2)," acres",sep="")),sep="")
 print(ht)
 
 # aquatics 
 SQLquery_HabLotic <- paste("SELECT unique_id, Shape_Length, SUM_23, DESC_23", # need to change these names
                           " FROM lu_LoticData ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
 aoi_HabLotic <- dbGetQuery(db, statement = SQLquery_HabLotic)
-if( nrow(aoi_HabLotic)>0 ) {
-  aoi_HabLotic1 <- aoi_HabLotic[c(-1)] # drop the puid column
-  aoi_HabLotic2 <- aggregate(as.numeric(aoi_HabLotic1$Shape_Length), by=list(aoi_HabLotic1$DESC_23), FUN=sum)
-  colnames(aoi_HabLotic2)[colnames(aoi_HabLotic2) == 'Group.1'] <- 'habitat'
-  colnames(aoi_HabLotic2)[colnames(aoi_HabLotic2) == 'x'] <- 'length'
+if( nrow(aoi_HabLotic) > 0 ) {
+  aoi_HabLotic <- aoi_HabLotic[c(-1)] # drop the puid column
+  aoi_HabLotic <- aggregate(as.numeric(aoi_HabLotic$Shape_Length), by=list(aoi_HabLotic$DESC_23), FUN=sum)
+  colnames(aoi_HabLotic)[colnames(aoi_HabLotic) == 'Group.1'] <- 'habitat'
+  colnames(aoi_HabLotic)[colnames(aoi_HabLotic) == 'x'] <- 'length'
   print("Streams and Rivers -- ")
-  hl <- paste(unique(paste(aoi_HabLotic2$habitat," - ", round(aoi_HabLotic2$length*0.000621371,2),"miles (",round(aoi_HabLotic2$length/1000,2), "km)",sep="")) , sep= " ")
+  hl <- paste(unique(paste(aoi_HabLotic$habitat," - ", round(aoi_HabLotic$length*0.000621371,2),"miles (",round(aoi_HabLotic$length/1000,2), "km)",sep="")) , sep= " ")
   print(hl)
 } else {
   print("No mapped streams in the NHD dataset.")
@@ -197,34 +192,38 @@ aoi_sgcnXpu$AREA <- round((as.numeric(aoi_sgcnXpu$PERCENTAGE) * 0.1),4) # used 0
 print("- - - - - - - - - - - - -")
 y = paste(nrow(aoi_sgcnXpu), "records in SGCNxPU dataframe", sep= " ")
 print(y)
-print( paste( length(which(aoi_sgcnXpu$OccProb== "High")), " High SGCN records in the AOI",sep="") )
-print( paste( length(which(aoi_sgcnXpu$OccProb== "Medium")), " Medium SGCN records in the AOI",sep="") )
-print( paste( length(which(aoi_sgcnXpu$OccProb== "Low")), " High SGCN records in the AOI",sep="") )
-
+print(paste( length(which(aoi_sgcnXpu$OccProb=="High"))," High SGCN records in the AOI",sep="") )
+print(paste( length(which(aoi_sgcnXpu$OccProb=="Medium"))," Medium SGCN records in the AOI",sep="") )
+print(paste( length(which(aoi_sgcnXpu$OccProb=="Low"))," High SGCN records in the AOI",sep="") )
 
 # dissolve table based on elcode and season, keeping all High records  and then med/low with highest summed area within group
-# subset the high values out of the DF
-aoi_sgcnXpu_High <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb=="High",]
-aoi_sgcnXpu_High1 <- aggregate(aoi_sgcnXpu_High$AREA~ELSeason+OccProb,aoi_sgcnXpu_High,FUN=sum)
-colnames(aoi_sgcnXpu_High1)[colnames(aoi_sgcnXpu_High1) == 'aoi_sgcnXpu_High$AREA'] <- 'AREA'
+
 # pick the highest area out of medium and low probabilities
 aoi_sgcnXpu_MedLow <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb!="High",]
-aoi_sgcnXpu_MedLow1 <- aggregate(aoi_sgcnXpu_MedLow$AREA~ELSeason+OccProb,aoi_sgcnXpu_MedLow,FUN=sum)
-aoi_sgcnXpu_MedLow2 <- do.call(rbind,lapply(split(aoi_sgcnXpu_MedLow1, aoi_sgcnXpu_MedLow1$ELSeason), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu_MedLow$AREA`),]))
-#colnames(aoi_sgcnXpu_MedLow2)[colnames(aoi_sgcnXpu_MedLow2) == 'El_Season'] <- 'ELSeason'
-colnames(aoi_sgcnXpu_MedLow2)[colnames(aoi_sgcnXpu_MedLow2) == 'aoi_sgcnXpu_MedLow$AREA'] <- 'AREA'
-# merge the two together
-aoi_sgcnXpu_MedLow2 <- aoi_sgcnXpu_MedLow2[!(aoi_sgcnXpu_MedLow2$ELSeason %in% aoi_sgcnXpu_High1$El_Season),]
-aoi_sgcnXpu_final <- rbind(aoi_sgcnXpu_High1,aoi_sgcnXpu_MedLow2)
-aoi_sgcnXpu_final <- aoi_sgcnXpu_final[ order( aoi_sgcnXpu_final$OccProb, -aoi_sgcnXpu_final$AREA ),
-  ]
+aoi_sgcnXpu_MedLow <- aggregate(aoi_sgcnXpu_MedLow$AREA~ELSeason+OccProb,aoi_sgcnXpu_MedLow,FUN=sum)
+aoi_sgcnXpu_MedLow <- do.call(rbind,lapply(split(aoi_sgcnXpu_MedLow, aoi_sgcnXpu_MedLow$ELSeason), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu_MedLow$AREA`),]))
+colnames(aoi_sgcnXpu_MedLow)[colnames(aoi_sgcnXpu_MedLow) == 'aoi_sgcnXpu_MedLow$AREA'] <- 'AREA'
+
+# subset the high values out of the DF
+if ( length(which(aoi_sgcnXpu$OccProb=="High") > 0 ) ){
+  aoi_sgcnXpu_High <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb=="High",]
+  aoi_sgcnXpu_High <- aggregate(aoi_sgcnXpu_High$AREA~ELSeason+OccProb,aoi_sgcnXpu_High,FUN=sum)
+  colnames(aoi_sgcnXpu_High)[colnames(aoi_sgcnXpu_High) == 'aoi_sgcnXpu_High$AREA'] <- 'AREA'  
+  # merge the two together
+  aoi_sgcnXpu_MedLow <- aoi_sgcnXpu_MedLow[!(aoi_sgcnXpu_MedLow$ELSeason %in% aoi_sgcnXpu_High$ELSeason),]
+  aoi_sgcnXpu_final <- rbind(aoi_sgcnXpu_High,aoi_sgcnXpu_MedLow)
+  aoi_sgcnXpu_final <- aoi_sgcnXpu_final[ order( aoi_sgcnXpu_final$OccProb, -aoi_sgcnXpu_final$AREA ), ]
+} else {
+  aoi_sgcnXpu_final <- aoi_sgcnXpu_MedLow
+}
+
 
 
 # drop all the low occurence probability values from the table
 ##aoi_sgcnXpu2 <- aoi_sgcnXpu2[ which(aoi_sgcnXpu2$OccProb!="Low"), ]
 
 # join SGCN name data sgcn_aoi table
-elcodes <- aoi_sgcnXpu2$ELSeason
+elcodes <- aoi_sgcnXpu_final$ELSeason
 SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, SENSITV_SP, Environment, TaxaGroup, ELSeason, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
 aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
 # deal with sensitive species
@@ -234,21 +233,21 @@ setDT(aoi_sgcn)[SENSITV_SP=="Y", SNAME:=paste0("{{ ",SNAME," }}")]
 aoi_sgcn[, "CAT_min"] <- apply(aoi_sgcn[, 10:13], 1, min) # get the minumum across categories
 aoi_sgcn$CAT_Weight <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse
 # merge species information to the planning units
-aoi_sgcnXpu2 <- merge(aoi_sgcnXpu2, aoi_sgcn) #, by="ELSeason"
-aoi_sgcnXpu2 <- aoi_sgcnXpu2[order(aoi_sgcnXpu2$TaxaGroup),]
+aoi_sgcnXpu_final <- merge(aoi_sgcnXpu_final, aoi_sgcn) #, by="ELSeason"
+aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(aoi_sgcnXpu_final$TaxaGroup),]
 # add a weight based on the Occurence probability
-aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="Low"] <- 0.6
-aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="Medium"] <- 0.8
-aoi_sgcnXpu2$OccWeight[aoi_sgcnXpu2$OccProb=="High"] <- 1
+aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Low"] <- 0.6
+aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Medium"] <- 0.8
+aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="High"] <- 1
 
 # Calcuate species priority
-aoi_sgcnXpu2$SGCNpriority <- aoi_sgcnXpu2$CAT_Weight * aoi_sgcnXpu2$OccWeight
-aoi_sgcnXpu2 <- aoi_sgcnXpu2[order(-aoi_sgcnXpu2$SGCNpriority),]
+aoi_sgcnXpu_final$SGCNpriority <- aoi_sgcnXpu_final$CAT_Weight * aoi_sgcnXpu_final$OccWeight
+aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(-aoi_sgcnXpu_final$SGCNpriority),]
 print("-------------")
-print(paste(aoi_sgcnXpu2$SCOMNAME,"-",aoi_sgcnXpu2$SeasonCode,"-",aoi_sgcnXpu2$OccProb,"prob."," - SGCN Priority = ",round(aoi_sgcnXpu2$SGCNpriority,2),sep=" "))
+print(paste(aoi_sgcnXpu_final$SCOMNAME,"-",aoi_sgcnXpu_final$SeasonCode,"-",aoi_sgcnXpu_final$OccProb,"prob."," - SGCN Priority = ",round(aoi_sgcnXpu_final$SGCNpriority,2),sep=" "))
 
-keeps <- c("SCOMNAME","SNAME","OccProb")
-aoi_sgcn_results <- aoi_sgcnXpu2[keeps]
+keeps <- c("SCOMNAME","SNAME","OccProb","SGCNpriority")
+aoi_sgcn_results <- aoi_sgcnXpu_final[keeps]
 
 ############## Actions
 SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
@@ -256,18 +255,34 @@ aoi_actions <- dbGetQuery(db, statement=SQLquery_actions)
 print( paste(aoi_actions$ScientificName,aoi_actions$EditedThreat,aoi_actions$COATool_Action,sep=" - ") )
 
 # create a table version of the actions.
-aoi_actionstable <- aoi_actions[,c("ScientificName","EditedThreat","Sensitive","COATool_Action","ActionPriority")]
-
+aoi_actions <- merge(aoi_actions,aoi_sgcnXpu_final,by="ELSeason")
+aoi_actionstable <- aoi_actions[,c("ScientificName","ELSeason","EditedThreat","Sensitive","COATool_Action","ActionPriority","SGCNpriority")]
+aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==2] <- 0.8
+aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==3] <- 0.6
+aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority=="NA"] <- 0
+aoi_actionstable$ActionPriority <- as.numeric(aoi_actionstable$ActionPriority)
+aoi_actionstable$FinalPriority <- aoi_actionstable$SGCNpriority * aoi_actionstable$ActionPriority
 
 # disconnect the SQL database
-# dbDisconnect()  #### This seems to be causing a crash.
+ dbDisconnect(db)  #### This seems to be causing a crash.
 
 ##############  report generation
 setwd("E:/coa2/COA/COA_WebToolDemo")
 loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
 
 knit2pdf(paste(loc_scripts,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
+setwd("E:/coa2/COA/COA_WebToolDemo")
+#delete excess files from the pdf creation
+fn_ext <- c(".tex",".log",".aux")
 
+#fn <- paste(,sep="")
+for(i in 1:NROW(fn_ext)){
+  fn <- paste("results_",Sys.Date(),fn_ext[i],sep="")
+  if (file.exists(fn)){ 
+    file.remove(fn)
+    # print(paste("Deleted ", fn,"from directory") )
+  }
+}
 
 
 }

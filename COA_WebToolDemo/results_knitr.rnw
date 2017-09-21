@@ -40,7 +40,7 @@ Counties: \Sexpr{as.character(counties)} \\
 
 <<echo=FALSE, results='asis'>>=
 keeps <- c("Macrogroup", "Habitat", "acres")
-print(xtable(aoi_HabTerr2[keeps], caption = 'Habitat type within area of interest'), 
+print(xtable(aoi_HabTerr[keeps], caption = 'Habitat type within area of interest'), 
       latex.environments="flushleft", caption.placement="top", floating=FALSE) 
 @
 

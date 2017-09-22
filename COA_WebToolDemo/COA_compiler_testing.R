@@ -218,7 +218,7 @@ aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
 setDT(aoi_sgcn)[SENSITV_SP=="Y", SNAME:=paste0("{{ ",SNAME," }}")]
 # before the merge, set the priority for the SGCN based on the highest value in a number of categories
 aoi_sgcn[, "CAT_min"] <- apply(aoi_sgcn[, 10:13], 1, min) # get the minumum across categories
-aoi_sgcn$CAT_Weight <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse
+aoi_sgcn$PriorityWAP <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse
 # merge species information to the planning units
 aoi_sgcnXpu_final <- merge(aoi_sgcnXpu_final, aoi_sgcn) #, by="ELSeason"
 aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(aoi_sgcnXpu_final$TaxaGroup),]
@@ -227,13 +227,13 @@ aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Low"] <- 0.6
 aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Medium"] <- 0.8
 aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="High"] <- 1
 
-# Calcuate species priority
-aoi_sgcnXpu_final$SGCNpriority <- aoi_sgcnXpu_final$CAT_Weight * aoi_sgcnXpu_final$OccWeight
+# Calcuate species priority (SGCN priority weight:WAP Category X SGCN OccProb Weight)
+aoi_sgcnXpu_final$SGCNpriority <- aoi_sgcnXpu_final$PriorityWAP * aoi_sgcnXpu_final$OccWeight
 aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(-aoi_sgcnXpu_final$SGCNpriority),]
 print("-------------")
 print(paste(aoi_sgcnXpu_final$SCOMNAME,"-",aoi_sgcnXpu_final$SeasonCode,"-",aoi_sgcnXpu_final$OccProb,"prob."," - SGCN Priority = ",round(aoi_sgcnXpu_final$SGCNpriority,2),sep=" "))
 
-keeps <- c("SCOMNAME","SNAME","OccProb","SGCNpriority")
+keeps <- c("SCOMNAME","SNAME","OccProb","PriorityWAP","SGCNpriority")
 aoi_sgcn_results <- aoi_sgcnXpu_final[keeps]
 
 ############## Actions  ##################################
@@ -243,12 +243,14 @@ print( paste(aoi_actions$ScientificName,aoi_actions$EditedThreat,aoi_actions$COA
 
 # create a table version of the actions.
 aoi_actions <- merge(aoi_actions,aoi_sgcnXpu_final,by="ELSeason")
-aoi_actionstable <- aoi_actions[,c("ScientificName","ELSeason","EditedThreat","Sensitive","COATool_Action","ActionPriority","SGCNpriority")]
+aoi_actionstable <- aoi_actions[,c("ScientificName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","SGCNpriority")]
 aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==2] <- 0.8
 aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==3] <- 0.6
 aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority=="NA"] <- 0
 aoi_actionstable$ActionPriority <- as.numeric(aoi_actionstable$ActionPriority)
 aoi_actionstable$FinalPriority <- aoi_actionstable$SGCNpriority * aoi_actionstable$ActionPriority
+
+
 
 ##############  report generation  #######################
 setwd("E:/coa2/COA/COA_WebToolDemo")

@@ -227,13 +227,14 @@ aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Low"] <- 0.6
 aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Medium"] <- 0.8
 aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="High"] <- 1
 
+# MOVE THIS ALL TO LATER, AFTER the ACTION JOINS
 # Calcuate species priority (SGCN priority weight:WAP Category X SGCN OccProb Weight)
-aoi_sgcnXpu_final$SGCNpriority <- aoi_sgcnXpu_final$PriorityWAP * aoi_sgcnXpu_final$OccWeight
-aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(-aoi_sgcnXpu_final$SGCNpriority),]
+#aoi_sgcnXpu_final$SGCNpriority <- aoi_sgcnXpu_final$PriorityWAP * aoi_sgcnXpu_final$OccWeight
+#aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(-aoi_sgcnXpu_final$SGCNpriority),]
 print("-------------")
-print(paste(aoi_sgcnXpu_final$SCOMNAME,"-",aoi_sgcnXpu_final$SeasonCode,"-",aoi_sgcnXpu_final$OccProb,"prob."," - SGCN Priority = ",round(aoi_sgcnXpu_final$SGCNpriority,2),sep=" "))
+print(paste(aoi_sgcnXpu_final$SCOMNAME,"-",aoi_sgcnXpu_final$SeasonCode,"-",aoi_sgcnXpu_final$OccProb,"prob.",sep=" ")) # " - SGCN Priority = ",round(aoi_sgcnXpu_final$SGCNpriority,2)
 
-keeps <- c("SCOMNAME","SNAME","OccProb","PriorityWAP","SGCNpriority")
+keeps <- c("SCOMNAME","SNAME","OccWeight","PriorityWAP")
 aoi_sgcn_results <- aoi_sgcnXpu_final[keeps]
 
 ############## Actions  ##################################
@@ -243,13 +244,24 @@ print( paste(aoi_actions$ScientificName,aoi_actions$EditedThreat,aoi_actions$COA
 
 # create a table version of the actions.
 aoi_actions <- merge(aoi_actions,aoi_sgcnXpu_final,by="ELSeason")
-aoi_actionstable <- aoi_actions[,c("ScientificName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","SGCNpriority")]
+aoi_actionstable <- aoi_actions[,c("ScientificName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","PriorityWAP","OccWeight" )]
+#aoi_actionstable$OccProb <- as.numeric(aoi_actionstable$OccProb)
+
 aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==2] <- 0.8
 aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==3] <- 0.6
 aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority=="NA"] <- 0
 aoi_actionstable$ActionPriority <- as.numeric(aoi_actionstable$ActionPriority)
-aoi_actionstable$FinalPriority <- aoi_actionstable$SGCNpriority * aoi_actionstable$ActionPriority
+aoi_actionstable$FinalPriority <- aoi_actionstable$OccWeight * aoi_actionstable$ActionPriority * aoi_actionstable$PriorityWAP
 
+#actioncat <- as.list(unique(aoi_actionstable$ActionCategory1))
+aoi_actionstable_Agg <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$ActionCategory1),FUN=sum)
+aoi_actionstable_Agg <- aoi_actionstable_Agg[order(-aoi_actionstable_Agg$x),]
+barplot(aoi_actionstable_Agg$x, main="Most important Actions", names.arg=aoi_actionstable_Agg$Group.1,las=2, col=c("orange") )
+write.csv(aoi_actionstable_Agg, "actions_by_cat.csv")
+
+aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)
+setwd("E:/coa2/COA/COA_WebToolDemo")
+write.csv(aoi_actionstable_Agg1, "actions_by_ind.csv")
 
 
 ##############  report generation  #######################

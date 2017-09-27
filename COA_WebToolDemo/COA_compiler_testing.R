@@ -16,19 +16,31 @@ require(data.table)
 if (!requireNamespace("xtable", quietly = TRUE))
   install.packages("xtable")
 require(xtable)
+if (!requireNamespace("gdata", quietly = TRUE))
+  install.packages("gdata")
+require(gdata)
+if (!requireNamespace("dplyr", quietly = TRUE))
+  install.packages("dplyr")
+require(dplyr)
   
 # options   
 options(useFancyQuotes = FALSE)
 
-# variables
-databasename = "E:/coa2/coa_bridgetest.sqlite"
+# Chris variables
+databasename <- "E:/coa2/coa_bridgetest.sqlite" #Chris' database path
+working_directory <- "E:/coa2/COA/COA_WebToolDemo"
+# Molly variables
+#databasename <- "H:/Projects/COA/coa_bridgetest.sqlite" #Molly's database path
+#working_directory <- "H:/Scripts/COA/latex" #folder location of .rnw script and .png files
+
 PU_area_m2 <- 40468.38 # area of full planning unit in square meters
 
 # define parameters to be used in ArcGIS tool
-#   planning_units = "E:/coa2/test_pu1.shp"
-project_name = in_params[[1]] # project_name <- "Manual Test Project"
-planning_units = in_params[[2]]
-#out_table = in_params[[3]]
+project_name = in_params[[1]]
+planning_units <- in_params[[2]]
+#project_name <- "Manual Test Project"
+#planning_units <- "H:/Projects/COA/test_pu1.shp"
+#planning_units = "E:/coa2/test_pu1.shp"
 
 print(paste("Project Name: ",project_name, sep=""))
 print(date())
@@ -256,18 +268,19 @@ aoi_actionstable$FinalPriority <- aoi_actionstable$OccWeight * aoi_actionstable$
 #actioncat <- as.list(unique(aoi_actionstable$ActionCategory1))
 aoi_actionstable_Agg <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$ActionCategory1),FUN=sum)
 aoi_actionstable_Agg <- aoi_actionstable_Agg[order(-aoi_actionstable_Agg$x),]
-barplot(aoi_actionstable_Agg$x, main="Most important Actions", names.arg=aoi_actionstable_Agg$Group.1,las=2, col=c("orange") )
+par(mar=c(18,3,4,2))
+bars <- barplot(aoi_actionstable_Agg$x, col=c("orange"))
+title("Priority of Conservation Action Categories:", adj=0, line=2)
+text(bars, par("usr")[3], labels=aoi_actionstable_Agg$Group.1, srt=75, adj=c(1,1),xpd=TRUE, cex=.9)
 write.csv(aoi_actionstable_Agg, "actions_by_cat.csv")
 
 aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)
-setwd("E:/coa2/COA/COA_WebToolDemo")
 write.csv(aoi_actionstable_Agg1, "actions_by_ind.csv")
 
 
 ##############  report generation  #######################
-setwd("E:/coa2/COA/COA_WebToolDemo")
-loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
-knit2pdf(paste(loc_scripts,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
+setwd(working_directory)
+knit2pdf(paste(working_directory,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
 #delete excess files from the pdf creation
 fn_ext <- c(".tex",".log",".aux")
 for(i in 1:NROW(fn_ext)){
@@ -280,6 +293,9 @@ for(i in 1:NROW(fn_ext)){
 
 # disconnect the SQL database
 dbDisconnect(db)  #### This seems to be causing a crash.
+
+pdf.path <- paste(working_directory, paste("results_",Sys.Date(), ".pdf",sep=""), sep="/")
+system(paste0('open "', pdf.path, '"'))
 
 # close out tool
 }

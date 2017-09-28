@@ -121,11 +121,10 @@ tool_exec <- function(in_params, out_params)  #
   aoi_HabTerr <- merge(aoi_HabTerr, aoi_NamesHabTerr, by="Code")
   aoi_HabTerr <- aoi_HabTerr[order(aoi_HabTerr$Macrogroup, -aoi_HabTerr$acres),]
   
-  
   addtorow <- list()
   addtorow$pos <- as.list(as.numeric(match(unique(aoi_HabTerr$Macrogroup),aoi_HabTerr$Macrogroup))-1)
-  addtorow$command <- paste("HEADER-- ", unique(aoi_HabTerr$Macrogroup), " --HEADER \\\\",sep="" )
-  addtorow$command <- gsub('&', 'and', addtorow$command)
+  addtorow$command <- paste(unique(aoi_HabTerr$Macrogroup), "  \\\\",sep="" )
+  addtorow$command <- gsub('&', 'and', addtorow$command) # probably better to use sanitize if we can get it work
   #addtorow$command <- sanitize(addtorow$command, type='latex')
   #addtorow$pos[[2]] <- 0
  

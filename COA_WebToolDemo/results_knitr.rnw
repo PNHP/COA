@@ -49,7 +49,7 @@ print(xt,
       latex.environments= c("flushleft"),
       caption.placement="top",
       add.to.row = addtorow,
-      include.rownames = FALSE) 
+      include.rownames=FALSE) 
 
 
 @
@@ -74,11 +74,28 @@ print(sp.xt,
 
 <<echo=FALSE, results='hide'>>=
 setwd(working_directory)
+# wrap the labels so the chart is smaller
+# Core wrapping function
+wrap.it <- function(x, len)
+{ 
+  sapply(x, function(y) paste(strwrap(y, len),collapse = "\n"),USE.NAMES = FALSE)
+}
+wrap.labels <- function(x, len)
+{
+  if (is.list(x))
+  {
+    lapply(x, wrap.it, len)
+  } else {
+    wrap.it(x, len)
+  }
+}
+wrappedLabels <- wrap.labels(aoi_actionstable_Agg$Group.1,28)
+
 png(filename="priorityactions.png", width=7, height=6, units="in", res=400, pointsize=10)
-par(mar=c(18,3,4,2))
+par(mar=c(10,3,4,2))
 bars <- barplot(aoi_actionstable_Agg$x, col=c("orange"))
 title("Priority of Conservation Action Categories:", adj=0, line=2)
-text(bars, par("usr")[3], labels=aoi_actionstable_Agg$Group.1, srt=75, adj=c(1,1),xpd=TRUE, cex=.9)
+text(bars, par("usr")[3], labels=wrappedLabels, srt=75, adj=c(1,1),xpd=TRUE, cex=.9)
 dev.off()
 @
 

@@ -34,6 +34,8 @@ tool_exec <- function(in_params, out_params)  #
   #working_directory <- "H:/Scripts/COA/latex" #folder location of .rnw script and .png files
   
   PU_area_m2 <- 40468.38 # area of full planning unit in square meters
+  # Latex Formating Variables
+  col <- "\\rowcolor[gray]{0.95}" # for table row groups  https://en.wikibooks.org/wiki/LaTeX/Colors
   
   # define parameters to be used in ArcGIS tool
   project_name = in_params[[1]]
@@ -115,18 +117,30 @@ tool_exec <- function(in_params, out_params)  #
   ## updated habitat information
   HabCodeList <- aoi_HabTerr$Code # 1 get the habitats
   # 2 get the names for the habitats
-  SQLquery_NamesHabTerr <- paste("SELECT Code, Habitat, Class, Macrogroup, MODIFIER, PATTERN, FORMATION, type ", # need to change these names
+  SQLquery_NamesHabTerr <- paste("SELECT Code, Habitat, Class, Macrogroup, PATTERN, FORMATION, type ", # need to change these names
                                  " FROM lu_HabitatName ","WHERE Code IN (", paste(toString(sQuote(HabCodeList)),collapse = ", "), ")")
   aoi_NamesHabTerr <- dbGetQuery(db, statement = SQLquery_NamesHabTerr)
   aoi_HabTerr <- merge(aoi_HabTerr, aoi_NamesHabTerr, by="Code")
+  #######################################
+  #######################################
+  ## updated habitat information
+  HabNameList <- aoi_HabTerr$Habitat # 1 get the habitats
+  SQLquery_NamesHabTerr <- paste("SELECT Habitat, Class, Macrogroup, PATTERN, FORMATION, type ", # need to change these names
+                                 " FROM lu_HabitatName ","WHERE Habitat IN (", paste(toString(sQuote(HabNameList)),collapse = ", "), ")")
+  aoi_NamesHabTerr <- dbGetQuery(db, statement = SQLquery_NamesHabTerr)
+  aoi_NamesHabTerr <- unique(aoi_NamesHabTerr)
+  aoi_HabTerr <- aggregate(aoi_HabTerr$acres, by=list(aoi_HabTerr$Habitat) , FUN=sum)
+  colnames(aoi_HabTerr)[colnames(aoi_HabTerr) == 'Group.1'] <- 'Habitat'
+  colnames(aoi_HabTerr)[colnames(aoi_HabTerr) == 'x'] <- 'acres'
+  aoi_HabTerr <- merge(aoi_HabTerr, aoi_NamesHabTerr, by="Habitat", all.x=FALSE)
+  
   aoi_HabTerr <- aoi_HabTerr[order(aoi_HabTerr$Macrogroup, -aoi_HabTerr$acres),]
   
   addtorow <- list()
   addtorow$pos <- as.list(as.numeric(match(unique(aoi_HabTerr$Macrogroup),aoi_HabTerr$Macrogroup))-1)
-  addtorow$command <- paste(unique(aoi_HabTerr$Macrogroup), "  \\\\",sep="" )
-  addtorow$command <- gsub('&', 'and', addtorow$command) # probably better to use sanitize if we can get it work
-  #addtorow$command <- sanitize(addtorow$command, type='latex')
-  #addtorow$pos[[2]] <- 0
+  addtorow$command <- paste(col,unique(aoi_HabTerr$Macrogroup), " \\\\",sep="" )
+  addtorow$command <- gsub('&', 'and', addtorow$command) # probably better to use sanitize if we can get it work#addtorow$command <- sanitize(addtorow$command, type='latex')
+
  
   
   # make a table of the results
@@ -219,8 +233,7 @@ tool_exec <- function(in_params, out_params)  #
   } else {
     aoi_sgcnXpu_final <- aoi_sgcnXpu_MedLow
   }
-  # drop all the low occurence probability values from the table
-  ##aoi_sgcnXpu2 <- aoi_sgcnXpu2[ which(aoi_sgcnXpu2$OccProb!="Low"), ]
+
   
   # join SGCN name data sgcn_aoi table
   elcodes <- aoi_sgcnXpu_final$ELSeason
@@ -238,7 +251,17 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Low"] <- 0.6
   aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Medium"] <- 0.8
   aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="High"] <- 1
+
+  # drop all the low occurence probability values from the table
+  ## get a list of Low Occ Prob species to put into a text section in the report
+  aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb=="Low"), ]
   
+  aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_LowOccProb[c("SCOMNAME","SNAME")]
+  aoi_sgcnXpu_LowOccProb$name <-paste(aoi_sgcnXpu_LowOccProb$SCOMNAME," (\\textit{",aoi_sgcnXpu_LowOccProb$SNAME,"})",sep="")
+  aoi_sgcnXpu_LowOccProb <- paste(aoi_sgcnXpu_LowOccProb$name, collapse = ", ")
+  
+  aoi_sgcnXpu_final <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb!="Low"), ]  
+    
   # MOVE THIS ALL TO LATER, AFTER the ACTION JOINS
   # Calcuate species priority (SGCN priority weight:WAP Category X SGCN OccProb Weight)
   #aoi_sgcnXpu_final$SGCNpriority <- aoi_sgcnXpu_final$PriorityWAP * aoi_sgcnXpu_final$OccWeight
@@ -265,16 +288,36 @@ tool_exec <- function(in_params, out_params)  #
   aoi_actionstable$ActionPriority <- as.numeric(aoi_actionstable$ActionPriority)
   aoi_actionstable$FinalPriority <- aoi_actionstable$OccWeight * aoi_actionstable$ActionPriority * aoi_actionstable$PriorityWAP
   
-  #actioncat <- as.list(unique(aoi_actionstable$ActionCategory1))
+  #Aggregate the Actions
   aoi_actionstable_Agg <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$ActionCategory1),FUN=sum)
   aoi_actionstable_Agg <- aoi_actionstable_Agg[order(-aoi_actionstable_Agg$x),]
+  # create a quantile scaled value of the AIS in order to assign "High","Medium", and "Low" priorities to the action group
   aoi_actionstable_Agg$quant <- with(aoi_actionstable_Agg, .bincode(x, breaks=qu <- quantile(x, probs=seq(0,1,1/3),na.rm=TRUE),(labels=(as.numeric(gsub("%.*","",names(qu))))/100)[-1], include.lowest=TRUE))
-  
-  
+  aoi_actionstable_Agg$quant1[aoi_actionstable_Agg$quant %in% 3] <- "High"
+  aoi_actionstable_Agg$quant1[aoi_actionstable_Agg$quant %in% 2] <- "Medium"
+  aoi_actionstable_Agg$quant1[aoi_actionstable_Agg$quant %in% 1] <- "Low"
   write.csv(aoi_actionstable_Agg, "actions_by_cat.csv")
   
-  aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)
-  write.csv(aoi_actionstable_Agg1, "actions_by_ind.csv")
+  # sort the individual actions by the priority in summerized categories
+  # MOVING THIS FROM THE RNW
+  # get sort order
+  TargetOrder <- aoi_actionstable_Agg$Group.1
+  # make a backup of the df
+  actionstable_working <- aoi_actionstable
+  actionstable_working$ActionCategory1 <- reorder.factor(actionstable_working$ActionCategory1, new.order=TargetOrder)
+  actionstable_working <- actionstable_working %>% arrange(ActionCategory1)
+  # get data for grouping the actions,
+  addtorow_Actions <- list()
+  addtorow_Actions$pos <- as.list(as.numeric(match(unique(actionstable_working$ActionCategory1),actionstable_working$ActionCategory1))-1)
+  addtorow_Actions$command <- paste(col, unique(actionstable_working$ActionCategory1),"  \\\\ ",sep="" )
+  # subset for presentation
+  action_results <- actionstable_working[c("COATool_Action","ScientificName")]
+  action_results$COATool_Action <- sanitize(action_results$COATool_Action, type="latex")
+  
+  
+  # this does the above but for every action
+  #aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)
+  #write.csv(aoi_actionstable_Agg1, "actions_by_ind.csv")
   
   
   ##############  report generation  #######################

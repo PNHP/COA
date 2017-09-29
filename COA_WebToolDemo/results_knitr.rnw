@@ -36,8 +36,10 @@ Counties: \Sexpr{as.character(counties)} \\
 \Sexpr{as.character(w)} \\
 \Sexpr{as.character(v)} \\
 \Sexpr{as.character(u1)} \\
-\Sexpr{as.character(u2[1])} \\
-\Sexpr{as.character(u2[2])}
+\Sexpr{as.character(u2)} 
+
+\noindent\normalsize \\
+The following table shows the distribution of habitats across the overlapping planning units. Habitats (i.e. ecological systems) are grouped by the macrogroup. For more information habitats, please see the 2015 Pennsylvania Wildlife Action Plan.\\
 
 <<echo=FALSE, results='asis'>>=
 keeps <- c("Habitat","acres")
@@ -53,6 +55,9 @@ print(xt,
 
 
 @
+
+\noindent\normalsize 
+\Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) have been identified as either occuring or potentially occurring within the Area of Interest.\\
 
 <<label=longtable, echo=FALSE, results='asis'>>=
 keeps <- c("SCOMNAME", "SNAME", "SeasonCode", "OccProb")
@@ -71,26 +76,16 @@ print(sp.xt,
 @
 
 \vspace{5mm}
-
+\noindent\normalsize 
+The following chart indicates a priorization of the actions across all SGCN within the Area of Interest. Action categories with high Action Impact Score (AIS) values are considered to have the most benefit(?) for the SGCN at the site. \\
 <<echo=FALSE, results='hide'>>=
 setwd(working_directory)
 # wrap the labels so the chart is smaller
 # Core wrapping function
-wrap.it <- function(x, len)
-{ 
-  sapply(x, function(y) paste(strwrap(y, len),collapse = "\n"),USE.NAMES = FALSE)
-}
-wrap.labels <- function(x, len)
-{
-  if (is.list(x))
-  {
-    lapply(x, wrap.it, len)
-  } else {
-    wrap.it(x, len)
-  }
-}
-wrappedLabels <- wrap.labels(aoi_actionstable_Agg$Group.1,28)
-
+wrap.it <- function(x, len){ sapply(x, function(y) paste(strwrap(y, len),collapse = "\n"),USE.NAMES = FALSE) }
+wrap.labels <- function(x, len){ if (is.list(x))  {lapply(x, wrap.it, len)} else {wrap.it(x, len)}}
+wrappedLabels <- wrap.labels(aoi_actionstable_Agg$Group.1,28) # wrap break is at 28 characters, adjust as needed
+#make the bar chart
 png(filename="priorityactions.png", width=7, height=6, units="in", res=400, pointsize=10)
 par(mar=c(10,3,4,2))
 bars <- barplot(aoi_actionstable_Agg$x, col=c("orange"))

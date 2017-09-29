@@ -268,6 +268,9 @@ tool_exec <- function(in_params, out_params)  #
   #actioncat <- as.list(unique(aoi_actionstable$ActionCategory1))
   aoi_actionstable_Agg <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$ActionCategory1),FUN=sum)
   aoi_actionstable_Agg <- aoi_actionstable_Agg[order(-aoi_actionstable_Agg$x),]
+  aoi_actionstable_Agg$quant <- with(aoi_actionstable_Agg, .bincode(x, breaks=qu <- quantile(x, probs=seq(0,1,1/3),na.rm=TRUE),(labels=(as.numeric(gsub("%.*","",names(qu))))/100)[-1], include.lowest=TRUE))
+  
+  
   write.csv(aoi_actionstable_Agg, "actions_by_cat.csv")
   
   aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)

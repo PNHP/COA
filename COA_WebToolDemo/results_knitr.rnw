@@ -83,7 +83,7 @@ Additionally, the following SGCN are noted as having a low probability of occure
 
 \vspace{5mm}
 \noindent\normalsize 
-The following chart indicates a priorization of the actions across all SGCN within the Area of Interest. Action categories with high Action Impact Score (AIS) values are considered to have the most benefit(?) for the SGCN at the site. \\
+The following chart indicates a priorization of the actions across all SGCN within the Area of Interest. Action categories with high Action Impact Score (AIS) values are considered to have the most benefit(?) for the SGCN at the site. The AIS is calculated as the product of the probability of occurence, SGCN priority, and the Action Priority and ranges from 0 to 1.  \\
 <<echo=FALSE, results='hide'>>=
 setwd(working_directory)
 # wrap the labels so the chart is smaller
@@ -106,21 +106,24 @@ dev.off()
   \end{raggedleft}
 \end{figure}
 
+\vspace{5mm}
+\noindent\normalsize
+
+The following is the list of actions appropiate for each SGCN within the Area of Interest. If an Action is appropiate for more than one SGCN, they have been compiled across species.
+
 <<echo=FALSE, results='asis'>>=
-
 ##
-
 names(action_results) <- c("Specific Action","ScientificName")
-ac.xt <- xtable(action_results, caption = 'Recommended conservation actions within the chosen area of interest', align= "lp{5.0in}p{2.0in}")
+ac.xt <- xtable(action_results, caption='Recommended conservation actions within the chosen area of interest', align="lp{5.0in}p{2.0in}")
 print(ac.xt,
       floating=FALSE,
+      booktabs=TRUE,
       latex.environments= c("flushleft"),
       tabular.environment= "longtable",
       caption.placement= "top",
       add.to.row = addtorow_Actions,
-      include.rownames= FALSE,
-      hline.after = c(-1,nrow(ac.xt))
-      #add.to.row = list(pos = list(0),command = "\\hline \\endhead "))
+      include.rownames= FALSE
+      #hline.after = c(-1,nrow(ac.xt))
 )
 @
 

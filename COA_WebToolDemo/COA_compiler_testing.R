@@ -304,17 +304,21 @@ tool_exec <- function(in_params, out_params)  #
   TargetOrder <- aoi_actionstable_Agg$Group.1
   # make a backup of the df
   actionstable_working <- aoi_actionstable
-  actionstable_working$ActionCategory1 <- reorder.factor(actionstable_working$ActionCategory1, new.order=TargetOrder)
+  actionstable_working$ActionCategory1 <- reorder.factor(actionstable_working$ActionCategory1,new.order=TargetOrder)
   actionstable_working <- actionstable_working %>% arrange(ActionCategory1)
+  actionstable_working <- actionstable_working[c("COATool_Action","ScientificName","ActionCategory1")]
+  actionstable_working <- unique(actionstable_working)
+  actionstable_working <- aggregate(ScientificName ~., actionstable_working, toString)
+  
   # get data for grouping the actions,
   addtorow_Actions <- list()
   addtorow_Actions$pos <- as.list(as.numeric(match(unique(actionstable_working$ActionCategory1),actionstable_working$ActionCategory1))-1)
   addtorow_Actions$command <- paste(col, unique(actionstable_working$ActionCategory1),"  \\\\ ",sep="" )
+
   # subset for presentation
   action_results <- actionstable_working[c("COATool_Action","ScientificName")]
   action_results$COATool_Action <- sanitize(action_results$COATool_Action, type="latex")
-  
-  
+
   # this does the above but for every action
   #aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)
   #write.csv(aoi_actionstable_Agg1, "actions_by_ind.csv")

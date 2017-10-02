@@ -48,3 +48,11 @@ vignettes/*.pdf
 *.mxd
 
 *.csv
+
+# pdfs and TEX results files
+*.pdf
+*.log
+*.aux
+*.tex
+
+

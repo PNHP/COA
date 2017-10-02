@@ -1,0 +1,6 @@
+CeruleanWarbler$ELCODE <- "ABPBX03240"
+EasternMassasauga$ELCODE <- "ARADE03011"
+flowline_LampsilisCariosa$ELCODE <- "IMBIV21050"
+NorthernGoshawk$ELCODE <- "ABNKC12060"
+RockVole$ELCODE <- "AMAFF11090"
+AMWO$ELCODE <- "ABNNF19020"

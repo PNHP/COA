@@ -158,6 +158,8 @@ tool_exec <- function(in_params, out_params)  #
     aoi_HabLotic <- aggregate(as.numeric(aoi_HabLotic$Shape_Length), by=list(aoi_HabLotic$DESC_23), FUN=sum)
     colnames(aoi_HabLotic)[colnames(aoi_HabLotic) == 'Group.1'] <- 'habitat'
     colnames(aoi_HabLotic)[colnames(aoi_HabLotic) == 'x'] <- 'length'
+    aoi_HabLotic$length_km <- aoi_HabLotic$length / 1000        # convert to kilometers
+    aoi_HabLotic$length_mi <- aoi_HabLotic$length * 0.000621371 # convert to miles
     print("Streams and Rivers -- ")
     hl <- paste(unique(paste(aoi_HabLotic$habitat," - ", round(aoi_HabLotic$length*0.000621371,2),"miles (",round(aoi_HabLotic$length/1000,2), "km)",sep="")) , sep= " ")
     print(hl)

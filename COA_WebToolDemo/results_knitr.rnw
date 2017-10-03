@@ -42,12 +42,12 @@ Counties: \Sexpr{as.character(counties)} \\
 \Sexpr{as.character(u2)} 
 
 \noindent\normalsize \\
-The following table shows the distribution of habitats across the overlapping planning units. Habitats (i.e. ecological systems) are grouped by the macrogroup. For more information habitats, please see the 2015 Pennsylvania Wildlife Action Plan.\\
+The following table shows the distribution of habitats that intersect the planning units. Habitats (i.e. ecological systems) are grouped by the macrogroup. For more information habitats, please see the 2015 Pennsylvania Wildlife Action Plan.\\
 
 <<echo=FALSE, results='asis'>>=
 keeps <- c("Habitat","acres")
 xt <- xtable(aoi_HabTerr[keeps], 
-             caption = 'Habitat type within area of interest',
+             caption = 'Acres of each habitat type within your Area of Interest, grouped by general habitat.',
              align="llr")
 names(xt) <- c("Habitat","Area(ac)")
 print(xt,
@@ -55,17 +55,33 @@ print(xt,
       caption.placement="top",
       add.to.row = addtorow,
       include.rownames=FALSE) 
-
-
 @
+\noindent\normalsize
+Note that due to data source and scale issues, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in these tables.
+
+<<echo=FALSE, results='asis'>>=
+keeps <- c("habitat","length_km","length_mi")
+xt <- xtable(aoi_HabLotic[keeps], 
+             caption = 'Aquatic Habitat type within area of interest',
+             align="llrr")
+names(xt) <- c("Habitat","length(km)","length(mi)")
+print(xt,
+      latex.environments= c("flushleft"),
+      caption.placement="top",
+      #add.to.row = addtorow,
+      include.rownames=FALSE) 
+@
+
+
 
 \noindent\normalsize 
 \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) have been identified as either occuring or potentially occurring within the Area of Interest.\\
 
 <<label=longtable, echo=FALSE, results='asis'>>=
 keeps <- c("SCOMNAME", "SNAME", "SeasonCode", "OccProb")
+aoi_sgcnXpu_final$SNAME <- paste("\\textit{",aoi_sgcnXpu_final$SNAME,"}", sep="")
 sp.xt <- xtable(aoi_sgcnXpu_final[keeps], 
-                caption = 'Occurrence probability of species of greatest conservation need within the chosen area of interest',
+                caption = 'Occurrence probability of Species of Greatest Conservation Need within the chosen area of interest',
                 align= "lp{2.25in}p{2.25in}p{.5in}p{1.4in}") 
 names(sp.xt) <- c("Common Name", "Scientific Name", "Season", "Occurrence Probability")  
 print(sp.xt,
@@ -75,10 +91,11 @@ print(sp.xt,
       caption.placement= "top",
       include.rownames= FALSE,
       hline.after = c(-1,nrow(aoi_sgcn_results)),
+      sanitize.text.function = identity,
       add.to.row = list(pos = list(0),command = "\\hline \\endhead "))
 @
 \noindent\normalsize 
-Additionally, the following SGCN are noted as having a low probability of occurence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but a additional survey work should be done to confirm their presence.
+Additionally, the following SGCN are noted as having a low probability of occurence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional surveys work be conducted to confirm their presence.
 \\
 
 \vspace{5mm}

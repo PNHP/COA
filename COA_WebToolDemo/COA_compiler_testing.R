@@ -35,7 +35,7 @@ tool_exec <- function(in_params, out_params)  #
   
   PU_area_m2 <- 40468.38 # area of full planning unit in square meters
   # Latex Formating Variables
-  col <- "\\rowcolor[gray]{0.95}" # for table row groups  https://en.wikibooks.org/wiki/LaTeX/Colors
+  col <- "\\rowcolor[gray]{.5}" # for table row groups  https://en.wikibooks.org/wiki/LaTeX/Colors
   
   # define parameters to be used in ArcGIS tool
   project_name = in_params[[1]]
@@ -138,7 +138,7 @@ tool_exec <- function(in_params, out_params)  #
   
   addtorow <- list()
   addtorow$pos <- as.list(as.numeric(match(unique(aoi_HabTerr$Macrogroup),aoi_HabTerr$Macrogroup))-1)
-  addtorow$command <- paste(col,unique(aoi_HabTerr$Macrogroup), " \\\\",sep="" )
+  addtorow$command <- paste(col,unique(aoi_HabTerr$Macrogroup), "  \\\\",sep="" )
   addtorow$command <- gsub('&', 'and', addtorow$command) # probably better to use sanitize if we can get it work#addtorow$command <- sanitize(addtorow$command, type='latex')
 
  
@@ -242,13 +242,13 @@ tool_exec <- function(in_params, out_params)  #
   SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, SENSITV_SP, Environment, TaxaGroup, ELSeason, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
   # deal with sensitive species
-  setDT(aoi_sgcn)[SENSITV_SP=="Y", SNAME:=paste0("{{ ",SNAME," }}")]
+  setDT(aoi_sgcn)[SENSITV_SP=="Y", SNAME:=paste0("[[ ",SNAME," ]]")]
   # before the merge, set the priority for the SGCN based on the highest value in a number of categories
   aoi_sgcn[, "CAT_min"] <- apply(aoi_sgcn[, 10:13], 1, min) # get the minumum across categories
   aoi_sgcn$PriorityWAP <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse
   # merge species information to the planning units
   aoi_sgcnXpu_final <- merge(aoi_sgcnXpu_final, aoi_sgcn) #, by="ELSeason"
-  aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(aoi_sgcnXpu_final$TaxaGroup),]
+ # aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(aoi_sgcnXpu_final$TaxaGroup),]
   # add a weight based on the Occurence probability
   aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Low"] <- 0.6
   aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Medium"] <- 0.8
@@ -257,17 +257,42 @@ tool_exec <- function(in_params, out_params)  #
   # drop all the low occurence probability values from the table
   ## get a list of Low Occ Prob species to put into a text section in the report
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb=="Low"), ]
-  
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_LowOccProb[c("SCOMNAME","SNAME")]
   aoi_sgcnXpu_LowOccProb$name <-paste(aoi_sgcnXpu_LowOccProb$SCOMNAME," (\\textit{",aoi_sgcnXpu_LowOccProb$SNAME,"})",sep="")
   aoi_sgcnXpu_LowOccProb <- paste(aoi_sgcnXpu_LowOccProb$name, collapse = ", ")
+  aoi_sgcnXpu_final <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb!="Low"), ]
+  # replace the breeding codes with full names
+  aoi_sgcnXpu_final$SeasonCode[aoi_sgcnXpu_final$SeasonCode=="b"] <- "Breeding"
+  aoi_sgcnXpu_final$SeasonCode[aoi_sgcnXpu_final$SeasonCode=="m"] <- "Migration"
+  aoi_sgcnXpu_final$SeasonCode[aoi_sgcnXpu_final$SeasonCode=="w"] <- "Wintering"
+  aoi_sgcnXpu_final$SeasonCode[aoi_sgcnXpu_final$SeasonCode=="y"] <- "Year-round"
   
-  aoi_sgcnXpu_final <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb!="Low"), ]  
-    
-  # MOVE THIS ALL TO LATER, AFTER the ACTION JOINS
-  # Calcuate species priority (SGCN priority weight:WAP Category X SGCN OccProb Weight)
-  #aoi_sgcnXpu_final$SGCNpriority <- aoi_sgcnXpu_final$PriorityWAP * aoi_sgcnXpu_final$OccWeight
-  #aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(-aoi_sgcnXpu_final$SGCNpriority),]
+  # move sensitive species to their own taxagroup
+  aoi_sgcnXpu_final$TaxaGroup[aoi_sgcnXpu_final$SENSITV_SP=="Y"] <- "SenSp"
+  aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(aoi_sgcnXpu_final$TaxaGroup,aoi_sgcnXpu_final$OccProb),]
+ # resort to the SWAP order
+  SWAPorder <- as.matrix(  c("AB","AM","AAAB","AAAA","ARAC","ARAD","ARAA","AF","IMBIV",
+     "inv_amp","inv_bees","IIHYM","inv_beetgr","inv_beetot","IICOL","inv_buttsk","IITRI","inv_cranfl","ICMAL","IIODO","inv_flatwm","IIORT","inv_isopod","IIEPH","inv_mothcw","inv_mothdg","inv_mother","IILEQ","IILEU","inv_mothsi","inv_mothnc","inv_mothnt","inv_mothot","inv_mothpa","inv_mothsa","IILEX0B","inv_mothte","inv_mothtg","IILEY89","IILEY7P","inv_sawfly","inv_snailf","inv_snailt","ILARA","IZSPN","IICLL,IIPLE","inv_trubug","SenSp") )
+  TaxaGrpInAOI <- unique(aoi_sgcnXpu_final$TaxaGroup)
+  SWAPorder1 <- SWAPorder[(SWAPorder %in% TaxaGrpInAOI),]
+  #TargetOrder <- aoi_actionstable_Agg$Group.1
+  aoi_sgcnXpu_final <- aoi_sgcnXpu_final
+  aoi_sgcnXpu_final$TaxaGroup <- reorder.factor(aoi_sgcnXpu_final$TaxaGroup,new.order=SWAPorder1)
+  aoi_sgcnXpu_final <- aoi_sgcnXpu_final %>% arrange(TaxaGroup)
+  
+  
+  # get the grouping varibles for the taxagroups
+  addtorow_taxagroup <- list()
+  addtorow_taxagroup$pos <- as.list(as.numeric(match(unique(aoi_sgcnXpu_final$TaxaGroup),aoi_sgcnXpu_final$TaxaGroup))-1)
+  addtorow_taxagroup$command <- unique(aoi_sgcnXpu_final$TaxaGroup)
+    ## add a line to join the taxagroups
+  SQLquery_taxagrp <- paste("SELECT code, taxagroup"," FROM lu_taxagrp ")
+  lu_taxagrp <- dbGetQuery(db, statement=SQLquery_taxagrp)
+  addtorow_taxagroup$command <- lu_taxagrp[,2][match(addtorow_taxagroup$command, lu_taxagrp[,1])]
+  addtorow_taxagroup$command <- gsub('&', 'and', addtorow_taxagroup$command)
+  addtorow_taxagroup$command <- paste(col,unique(addtorow_taxagroup$command), "& & & \\\\",sep="" )
+      
+# print to terminal
   print("-------------")
   print(paste(aoi_sgcnXpu_final$SCOMNAME,"-",aoi_sgcnXpu_final$SeasonCode,"-",aoi_sgcnXpu_final$OccProb,"prob.",sep=" ")) # " - SGCN Priority = ",round(aoi_sgcnXpu_final$SGCNpriority,2)
   
@@ -304,7 +329,6 @@ tool_exec <- function(in_params, out_params)  #
   # MOVING THIS FROM THE RNW
   # get sort order
   TargetOrder <- aoi_actionstable_Agg$Group.1
-  # make a backup of the df
   actionstable_working <- aoi_actionstable
   actionstable_working$ActionCategory1 <- reorder.factor(actionstable_working$ActionCategory1,new.order=TargetOrder)
   actionstable_working <- actionstable_working %>% arrange(ActionCategory1)
@@ -315,7 +339,7 @@ tool_exec <- function(in_params, out_params)  #
   # get data for grouping the actions,
   addtorow_Actions <- list()
   addtorow_Actions$pos <- as.list(as.numeric(match(unique(actionstable_working$ActionCategory1),actionstable_working$ActionCategory1))-1)
-  addtorow_Actions$command <- paste(col, unique(actionstable_working$ActionCategory1),"  \\\\ ",sep="" )
+  addtorow_Actions$command <- paste(col, unique(actionstable_working$ActionCategory1)," & \\\\ ",sep="" )
 
   # subset for presentation
   action_results <- actionstable_working[c("COATool_Action","ScientificName")]

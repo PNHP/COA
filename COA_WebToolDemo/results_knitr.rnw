@@ -82,7 +82,7 @@ keeps <- c("SCOMNAME", "SNAME", "SeasonCode", "OccProb")
 aoi_sgcnXpu_final$SNAME <- paste("\\textit{",aoi_sgcnXpu_final$SNAME,"}", sep="")
 sp.xt <- xtable(aoi_sgcnXpu_final[keeps], 
                 caption = 'Occurrence probability of Species of Greatest Conservation Need within the chosen area of interest',
-                align= "lp{2.25in}p{2.25in}p{.5in}p{1.4in}") 
+                align= "lp{2in}p{2in}p{1.5in}p{1.4in}") 
 names(sp.xt) <- c("Common Name", "Scientific Name", "Season", "Occurrence Probability")  
 print(sp.xt,
       floating= FALSE,
@@ -91,8 +91,10 @@ print(sp.xt,
       caption.placement= "top",
       include.rownames= FALSE,
       hline.after = c(-1,nrow(aoi_sgcn_results)),
-      sanitize.text.function = identity,
-      add.to.row = list(pos = list(0),command = "\\hline \\endhead "))
+      add.to.row = addtorow_taxagroup,
+      sanitize.text.function = identity
+  #    add.to.row = list(pos = list(0),command = "\\hline \\endhead ")
+      )
 @
 \noindent\normalsize 
 Additionally, the following SGCN are noted as having a low probability of occurence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional surveys work be conducted to confirm their presence.

@@ -22,6 +22,9 @@ tool_exec <- function(in_params, out_params)  #
   if (!requireNamespace("dplyr", quietly = TRUE))
     install.packages("dplyr")
   require(dplyr)
+  if (!requireNamespace("lettercase", quietly = TRUE))
+    install.packages("lettercase")
+  require(lettercase)
   
   # options   
   options(useFancyQuotes = FALSE)
@@ -41,8 +44,8 @@ tool_exec <- function(in_params, out_params)  #
   project_name = in_params[[1]]
   planning_units <- in_params[[2]]
   #project_name <- "Manual Test Project"
-  #planning_units <- "H:/Projects/COA/test_pu1.shp"
-  #planning_units = "E:/coa2/test_pu1.shp"
+  #planning_units <- "H:/Projects/COA/test_pu4.shp"
+  #planning_units <- "E:/coa2/test_pu1.shp"
   
   print(paste("Project Name: ",project_name, sep=""))
   print(date())
@@ -135,12 +138,12 @@ tool_exec <- function(in_params, out_params)  #
   aoi_HabTerr <- merge(aoi_HabTerr, aoi_NamesHabTerr, by="Habitat", all.x=FALSE)
   
   aoi_HabTerr <- aoi_HabTerr[order(aoi_HabTerr$Macrogroup, -aoi_HabTerr$acres),]
+  aoi_HabTerr$Macrogroup <- gsub('&', 'and', aoi_HabTerr$Macrogroup)
   
   addtorow <- list()
   addtorow$pos <- as.list(as.numeric(match(unique(aoi_HabTerr$Macrogroup),aoi_HabTerr$Macrogroup))-1)
-  addtorow$command <- paste(col,unique(aoi_HabTerr$Macrogroup), "  \\\\",sep="" )
+  addtorow$command <- paste("\\multicolumn{2}{l}{", col,unique(aoi_HabTerr$Macrogroup), "}  \\\\",sep="" )
   addtorow$command <- gsub('&', 'and', addtorow$command) # probably better to use sanitize if we can get it work#addtorow$command <- sanitize(addtorow$command, type='latex')
-
  
   
   # make a table of the results
@@ -239,7 +242,7 @@ tool_exec <- function(in_params, out_params)  #
   
   # join SGCN name data sgcn_aoi table
   elcodes <- aoi_sgcnXpu_final$ELSeason
-  SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, SENSITV_SP, Environment, TaxaGroup, ELSeason, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+  SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, SENSITV_SP, Environment, TaxaGroup, ELSeason, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps, WebAddress "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
   # deal with sensitive species
   setDT(aoi_sgcn)[SENSITV_SP=="Y", SNAME:=paste0("[[ ",SNAME," ]]")]

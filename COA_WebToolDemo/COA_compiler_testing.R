@@ -30,11 +30,11 @@ tool_exec <- function(in_params, out_params)  #
   options(useFancyQuotes = FALSE)
   
   # Chris variables
-  databasename <- "E:/coa2/coa_bridgetest.sqlite" #Chris' database path
-  working_directory <- "E:/coa2/COA/COA_WebToolDemo"
+  #databasename <- "E:/coa2/coa_bridgetest.sqlite" #Chris' database path
+  #working_directory <- "E:/coa2/COA/COA_WebToolDemo"
   # Molly variables
-  #databasename <- "H:/Projects/COA/coa_bridgetest.sqlite" #Molly's database path
-  #working_directory <- "H:/Scripts/COA/latex" #folder location of .rnw script and .png files
+  databasename <- "H:/Projects/COA/coa_bridgetest.sqlite" #Molly's database path
+  working_directory <- "H:/Scripts/COA/latex" #folder location of .rnw script and .png files
   
   PU_area_m2 <- 40468.38 # area of full planning unit in square meters
   # Latex Formating Variables

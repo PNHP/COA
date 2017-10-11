@@ -39,41 +39,9 @@ Counties: \Sexpr{as.character(counties)} \\
 \Sexpr{as.character(w)} \\
 \Sexpr{as.character(v)} \\
 \Sexpr{as.character(u1)} \\
-\Sexpr{as.character(u2)} 
+\Sexpr{as.character(u2)} \\ 
 
-\noindent\normalsize \\
-The following table shows the distribution of habitats that intersect the planning units. Habitats (i.e. ecological systems) are grouped by the macrogroup. For more information habitats, please see the 2015 Pennsylvania Wildlife Action Plan.\\
-
-<<echo=FALSE, results='asis'>>=
-keeps <- c("Habitat","acres")
-xt <- xtable(aoi_HabTerr[keeps], 
-             caption = 'Acres of each habitat type within your Area of Interest, grouped by general habitat.',
-             align="llr")
-names(xt) <- c("Habitat","Area(ac)")
-print(xt,
-      latex.environments= c("flushleft"),
-      caption.placement="top",
-      add.to.row = addtorow,
-      include.rownames=FALSE) 
-@
-\noindent\normalsize
-Note that due to data source and scale issues, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in these tables.
-
-<<echo=FALSE, results='asis'>>=
-keeps <- c("habitat","length_km","length_mi")
-xt <- xtable(aoi_HabLotic[keeps], 
-             caption = 'Aquatic Habitat type within area of interest',
-             align="llrr")
-names(xt) <- c("Habitat","length(km)","length(mi)")
-print(xt,
-      latex.environments= c("flushleft"),
-      caption.placement="top",
-      #add.to.row = addtorow,
-      include.rownames=FALSE) 
-@
-
-
-
+\noindent\large\textbf{Species of Greatest Conservation Need:} \\\\
 \noindent\normalsize 
 \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) have been identified as either occuring or potentially occurring within the Area of Interest.\\
 
@@ -98,9 +66,42 @@ print(sp.xt,
 @
 \noindent\normalsize 
 Additionally, the following SGCN are noted as having a low probability of occurence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional surveys work be conducted to confirm their presence.
-\\
+\\\\
+\noindent\large\textbf{Habitats:} \\
+\noindent\normalsize \\
+The following table shows the distribution of habitats that intersect the planning units. Habitats (i.e. ecological systems) are grouped by the macrogroup. For more information habitats, please see the 2015 Pennsylvania Wildlife Action Plan.\\
+
+<<echo=FALSE, results='asis'>>=
+keeps <- c("Habitat","acres")
+xt <- xtable(aoi_HabTerr[keeps], 
+             caption = 'Acres of each habitat type within your Area of Interest, grouped by general habitat.',
+             align="llr")
+names(xt) <- c("Habitat","Area(ac)")
+print(xt,
+      latex.environments= c("flushleft"),
+      caption.placement="top",
+      add.to.row = addtorow,
+      include.rownames=FALSE) 
+@
+
+<<echo=FALSE, results='asis'>>=
+keeps <- c("habitat","length_km","length_mi")
+xt <- xtable(aoi_HabLotic[keeps], 
+             caption = 'Aquatic Habitat type within area of interest',
+             align="llrr")
+names(xt) <- c("Habitat","length(km)","length(mi)")
+print(xt,
+      latex.environments= c("flushleft"),
+      caption.placement="top",
+      #add.to.row = addtorow,
+      include.rownames=FALSE) 
+@
+
+\noindent\normalsize
+Note that due to data source and scale issues, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in these tables.\\\\
 
 \vspace{5mm}
+\noindent\large\textbf{Conservation Actions:} \\\\
 \noindent\normalsize 
 The following chart indicates a priorization of the actions across all SGCN within the Area of Interest. Action categories with high Action Impact Score (AIS) values are considered to have the most benefit(?) for the SGCN at the site. The AIS is calculated as the product of the probability of occurence, SGCN priority, and the Action Priority and ranges from 0 to 1.  \\
 <<echo=FALSE, results='hide'>>=
@@ -148,8 +149,11 @@ print(ac.xt,
 
 \vspace{10mm}
 
-\noindent\large\textbf{Want more information or have questions? Please contact:} \\
+\noindent\large\textbf{Want more information or have questions? } \\
+\noindent\normalsize\\
 
+
+Please contact:
 \noindent\begin{minipage}{0.1\textwidth}
 \includegraphics[scale=0.35]{pgc}
 \end{minipage}%

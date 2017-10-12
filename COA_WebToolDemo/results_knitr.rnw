@@ -67,6 +67,42 @@ cat(paste0(aoi_HUC$HUC12name, collapse=", "))
 
 \vspace{8mm}
 
+\noindent\Large\textbf{Species of Greatest Conservation Need} \\
+\noindent\normalsize The table below shows \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) that have been identified as either occurring or potentially occurring within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}.\\
+
+<<label=longtable, echo=FALSE, results='asis'>>=
+sgcn <- aoi_sgcnXpu_final
+sgcn$SNAME <- paste("\\textit{",sgcn$SNAME,"}", sep="")
+for(r in 1:nrow(sgcn)){
+  if(is.na(sgcn$WebAddress[r]) == FALSE){
+    sgcn$SCOMNAME[r] <- paste0("\\href{", sgcn$WebAddress[r], "}{", sgcn$SCOMNAME[r], "}")
+  }
+}
+lu_taxagrp$taxagroup <- gsub('&', 'and', lu_taxagrp$taxagroup)
+sgcn$TaxaGroup <- lu_taxagrp[,2][match(sgcn$TaxaGroup, lu_taxagrp[,1])]
+taxa <- unique(sgcn$TaxaGroup)
+cat('\\begin{longtable}{p{2.5in}p{2in}p{.75in}p{1.5in}}\n')
+cat('\\toprule\n')
+cat('Common Name & Scientific Name & Season & Occurrence Probability \\\\ \n')
+cat('\\midrule\n')
+cat('\\endhead\n')
+for(t in taxa){
+  cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.5}',t,'}', '\\\\ \n'))
+
+  for(i in 1:nrow(sgcn)){
+    if(sgcn$TaxaGroup[i] == t){
+      cat(paste0('\\hspace{5mm}',sgcn$SCOMNAME[i],'&',sgcn$SNAME[i],'&',sgcn$SeasonCode[i],'&',sgcn$OccProb[i],'\\\\ \n'))
+    }
+  }
+}
+cat('\\bottomrule\n')
+cat('\\end{longtable}\n')
+@
+\vspace*{-4mm}
+\noindent\normalsize Additionally, the following SGCN have been identified as having a low probability of occurrence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence.\\
+\newpage 
+\vspace{8mm}
+
 \noindent\Large\textbf{Habitat} \\
 \normalsize The following table shows the distribution of habitats that intersect the planning units within your area of interest. Terrestrial and wetland habitats (i.e. ecological systems) are categorized by their macrogroup. For more information about habitats, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 2}. \\
 
@@ -117,41 +153,7 @@ cat('\\end{table}\n')
 \vspace*{-8mm}
 \noindent\normalsize **Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.
 
-\vspace{8mm}
 
-\noindent\Large\textbf{Species of Greatest Conservation Need} \\
-\noindent\normalsize The table below shows \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) that have been identified as either occurring or potentially occurring within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}.\\
-
-<<label=longtable, echo=FALSE, results='asis'>>=
-sgcn <- aoi_sgcnXpu_final
-sgcn$SNAME <- paste("\\textit{",sgcn$SNAME,"}", sep="")
-for(r in 1:nrow(sgcn)){
-  if(is.na(sgcn$WebAddress[r]) == FALSE){
-    sgcn$SCOMNAME[r] <- paste0("\\href{", sgcn$WebAddress[r], "}{", sgcn$SCOMNAME[r], "}")
-  }
-}
-lu_taxagrp$taxagroup <- gsub('&', 'and', lu_taxagrp$taxagroup)
-sgcn$TaxaGroup <- lu_taxagrp[,2][match(sgcn$TaxaGroup, lu_taxagrp[,1])]
-taxa <- unique(sgcn$TaxaGroup)
-cat('\\begin{longtable}{p{2.5in}p{2in}p{.75in}p{1.5in}}\n')
-cat('\\toprule\n')
-cat('Common Name & Scientific Name & Season & Occurrence Probability \\\\ \n')
-cat('\\midrule\n')
-cat('\\endhead\n')
-for(t in taxa){
-  cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.5}',t,'}', '\\\\ \n'))
-
-  for(i in 1:nrow(sgcn)){
-    if(sgcn$TaxaGroup[i] == t){
-      cat(paste0('\\hspace{5mm}',sgcn$SCOMNAME[i],'&',sgcn$SNAME[i],'&',sgcn$SeasonCode[i],'&',sgcn$OccProb[i],'\\\\ \n'))
-    }
-  }
-}
-cat('\\bottomrule\n')
-cat('\\end{longtable}\n')
-@
-\vspace*{-4mm}
-\noindent\normalsize Additionally, the following SGCN have been identified as having a low probability of occurrence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence.\\
 
 \vspace{8mm}
 

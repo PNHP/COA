@@ -283,12 +283,12 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_final$TaxaGroup <- reorder.factor(aoi_sgcnXpu_final$TaxaGroup,new.order=SWAPorder1)
   aoi_sgcnXpu_final <- aoi_sgcnXpu_final %>% arrange(TaxaGroup)
   
-  
   # get the grouping varibles for the taxagroups
   addtorow_taxagroup <- list()
   addtorow_taxagroup$pos <- as.list(as.numeric(match(unique(aoi_sgcnXpu_final$TaxaGroup),aoi_sgcnXpu_final$TaxaGroup))-1)
   addtorow_taxagroup$command <- unique(aoi_sgcnXpu_final$TaxaGroup)
-    ## add a line to join the taxagroups
+  
+  ## add a line to join the taxagroups
   SQLquery_taxagrp <- paste("SELECT code, taxagroup"," FROM lu_taxagrp ")
   lu_taxagrp <- dbGetQuery(db, statement=SQLquery_taxagrp)
   addtorow_taxagroup$command <- lu_taxagrp[,2][match(addtorow_taxagroup$command, lu_taxagrp[,1])]
@@ -298,7 +298,6 @@ tool_exec <- function(in_params, out_params)  #
 # print to terminal
   print("-------------")
   print(paste(aoi_sgcnXpu_final$SCOMNAME,"-",aoi_sgcnXpu_final$SeasonCode,"-",aoi_sgcnXpu_final$OccProb,"prob.",sep=" ")) # " - SGCN Priority = ",round(aoi_sgcnXpu_final$SGCNpriority,2)
-  
   keeps <- c("SCOMNAME","SNAME","OccWeight","PriorityWAP")
   aoi_sgcn_results <- aoi_sgcnXpu_final[keeps]
   
@@ -311,7 +310,6 @@ tool_exec <- function(in_params, out_params)  #
   aoi_actions <- merge(aoi_actions,aoi_sgcnXpu_final,by="ELSeason")
   aoi_actionstable <- aoi_actions[,c("ScientificName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","PriorityWAP","OccWeight" )]
   #aoi_actionstable$OccProb <- as.numeric(aoi_actionstable$OccProb)
-  
   aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==2] <- 0.8
   aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==3] <- 0.6
   aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority=="NA"] <- 0
@@ -337,7 +335,6 @@ tool_exec <- function(in_params, out_params)  #
   actionstable_working <- actionstable_working %>% arrange(ActionCategory1)
   actionstable_working <- actionstable_working[c("COATool_Action","ScientificName","ActionCategory1")]
   actionstable_working <- unique(actionstable_working)
-  
   actionstable_working <- aggregate(ScientificName ~., actionstable_working, toString)
   
   # get data for grouping the actions,
@@ -356,9 +353,10 @@ tool_exec <- function(in_params, out_params)  #
   
   ##############  report generation  #######################
   setwd(working_directory)
+  #write the pdf
   knit2pdf(paste(working_directory,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
   #delete excess files from the pdf creation
-  fn_ext <- c(".tex",".log",".aux")
+  fn_ext <- c(".tex",".log",".aux",".out")
   for(i in 1:NROW(fn_ext)){
     fn <- paste("results_",Sys.Date(),fn_ext[i],sep="")
     if (file.exists(fn)){ 
@@ -366,10 +364,9 @@ tool_exec <- function(in_params, out_params)  #
       # print(paste("Deleted ", fn,"from directory") )
     }
   }
-  
   # disconnect the SQL database
   dbDisconnect(db)  #### This seems to be causing a crash.
-  
+  #open the pdf
   pdf.path <- paste(working_directory, paste("results_",Sys.Date(), ".pdf",sep=""), sep="/")
   system(paste0('open "', pdf.path, '"'))
   

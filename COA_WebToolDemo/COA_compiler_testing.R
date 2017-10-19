@@ -36,8 +36,7 @@ tool_exec <- function(in_params, out_params)  #
   #databasename <- "H:/Projects/COA/coa_bridgetest.sqlite" #Molly's database path
   #working_directory <- "H:/Scripts/COA/latex" #folder location of .rnw script and .png files
   
-  PU_area_m2 <- 40468.38 # area of full planning unit in square meters
-  # Latex Formating Variables
+    # Latex Formating Variables
   col <- "\\rowcolor[gray]{.5}" # for table row groups  https://en.wikibooks.org/wiki/LaTeX/Colors
   
   # define parameters to be used in ArcGIS tool
@@ -53,12 +52,10 @@ tool_exec <- function(in_params, out_params)  #
   # load and report on selected planning units
   pu <- arc.open(planning_units)
   selected_pu <- arc.select(pu)
-  
   area_pu_total <- paste("Project Area: ",nrow(selected_pu)*10," acres ","(",nrow(selected_pu), " planning units selected) ", sep="") # convert square meters to acres
 
   # create list of unique ids for selected planning units
   pu_list <- selected_pu$unique_id
-  
   # create connection to sqlite database
   db <- dbConnect(SQLite(), dbname = databasename)
   
@@ -80,7 +77,6 @@ tool_exec <- function(in_params, out_params)  #
   munis <- paste(aoi_muni_name$Name_Proper_Type, sep=",")
 
   ## do we want to add PGC/PFBC district information to the table here???
-  
   ############## Natural Boundaries
   SQLquery_luNatBound <- paste("SELECT unique_id, HUC12, PROVINCE, SECTION_, ECO_NAME"," FROM lu_NaturalBoundaries ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   aoi_NaturalBoundaries <- dbGetQuery(db, statement = SQLquery_luNatBound )
@@ -154,22 +150,6 @@ tool_exec <- function(in_params, out_params)  #
   print("Looking up Threats with the AOI") # report out to ArcGIS
   SQLquery_luThreats <- paste("SELECT unique_id, WindTurbines, WindCapability, ShaleGas,ShaleGasWell,StrImpAg,StrImpAMD"," FROM lu_threats ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   aoi_Threats <- dbGetQuery(db, statement = SQLquery_luThreats )
-  
-  #if(max(aoi_Threats$WindCapability)>2) { # selected '2' as class 3 and above are thought to have commercial wind energy potential
-  #  print("Class 3 wind power potential at this site.")
-  #} else {
-  #  print("No significant wind resources known at this site.")
-  #}
-  # wind turbines
-  #if(any(aoi_Threats$WindTurbines =='y')) print("Wind turbines present within the AOI.")
-  # shale gas
-  #if(any(aoi_Threats$ShaleGas=='y')) {
-  #  print("Site overlaps potential shale gas resource.")
-  #} else {
-  #  print("No known shale resource within this AOI.")
-  #}
-  # gas wells
-  #if(any(aoi_Threats$ShaleGasWell=='y')) print("Shale gas well pads present within the AOI.")
   
   ##############  SGCN  ########################################
   # build query to select planning units within area of interest from SGCNxPU table
@@ -247,22 +227,17 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_final <- aoi_sgcnXpu_final
   aoi_sgcnXpu_final$TaxaGroup <- reorder.factor(aoi_sgcnXpu_final$TaxaGroup,new.order=SWAPorder1)
   aoi_sgcnXpu_final <- aoi_sgcnXpu_final %>% arrange(TaxaGroup)
-  
-
-  
   ## add a line to join the taxagroups
   SQLquery_taxagrp <- paste("SELECT code, taxagroup"," FROM lu_taxagrp ")
   lu_taxagrp <- dbGetQuery(db, statement=SQLquery_taxagrp)
-
+  # subset to needed columns
   keeps <- c("SCOMNAME","SNAME","OccWeight","PriorityWAP")
   aoi_sgcn_results <- aoi_sgcnXpu_final[keeps]
   
   ############## Actions  ##################################
   print("Looking up Conservation Actions with the AOI") # report out to ArcGIS
-  
   SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_actions <- dbGetQuery(db, statement=SQLquery_actions)
-
   # create a table version of the actions.
   aoi_actions <- merge(aoi_actions,aoi_sgcnXpu_final,by="ELSeason")
   aoi_actionstable <- aoi_actions[,c("ScientificName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","PriorityWAP","OccWeight" )]
@@ -284,7 +259,6 @@ tool_exec <- function(in_params, out_params)  #
   write.csv(aoi_actionstable_Agg, "actions_by_cat.csv")
   
   # sort the individual actions by the priority in summerized categories
-  # MOVING THIS FROM THE RNW
   # get sort order
   TargetOrder <- aoi_actionstable_Agg$Group.1
   actionstable_working <- aoi_actionstable
@@ -297,12 +271,10 @@ tool_exec <- function(in_params, out_params)  #
   # subset for presentation
   action_results <- actionstable_working[c("COATool_Action","ScientificName")]
   action_results$COATool_Action <- sanitize(action_results$COATool_Action, type="latex")
-
   # this does the above but for every action
   #aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)
   #write.csv(aoi_actionstable_Agg1, "actions_by_ind.csv")
-  
-  
+
   ##############  report generation  #######################
   print("Generating the PDF report...") # report out to ArcGIS
   setwd(working_directory)

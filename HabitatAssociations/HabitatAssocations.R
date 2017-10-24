@@ -23,19 +23,12 @@ sgcn_melt$habitat_value <- gsub("VALUE_","",sgcn_melt$habitat_value) #remove the
 sgcn_melt <- merge(x=sgcn_melt, y=habitat, by="habitat_value", all.x=TRUE)
 # formation subset
 formation <- read.csv("lu_SGCN_Formation.csv")
-sgcn_melt <- merge(x=sgcn_melt, y=formation, by="ELSEASON", all.x=TRUE)
-sgcn_melt$matching <- ifelse(as.character(sgcn_melt$CLASS)==as.character(sgcn_melt$Class),"match","doesntmatch")
-sgcn_melt <- sgcn_melt[sgcn_melt$matching=="match",]
-sgcn_melt$matching <- NULL
-
-
+formation$class_expected <- formation$Class
+sgcn_melt <- merge(x=sgcn_melt, y=formation, by.x=c("ELSEASON","CLASS"),by.y=c("ELSEASON","Class"), all.x=TRUE)
 sgcn_habitat <- ddply(sgcn_melt,.(ELSEASON),transform,observed=value/sum(value)) #calculate the observed proportin for each habitat
 sgcn_habitat$chi <- ((sgcn_habitat$observed - sgcn_habitat$expected)/sgcn_habitat$expected)+1 # calculate the chi square value.
 sgcn_habitat$chi <- round(sgcn_habitat$chi,2)
 sgcn_habitat <- sgcn_habitat[order(sgcn_habitat$ELSEASON,-sgcn_habitat$chi),]
-
-#sgcn_habitat <- merge(x=sgcn_melt, y=habitat, by="habitat_value", all.x=TRUE) # merge the two tables into one
-
 
 ## how to split strings https://stackoverflow.com/questions/15347282/split-delimited-strings-in-a-column-and-insert-as-new-rows
 #https://stackoverflow.com/questions/28590469/r-match-between-two-comma-separated-strings

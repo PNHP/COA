@@ -141,6 +141,11 @@ tool_exec <- function(in_params, out_params)  #
     aoi_HabLotic$length_km <- aoi_HabLotic$length / 1000        # convert to kilometers
     aoi_HabLotic$length_mi <- aoi_HabLotic$length * 0.000621371 # convert to miles
 
+  # special habitats such as seasonal pools and caves
+    SQLquery_HabSpecial <- paste("SELECT unique_id, SpecialHabitat"," FROM lu_SpecialHabitats ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)),collapse = ", "), ")")
+    aoi_HabSpecial <- dbGetQuery(db, statement = SQLquery_HabSpecial)
+    # pass this to the knitr for inclusion in the report.
+    
   ############## PROTECTED LAND ###############
   print("Looking up Protected Land with the AOI") # report out to ArcGIS  
   SQLquery_luProtectedLand <- paste("SELECT unique_id, site_nm, manager, owner_typ", " FROM lu_ProtectedLands_25 ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
@@ -294,7 +299,7 @@ tool_exec <- function(in_params, out_params)  #
   #open the pdf
   pdf.path <- paste(working_directory, paste("results_",Sys.Date(), ".pdf",sep=""), sep="/")
   system(paste0('open "', pdf.path, '"'))
-  
+   
   # close out tool
   }
 }

@@ -152,7 +152,16 @@ cat('\\end{table}\n')
 @
 \vspace*{-8mm}
 \noindent\normalsize **Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.
+\vspace{8mm} 
+<<echo=FALSE, results='asis'>>=
+if (any(aoi_HabSpecial$SpecialHabitat=="Seasonal Pool")) {
+  print("Seasonal pools are present within the site.")
+}
+if (any(aoi_HabSpecial$SpecialHabitat=="Cave")) {
+  print("Caves are present within the site.")
+}
 
+@
 
 
 \vspace{8mm}

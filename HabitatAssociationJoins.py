@@ -20,9 +20,9 @@ print("process beginning at: "+datetime.datetime.now().strftime('%Y-%m-%d %H:%M:
 #set directories and environmental variables
 arcpy.env.overwriteOutput = True
 arcpy.env.qualifiedFieldNames = False
-wd = r'H:\Projects\COA\HabitatAssociations' # folder location of raster and SGCN habitat association .csv files - make sure only SGCN .csv files are in this folder.
-gdb = r'H:\Projects\COA\HabitatAssociations\OutputHabAss.gdb' # output GDB where SGCN habitat association rasters will be written
-raster = r'H:\Projects\COA\HabitatAssociations\Habitat_TerrLent_HUC08.tif' # habitat raster layer
+wd = r'E:\COA\HabitatAssocations_Take2\HabitatAssocations\output' # folder location of raster and SGCN habitat association .csv files - make sure only SGCN .csv files are in this folder.
+gdb = r'E:\COA\HabitatAssocations_Take2\HabitatAssocations\output\sgcn_assoc_maps.gdb' # output GDB where SGCN habitat association rasters will be written
+raster = r'E:\COA\HabitatAssocations_Take2\HabitatAssocations_Take2.gdb\Habitat_TerrLent_HUC08' # habitat raster layer
 
 #create raster layer from input habitat raster to allow join
 r = arcpy.MakeRasterLayer_management(raster, "raster")

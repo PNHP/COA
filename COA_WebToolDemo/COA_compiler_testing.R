@@ -78,6 +78,7 @@ tool_exec <- function(in_params, out_params)  #
 
   ## do we want to add PGC/PFBC district information to the table here???
   ############## Natural Boundaries
+  print("Looking up Natural Boundaries within  the AOI") # report out to ArcGIS
   SQLquery_luNatBound <- paste("SELECT unique_id, HUC12, PROVINCE, SECTION_, ECO_NAME"," FROM lu_NaturalBoundaries ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   aoi_NaturalBoundaries <- dbGetQuery(db, statement = SQLquery_luNatBound )
   HUC_list <- unique(aoi_NaturalBoundaries$HUC12)
@@ -91,7 +92,7 @@ tool_exec <- function(in_params, out_params)  #
   #print(v)
   u1 = paste("HUC8 --",unique(aoi_HUC$HUC8name), sep= " ")
   u2 = paste("HUC12 --",unique(aoi_HUC$HUC12name), sep= " ")
-
+  print(u1) # for testing
   ############# Habitats  ##################################
   print("Looking up Habitats with the AOI") # report out to ArcGIS
   
@@ -115,7 +116,9 @@ tool_exec <- function(in_params, out_params)  #
                                  " FROM lu_HabitatName ","WHERE Code IN (", paste(toString(sQuote(HabCodeList)),collapse = ", "), ")")
   aoi_NamesHabTerr <- dbGetQuery(db, statement = SQLquery_NamesHabTerr)
   aoi_HabTerr <- merge(aoi_HabTerr, aoi_NamesHabTerr, by="Code")
+  print(aoi_HabTerr) # for testing
   #######################################
+  
   HabNameList <- aoi_HabTerr$Habitat # 1 get the habitats
   SQLquery_NamesHabTerr <- paste("SELECT Habitat, Class, Macrogroup, PATTERN, FORMATION, type ", # need to change these names
                                  " FROM lu_HabitatName ","WHERE Habitat IN (", paste(toString(sQuote(HabNameList)),collapse = ", "), ")")
@@ -133,6 +136,7 @@ tool_exec <- function(in_params, out_params)  #
   SQLquery_HabLotic <- paste("SELECT unique_id, Shape_Length, SUM_23, DESC_23", # need to change these names
                              " FROM lu_LoticData ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   aoi_HabLotic <- dbGetQuery(db, statement = SQLquery_HabLotic)
+ 
   if( nrow(aoi_HabLotic) > 0 ) {
     aoi_HabLotic <- aoi_HabLotic[c(-1)] # drop the puid column
     aoi_HabLotic <- aggregate(as.numeric(aoi_HabLotic$Shape_Length), by=list(aoi_HabLotic$DESC_23), FUN=sum)
@@ -140,7 +144,7 @@ tool_exec <- function(in_params, out_params)  #
     colnames(aoi_HabLotic)[colnames(aoi_HabLotic) == 'x'] <- 'length'
     aoi_HabLotic$length_km <- aoi_HabLotic$length / 1000        # convert to kilometers
     aoi_HabLotic$length_mi <- aoi_HabLotic$length * 0.000621371 # convert to miles
-
+}
   # special habitats such as seasonal pools and caves
     SQLquery_HabSpecial <- paste("SELECT unique_id, SpecialHabitat"," FROM lu_SpecialHabitats ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)),collapse = ", "), ")")
     aoi_HabSpecial <- dbGetQuery(db, statement = SQLquery_HabSpecial)
@@ -302,4 +306,3 @@ tool_exec <- function(in_params, out_params)  #
    
   # close out tool
   }
-}

@@ -42,9 +42,11 @@ tool_exec <- function(in_params, out_params)  #
   # define parameters to be used in ArcGIS tool
   project_name = in_params[[1]]
   planning_units <- in_params[[2]]
+  #AgencyPersonnel <- in_params[[3]] 
   #project_name <- "Manual Test Project"
   #planning_units <- "H:/Projects/COA/test_pu4.shp"
   #planning_units <- "E:/coa2/test_pu1.shp"
+  #AgencyPersonnel <- "PGC"
   
   print(paste("Project Name: ",project_name, sep=""))
   print(date())
@@ -245,11 +247,21 @@ tool_exec <- function(in_params, out_params)  #
   
   ############## Actions  ##################################
   print("Looking up Conservation Actions with the AOI") # report out to ArcGIS
-  SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+  SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason, AgencySpecific"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_actions <- dbGetQuery(db, statement=SQLquery_actions)
   # create a table version of the actions.
   aoi_actions <- merge(aoi_actions,aoi_sgcnXpu_final,by="ELSeason")
-  aoi_actionstable <- aoi_actions[,c("ScientificName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","PriorityWAP","OccWeight" )]
+  aoi_actionstable <- aoi_actions[,c("ScientificName","CommonName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","PriorityWAP","OccWeight","AgencySpecific" )]
+  
+#  # remove actions that are agency specific
+#  if (AgencyPersonnel=="PFBC") {
+#    aoi_actionstable <- aoi_actionstable[aoi_actionstable$AgencySpecific!="PGC", ]
+#  } else if (AgencyPersonnel=="PGC") {  
+#    aoi_actionstable <- aoi_actionstable[aoi_actionstable$AgencySpecific!="PFBC", ]
+#  } else {
+#    aoi_actionstable <- aoi_actionstable[is.na(aoi_actionstable$AgencySpecific), ]
+#  }
+  
   #aoi_actionstable$OccProb <- as.numeric(aoi_actionstable$OccProb)
   aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==2] <- 0.8
   aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==3] <- 0.6
@@ -265,20 +277,20 @@ tool_exec <- function(in_params, out_params)  #
   aoi_actionstable_Agg$quant1[aoi_actionstable_Agg$quant %in% 3] <- "High"
   aoi_actionstable_Agg$quant1[aoi_actionstable_Agg$quant %in% 2] <- "Medium"
   aoi_actionstable_Agg$quant1[aoi_actionstable_Agg$quant %in% 1] <- "Low"
-  write.csv(aoi_actionstable_Agg, "actions_by_cat.csv")
+  ### write.csv(aoi_actionstable_Agg, "actions_by_cat.csv")  # for testing, not needed output
   
-  # sort the individual actions by the priority in summerized categories
+    # sort the individual actions by the priority in summerized categories
   # get sort order
   TargetOrder <- aoi_actionstable_Agg$Group.1
   actionstable_working <- aoi_actionstable
   actionstable_working$ActionCategory1 <- reorder.factor(actionstable_working$ActionCategory1,new.order=TargetOrder)
   actionstable_working <- actionstable_working %>% arrange(ActionCategory1)
-  actionstable_working <- actionstable_working[c("COATool_Action","ScientificName","ActionCategory1")]
+  actionstable_working <- actionstable_working[c("COATool_Action","CommonName","ActionCategory1")]
   actionstable_working <- unique(actionstable_working)
-  actionstable_working <- aggregate(ScientificName ~., actionstable_working, toString)
+  actionstable_working <- aggregate(CommonName ~., actionstable_working, toString)
 
   # subset for presentation
-  action_results <- actionstable_working[c("COATool_Action","ScientificName")]
+  action_results <- actionstable_working[c("COATool_Action","CommonName")]
   action_results$COATool_Action <- sanitize(action_results$COATool_Action, type="latex")
   # this does the above but for every action
   #aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)

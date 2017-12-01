@@ -229,11 +229,11 @@ tool_exec <- function(in_params, out_params)  #
   
   ############## Actions  ##################################
   print("Looking up Conservation Actions with the AOI") # report out to ArcGIS
-  SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason, AgencySpecific"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+  SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason, AgencySpecific, ConstraintWind, ConstraintShale"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_actions <- dbGetQuery(db, statement=SQLquery_actions)
   # create a table version of the actions.
   aoi_actions <- merge(aoi_actions,aoi_sgcnXpu_final,by="ELSeason")
-  aoi_actionstable <- aoi_actions[,c("ScientificName","CommonName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","PriorityWAP","OccWeight","AgencySpecific" )]
+  aoi_actionstable <- aoi_actions[,c("ScientificName","CommonName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","PriorityWAP","OccWeight","AgencySpecific","ConstraintWind","ConstraintShale" )]
   
 #  # remove actions that are agency specific
 #  if (AgencyPersonnel=="PFBC") {
@@ -244,6 +244,24 @@ tool_exec <- function(in_params, out_params)  #
 #    aoi_actionstable <- aoi_actionstable[is.na(aoi_actionstable$AgencySpecific), ]
 #  }
   
+  #remove actions that are only appropiate for wind issues when the AOI is not within the wind region.
+  if(max(aoi_Threats$WindCapability)>2 | any(aoi_Threats$WindTurbines =='y') ) { # selected '2' as class 3 and above 
+    aoi_actionstable <- aoi_actionstable
+  } else {
+    #print("No significant wind resources known at this site.")
+    aoi_actionstable <- aoi_actionstable[ is.na(aoi_actionstable$ConstraintWind) , ]
+  }
+  #remove actions that are only appropiate for shale issues when the AOI is not within the shale region.
+  if( any(aoi_Threats$ShaleGas=='y') | any(aoi_Threats$ShaleGasWell=='y') ) { 
+    aoi_actionstable <- aoi_actionstable
+  } else {
+    #print("No significant wind resources known at this site.")
+    aoi_actionstable <- aoi_actionstable[ is.na(aoi_actionstable$ConstraintShale) , ]
+  }  
+
+  #
+  ################
+    
   #aoi_actionstable$OccProb <- as.numeric(aoi_actionstable$OccProb)
   aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==2] <- 0.8
   aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==3] <- 0.6

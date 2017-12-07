@@ -220,6 +220,13 @@ cat('\\end{longtable}\n')
 \vspace{10mm}
 
 \noindent\large\textbf{Want more information or have questions? Please contact:} \\
+\noindent\normalsize 
+
+This AOI is within the following PFBC and PGC districts:\\
+<<echo=FALSE, results='asis'>>=
+print( paste("PGC District: ",aoi_Agency$pgc_DistNum,"\\\\ \n", sep="")  )
+print( paste("PFBC District: ",aoi_Agency$pfbc_Name, "\\\\ \n", sep="")  )
+@
 
 \noindent\begin{minipage}{0.1\textwidth}
 \includegraphics[scale=0.35]{pgc}

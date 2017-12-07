@@ -46,7 +46,6 @@ tool_exec <- function(in_params, out_params)  #
   #project_name <- "Manual Test Project"
   #planning_units <- "H:/Projects/COA/test_pu4.shp"
   #planning_units <- "E:/coa2/test_pu1.shp"
-  #AgencyPersonnel <- "PGC"
   print(paste("Project Name: ",project_name, sep=""))
   print(date())
   
@@ -245,21 +244,17 @@ tool_exec <- function(in_params, out_params)  #
 #  }
   
   #remove actions that are only appropiate for wind issues when the AOI is not within the wind region.
-  if(max(aoi_Threats$WindCapability)>2 | any(aoi_Threats$WindTurbines =='y') ) { # selected '2' as class 3 and above 
+  if(max(aoi_Threats$WindCapability)>2 | any(aoi_Threats$WindTurbines =='y') ) { # selected class 3 and above
     aoi_actionstable <- aoi_actionstable
   } else {
-    #print("No significant wind resources known at this site.")
     aoi_actionstable <- aoi_actionstable[ is.na(aoi_actionstable$ConstraintWind) , ]
   }
   #remove actions that are only appropiate for shale issues when the AOI is not within the shale region.
   if( any(aoi_Threats$ShaleGas=='y') | any(aoi_Threats$ShaleGasWell=='y') ) { 
     aoi_actionstable <- aoi_actionstable
   } else {
-    #print("No significant wind resources known at this site.")
     aoi_actionstable <- aoi_actionstable[ is.na(aoi_actionstable$ConstraintShale) , ]
   }  
-
-  #
   ################
     
   #aoi_actionstable$OccProb <- as.numeric(aoi_actionstable$OccProb)
@@ -279,7 +274,6 @@ tool_exec <- function(in_params, out_params)  #
   aoi_actionstable_Agg$quant1[aoi_actionstable_Agg$quant %in% 1] <- "Low"
  
   # sort the individual actions by the priority in summerized categories
-  # get sort order
   TargetOrder <- aoi_actionstable_Agg$Group.1
   actionstable_working <- aoi_actionstable
   actionstable_working$ActionCategory1 <- reorder.factor(actionstable_working$ActionCategory1,new.order=TargetOrder)
@@ -295,6 +289,13 @@ tool_exec <- function(in_params, out_params)  #
   #aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)
   #write.csv(aoi_actionstable_Agg1, "actions_by_ind.csv")
 
+  ############## Agency Districts ###############
+  print("Looking up Agency Regions with the AOI") # report out to ArcGIS
+  SQLquery_luAgency <- paste("SELECT unique_id, pgc_DistNum, pgc_RegionID, pgc_Region, pgc_District, pfbc_Name, pfbc_Region, pfbc_District, dcnr_DistrictNum, dcnr_DistrictName "," FROM lu_AgencyDistricts ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
+  aoi_Agency <- dbGetQuery(db, statement = SQLquery_luAgency )
+  aoi_Agency$unique_id <- NULL
+  aoi_Agency <- unique(aoi_Agency)
+  
   ##############  report generation  #######################
   print("Generating the PDF report...") # report out to ArcGIS
   setwd(working_directory)
@@ -314,5 +315,10 @@ tool_exec <- function(in_params, out_params)  #
   # create and open the pdf
   pdf.path <- paste(working_directory, paste("results_",Sys.Date(), ".pdf",sep=""), sep="/")
   system(paste0('open "', pdf.path, '"'))
+  
+  
+  ############# Add statisical information the database ##############################
+  
+  
   # close out tool
   }

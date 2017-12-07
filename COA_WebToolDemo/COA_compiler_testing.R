@@ -30,21 +30,21 @@ tool_exec <- function(in_params, out_params)  #
   options(useFancyQuotes = FALSE)
   
   # Chris variables
-  databasename <- "E:/coa2/coa_bridgetest.sqlite" #Chris' database path
-  working_directory <- "E:/coa2/COA/COA_WebToolDemo"
+  #databasename <- "E:/coa2/coa_bridgetest.sqlite" #Chris' database path
+  #working_directory <- "E:/coa2/COA/COA_WebToolDemo"
   # Molly variables
-  #databasename <- "H:/Projects/COA/coa_bridgetest.sqlite" #Molly's database path
-  #working_directory <- "H:/Scripts/COA/latex" #folder location of .rnw script and .png files
+  databasename <- "C:/coa/coa_bridgetest.sqlite" #Molly's database path
+  working_directory <- "C:/coa/script_tool" #folder location of .rnw script and .png files
   
-    # Latex Formating Variables
-  col <- "\\rowcolor[gray]{.5}" # for table row groups  https://en.wikibooks.org/wiki/LaTeX/Colors
+  # Latex Formating Variables
+  col <- "\\rowcolor[gray]{.7}" # for table row groups  https://en.wikibooks.org/wiki/LaTeX/Colors
   
   # define parameters to be used in ArcGIS tool
   project_name = in_params[[1]]
   planning_units <- in_params[[2]]
   #AgencyPersonnel <- in_params[[3]] 
   #project_name <- "Manual Test Project"
-  #planning_units <- "H:/Projects/COA/test_pu4.shp"
+  #planning_units <- "C:/coa/planning_unit_test.shp"
   #planning_units <- "E:/coa2/test_pu1.shp"
   print(paste("Project Name: ",project_name, sep=""))
   print(date())
@@ -78,7 +78,6 @@ tool_exec <- function(in_params, out_params)  #
 
   ## do we want to add PGC/PFBC district information to the table here???
   ############## Natural Boundaries
-  print("Looking up Natural Boundaries within  the AOI") # report out to ArcGIS
   SQLquery_luNatBound <- paste("SELECT unique_id, HUC12, PROVINCE, SECTION_, ECO_NAME"," FROM lu_NaturalBoundaries ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   aoi_NaturalBoundaries <- dbGetQuery(db, statement = SQLquery_luNatBound )
   HUC_list <- unique(aoi_NaturalBoundaries$HUC12)
@@ -92,6 +91,7 @@ tool_exec <- function(in_params, out_params)  #
   #print(v)
   u1 = paste("HUC8 --",unique(aoi_HUC$HUC8name), sep= " ")
   u2 = paste("HUC12 --",unique(aoi_HUC$HUC12name), sep= " ")
+
   ############# Habitats  ##################################
   print("Looking up Habitats with the AOI") # report out to ArcGIS
   SQLquery_HabTerr <- paste("SELECT unique_id, Code, PERCENTAGE"," FROM lu_HabTerr ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)),collapse = ", "), ")")
@@ -128,7 +128,6 @@ tool_exec <- function(in_params, out_params)  #
   SQLquery_HabLotic <- paste("SELECT unique_id, Shape_Length, SUM_23, DESC_23", # need to change these names
                              " FROM lu_LoticData ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   aoi_HabLotic <- dbGetQuery(db, statement = SQLquery_HabLotic)
- 
   if( nrow(aoi_HabLotic) > 0 ) {
     aoi_HabLotic <- aoi_HabLotic[c(-1)] # drop the puid column
     aoi_HabLotic <- aggregate(as.numeric(aoi_HabLotic$Shape_Length), by=list(aoi_HabLotic$DESC_23), FUN=sum)
@@ -136,12 +135,13 @@ tool_exec <- function(in_params, out_params)  #
     colnames(aoi_HabLotic)[colnames(aoi_HabLotic) == 'x'] <- 'length'
     aoi_HabLotic$length_km <- aoi_HabLotic$length / 1000        # convert to kilometers
     aoi_HabLotic$length_mi <- aoi_HabLotic$length * 0.000621371 # convert to miles
+
   }
   # special habitats such as seasonal pools and caves
     SQLquery_HabSpecial <- paste("SELECT unique_id, SpecialHabitat"," FROM lu_SpecialHabitats ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)),collapse = ", "), ")")
     aoi_HabSpecial <- dbGetQuery(db, statement = SQLquery_HabSpecial)
     # pass this to the knitr for inclusion in the report.
-    
+
   ############## PROTECTED LAND ###############
   print("Looking up Protected Land with the AOI") # report out to ArcGIS  
   SQLquery_luProtectedLand <- paste("SELECT unique_id, site_nm, manager, owner_typ", " FROM lu_ProtectedLands_25 ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
@@ -220,7 +220,7 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_final$TaxaGroup <- reorder.factor(aoi_sgcnXpu_final$TaxaGroup,new.order=SWAPorder1)
   aoi_sgcnXpu_final <- aoi_sgcnXpu_final %>% arrange(TaxaGroup)
   ## add a line to join the taxagroups
-  SQLquery_taxagrp <- paste("SELECT code, taxagroup"," FROM lu_taxagrp ")
+  SQLquery_taxagrp <- paste("SELECT code, taxagroup, taxadisplay"," FROM lu_taxagrp ")
   lu_taxagrp <- dbGetQuery(db, statement=SQLquery_taxagrp)
   # subset to needed columns
   keeps <- c("SCOMNAME","SNAME","OccWeight","PriorityWAP")
@@ -316,9 +316,9 @@ tool_exec <- function(in_params, out_params)  #
   pdf.path <- paste(working_directory, paste("results_",Sys.Date(), ".pdf",sep=""), sep="/")
   system(paste0('open "', pdf.path, '"'))
   
-  
   ############# Add statisical information the database ##############################
   
   
   # close out tool
   }
+

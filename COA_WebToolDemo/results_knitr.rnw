@@ -54,6 +54,11 @@ Project Date: \Sexpr{format(Sys.Date(), "%d %b %Y")} \\~\\~\\
 \includegraphics[width=\linewidth]{logo} \\
 \end{minipage}
 
+\noindent\begin{minipage}{0.3\textwidth}
+\framebox(200,125){**Placeholder for AOI Map**}
+\end{minipage}%
+\hfill
+\noindent\begin{minipage}{.6\textwidth}
 \noindent\normalsize \Sexpr{as.character(area_pu_total)} \\
 Counties: \Sexpr{as.character(str_to_title(counties))} \\
 \Sexpr{as.character(gsub(" --", ":", w))} \\
@@ -64,6 +69,8 @@ cat(paste0(unique(aoi_HUC$HUC8name), collapse=", ", "\\\\"))
 cat('HUC12: ')
 cat(paste0(aoi_HUC$HUC12name, collapse=", "))
 @
+\vspace{20mm}
+\end{minipage}
 
 \vspace{8mm}
 
@@ -72,14 +79,7 @@ cat(paste0(aoi_HUC$HUC12name, collapse=", "))
 
 <<label=longtable, echo=FALSE, results='asis'>>=
 sgcn <- aoi_sgcnXpu_final
-sgcn$SNAME <- paste("\\textit{",sgcn$SNAME,"}", sep="")
-for(r in 1:nrow(sgcn)){
-  if(is.na(sgcn$WebAddress[r]) == FALSE){
-    sgcn$SCOMNAME[r] <- paste0("\\href{", sgcn$WebAddress[r], "}{", sgcn$SCOMNAME[r], "}")
-  }
-}
-lu_taxagrp$taxagroup <- gsub('&', 'and', lu_taxagrp$taxagroup)
-sgcn$TaxaGroup <- lu_taxagrp[,2][match(sgcn$TaxaGroup, lu_taxagrp[,1])]
+sgcn$TaxaGroup <- lu_taxagrp[,3][match(sgcn$TaxaGroup, lu_taxagrp[,1])]
 taxa <- unique(sgcn$TaxaGroup)
 cat('\\begin{longtable}{p{2.5in}p{2in}p{.75in}p{1.5in}}\n')
 cat('\\toprule\n')
@@ -87,8 +87,20 @@ cat('Common Name & Scientific Name & Season & Occurrence Probability \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
 for(t in taxa){
-  cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.5}',t,'}', '\\\\ \n'))
-
+  if(t=="Bird"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.pgc.pa.gov/Wildlife/WildlifeActionPlan/Documents/SWAP-CHAPTER-1-apx14a-birds.pdf}{',t,'}}', '\\\\ \n'))}
+  else if(t=="Fish"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14e-fish.pdf}{',t,'}}', '\\\\ \n'))}
+  else if(t=="Mammal"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.pgc.pa.gov/Wildlife/WildlifeActionPlan/Documents/SWAP-CHAPTER-1-apx14b-mammals.pdf}{',t,'}}', '\\\\ \n'))}
+  else if(t=="Frog" | t=="Salamander"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14c-amp.pdf}{',t,'}}', '\\\\ \n'))}
+  else if(t=="Invertebrate - Mussels"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14f-mussels.pdf}{',t,'}}', '\\\\ \n'))}
+  else if(t=="Lizard" | t=="Snake" | t=="Turtle"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14d-reptiles.pdf}{',t,'}}', '\\\\ \n'))}
+  else{
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}',t,'}', '\\\\ \n'))}
   for(i in 1:nrow(sgcn)){
     if(sgcn$TaxaGroup[i] == t){
       cat(paste0('\\hspace{5mm}',sgcn$SCOMNAME[i],'&',sgcn$SNAME[i],'&',sgcn$SeasonCode[i],'&',sgcn$OccProb[i],'\\\\ \n'))
@@ -104,7 +116,7 @@ cat('\\end{longtable}\n')
 \vspace{8mm}
 
 \noindent\Large\textbf{Habitat} \\
-\normalsize The following table shows the distribution of habitats that intersect the planning units within your area of interest. Terrestrial and wetland habitats (i.e. ecological systems) are categorized by their macrogroup. For more information about habitats, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 2}. \\
+\normalsize The following table shows the distribution of habitats that intersect the planning units within your area of interest. Terrestrial and wetland habitats (i.e. ecological systems) are categorized by their macrogroup. For more information about habitats, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 2} and for complete habitat descriptions, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2-apx21-22.pdf}{Northeast Terrestrial and Aquatic Habitat Descriptions, Appendix 2.1}  \\
 
 <<echo=FALSE, results='asis'>>=
 keeps <- c("Macrogroup", "Habitat", "acres")
@@ -112,13 +124,11 @@ hab <- aoi_HabTerr[keeps]
 macros <- unique(hab$Macrogroup)
 cat('\\setlength{\\LTleft}{0pt}\n')
 cat('\\begin{table}[ht]\n')
-cat('\\begin{flushleft}\n')
+cat('\\centering\n')
 cat('\\begin{tabular}{lr}\n')
-cat('\\toprule\n')
-cat('\\belowrulesepcolor{gray}\n')
-cat('\\rowcolor[gray]{.5}{Terrestrial and Wetland Habitat & Area(ac)} \\\\ \n')
-cat('\\aboverulesepcolor{gray}')
-cat('\\midrule\n')
+cat('\\hline\n')
+cat('\\rowcolor[gray]{.8}{Terrestrial and Wetland Habitat & Area(ac)} \\\\ \n')
+cat('\\hline\n')
 for(m in macros){
   cat(paste0('\\multicolumn{2}{l}{',m,'}', '\\\\ \n'))
   for(i in 1:nrow(hab)){
@@ -128,40 +138,26 @@ for(m in macros){
   }
 }
 if(nrow(aoi_HabLotic) == 0){
-  cat('\\midrule\n')
-  cat('\\belowrulesepcolor{gray}')
-  cat('\\rowcolor[gray]{.5}{Streams and River Habitat & Length(mi)} \\\\ \n')
-  cat('\\aboverulesepcolor{gray}')
-  cat('\\midrule\n')
+  cat('\\hline\n')
+  cat('\\rowcolor[gray]{.8}{Streams and River Habitat & Length(mi)} \\\\ \n')
+  cat('\\hline\n')
   cat('No stream or river habitat is present in area of interest \\\\ \n')
-  cat('\\bottomrule\n')
+  cat('\\hline\n')
   }  else{
-  cat('\\midrule\n')
-  cat('\\belowrulesepcolor{gray}')
-  cat('\\rowcolor[gray]{.5}{Streams and River Habitat & Length(mi)} \\\\ \n')
-  cat('\\aboverulesepcolor{gray}')
-  cat('\\midrule\n')
+  cat('\\hline\n')
+  cat('\\rowcolor[gray]{.8}{Streams and River Habitat & Length(mi)} \\\\ \n')
+  cat('\\hline\n')
     for(i in 1:nrow(aoi_HabLotic)){
     cat(paste0(aoi_HabLotic$habitat[i], '&', round(aoi_HabLotic$length_km[i], digits=1), '\\\\ \n'))
   }
-  cat('\\bottomrule\n')
+  cat('\\hline\n')
 }
 cat('\\end{tabular}\n')
-cat('\\end{flushleft}\n')
 cat('\\end{table}\n')
 @
-\vspace*{-8mm}
+\vspace*{-3mm}
 \noindent\normalsize **Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.
-\vspace{8mm} 
-<<echo=FALSE, results='asis'>>=
-if (any(aoi_HabSpecial$SpecialHabitat=="Seasonal Pool")) {
-  print("Seasonal pools are present within the site.")
-}
-if (any(aoi_HabSpecial$SpecialHabitat=="Cave")) {
-  print("Caves are present within the site.")
-}
 
-@
 
 
 \vspace{8mm}
@@ -205,7 +201,7 @@ cat('Recommended Conservation Actions/SGCN Affected \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
 for(a in action_cat){
-  cat(paste0('\\multicolumn{1}{l}{\\rowcolor[gray]{.5}',a,'}', '\\\\ \n'))
+  cat(paste0('\\multicolumn{1}{l}{\\rowcolor[gray]{.7}',a,'}', '\\\\ \n'))
   for(i in 1:nrow(actions)){
     if(actions$ActionCategory1[i] == a){
       cat(paste0(actions$COATool_Action[i], '\\\\ \n'))

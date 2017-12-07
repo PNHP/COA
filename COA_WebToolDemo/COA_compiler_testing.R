@@ -42,10 +42,10 @@ tool_exec <- function(in_params, out_params)  #
   # define parameters to be used in ArcGIS tool
   project_name = in_params[[1]]
   planning_units <- in_params[[2]]
+  #AgencyPersonnel <- in_params[[3]] 
   #project_name <- "Manual Test Project"
   #planning_units <- "C:/coa/planning_unit_test.shp"
   #planning_units <- "E:/coa2/test_pu1.shp"
-  
   print(paste("Project Name: ",project_name, sep=""))
   print(date())
   
@@ -94,15 +94,12 @@ tool_exec <- function(in_params, out_params)  #
 
   ############# Habitats  ##################################
   print("Looking up Habitats with the AOI") # report out to ArcGIS
-  
   SQLquery_HabTerr <- paste("SELECT unique_id, Code, PERCENTAGE"," FROM lu_HabTerr ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)),collapse = ", "), ")")
   aoi_HabTerr <- dbGetQuery(db, statement = SQLquery_HabTerr)
-  #calculate acres of each habitat
-  aoi_HabTerr$acres <- as.numeric(aoi_HabTerr$PERCENTAGE) * 10 # "10" is the number of acres in a planning unit
+  aoi_HabTerr$acres <- as.numeric(aoi_HabTerr$PERCENTAGE) * 10 #calculate acres of each habitat; "10" is the number of acres in a planning unit
   aoi_HabTerr$PERCENTAGE <- NULL
   # reduce by removing unique planning units
   aoi_HabTerr <- aoi_HabTerr[c(-1)] # drop the puid column
-  #colnames(aoi_HabTerr1)[colnames(aoi_HabTerr1) == 'variable'] <- 'habitat'
   aoi_HabTerr <- aggregate(aoi_HabTerr$acres, by=list(aoi_HabTerr$Code) , FUN=sum)
   colnames(aoi_HabTerr)[colnames(aoi_HabTerr) == 'Group.1'] <- 'Code'
   colnames(aoi_HabTerr)[colnames(aoi_HabTerr) == 'x'] <- 'acres'
@@ -110,7 +107,6 @@ tool_exec <- function(in_params, out_params)  #
   
   ## updated habitat information
   HabCodeList <- aoi_HabTerr$Code # 1 get the habitats
-  # 2 get the names for the habitats
   SQLquery_NamesHabTerr <- paste("SELECT Code, Habitat, Class, Macrogroup, PATTERN, FORMATION, type ", # need to change these names
                                  " FROM lu_HabitatName ","WHERE Code IN (", paste(toString(sQuote(HabCodeList)),collapse = ", "), ")")
   aoi_NamesHabTerr <- dbGetQuery(db, statement = SQLquery_NamesHabTerr)
@@ -125,7 +121,6 @@ tool_exec <- function(in_params, out_params)  #
   colnames(aoi_HabTerr)[colnames(aoi_HabTerr) == 'Group.1'] <- 'Habitat'
   colnames(aoi_HabTerr)[colnames(aoi_HabTerr) == 'x'] <- 'acres'
   aoi_HabTerr <- merge(aoi_HabTerr, aoi_NamesHabTerr, by="Habitat", all.x=FALSE)
-  
   aoi_HabTerr <- aoi_HabTerr[order(aoi_HabTerr$Macrogroup, -aoi_HabTerr$acres),]
   aoi_HabTerr$Macrogroup <- gsub('&', 'and', aoi_HabTerr$Macrogroup)
   
@@ -141,6 +136,12 @@ tool_exec <- function(in_params, out_params)  #
     aoi_HabLotic$length_km <- aoi_HabLotic$length / 1000        # convert to kilometers
     aoi_HabLotic$length_mi <- aoi_HabLotic$length * 0.000621371 # convert to miles
 
+  }
+  # special habitats such as seasonal pools and caves
+    SQLquery_HabSpecial <- paste("SELECT unique_id, SpecialHabitat"," FROM lu_SpecialHabitats ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)),collapse = ", "), ")")
+    aoi_HabSpecial <- dbGetQuery(db, statement = SQLquery_HabSpecial)
+    # pass this to the knitr for inclusion in the report.
+
   ############## PROTECTED LAND ###############
   print("Looking up Protected Land with the AOI") # report out to ArcGIS  
   SQLquery_luProtectedLand <- paste("SELECT unique_id, site_nm, manager, owner_typ", " FROM lu_ProtectedLands_25 ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
@@ -154,19 +155,11 @@ tool_exec <- function(in_params, out_params)  #
   ##############  SGCN  ########################################
   # build query to select planning units within area of interest from SGCNxPU table
   print("Looking up SGCN with the AOI") # report out to ArcGIS
-  
   SQLquery <- paste("SELECT unique_id, El_Season, OccProb, PERCENTAGE"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   # create SGCNxPU dataframe containing selected planning units
   aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery)
   colnames(aoi_sgcnXpu)[colnames(aoi_sgcnXpu) == 'El_Season'] <- 'ELSeason'
   aoi_sgcnXpu$AREA <- round((as.numeric(aoi_sgcnXpu$PERCENTAGE) * 0.1),4) # used 0.1 because the percentate ranges from 0-100 so this works to convert to 10acres
-  # report on number of records in dataframe
-  ##y = paste(nrow(aoi_sgcnXpu), "records in SGCNxPU dataframe", sep= " ")
-  ##print(y)
-  ##print(paste( length(which(aoi_sgcnXpu$OccProb=="High"))," High SGCN records in the AOI",sep="") )
-  ##print(paste( length(which(aoi_sgcnXpu$OccProb=="Medium"))," Medium SGCN records in the AOI",sep="") )
-  ##print(paste( length(which(aoi_sgcnXpu$OccProb=="Low"))," Low SGCN records in the AOI",sep="") )
-  
   # dissolve table based on elcode and season, keeping all High records  and then med/low with highest summed area within group
   # pick the highest area out of medium and low probabilities
   aoi_sgcnXpu_MedLow <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb!="High",]
@@ -198,7 +191,6 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcn$PriorityWAP <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse
   # merge species information to the planning units
   aoi_sgcnXpu_final <- merge(aoi_sgcnXpu_final, aoi_sgcn) #, by="ELSeason"
-  # aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(aoi_sgcnXpu_final$TaxaGroup),]
   # add a weight based on the Occurence probability
   aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Low"] <- 0.6
   aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Medium"] <- 0.8
@@ -218,7 +210,7 @@ tool_exec <- function(in_params, out_params)  #
   # move sensitive species to their own taxagroup
   aoi_sgcnXpu_final$TaxaGroup[aoi_sgcnXpu_final$SENSITV_SP=="Y"] <- "SenSp"
   aoi_sgcnXpu_final <- aoi_sgcnXpu_final[order(aoi_sgcnXpu_final$TaxaGroup,aoi_sgcnXpu_final$OccProb),]
- # resort to the SWAP order
+  # resort to the SWAP order
   SWAPorder <- as.matrix(  c("AB","AM","AAAB","AAAA","ARAC","ARAD","ARAA","AF","IMBIV",
      "inv_amp","inv_bees","IIHYM","inv_beetgr","inv_beetot","IICOL","inv_buttsk","IITRI","inv_cranfl","ICMAL","IIODO","inv_flatwm","IIORT","inv_isopod","IIEPH","inv_mothcw","inv_mothdg","inv_mother","IILEQ","IILEU","inv_mothsi","inv_mothnc","inv_mothnt","inv_mothot","inv_mothpa","inv_mothsa","IILEX0B","inv_mothte","inv_mothtg","IILEY89","IILEY7P","inv_sawfly","inv_snailf","inv_snailt","ILARA","IZSPN","IICLL,IIPLE","inv_trubug","SenSp") )
   TaxaGrpInAOI <- unique(aoi_sgcnXpu_final$TaxaGroup)
@@ -236,11 +228,35 @@ tool_exec <- function(in_params, out_params)  #
   
   ############## Actions  ##################################
   print("Looking up Conservation Actions with the AOI") # report out to ArcGIS
-  SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+  SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason, AgencySpecific, ConstraintWind, ConstraintShale"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_actions <- dbGetQuery(db, statement=SQLquery_actions)
   # create a table version of the actions.
   aoi_actions <- merge(aoi_actions,aoi_sgcnXpu_final,by="ELSeason")
-  aoi_actionstable <- aoi_actions[,c("ScientificName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","PriorityWAP","OccWeight" )]
+  aoi_actionstable <- aoi_actions[,c("ScientificName","CommonName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","PriorityWAP","OccWeight","AgencySpecific","ConstraintWind","ConstraintShale" )]
+  
+#  # remove actions that are agency specific
+#  if (AgencyPersonnel=="PFBC") {
+#    aoi_actionstable <- aoi_actionstable[aoi_actionstable$AgencySpecific!="PGC", ]
+#  } else if (AgencyPersonnel=="PGC") {  
+#    aoi_actionstable <- aoi_actionstable[aoi_actionstable$AgencySpecific!="PFBC", ]
+#  } else {
+#    aoi_actionstable <- aoi_actionstable[is.na(aoi_actionstable$AgencySpecific), ]
+#  }
+  
+  #remove actions that are only appropiate for wind issues when the AOI is not within the wind region.
+  if(max(aoi_Threats$WindCapability)>2 | any(aoi_Threats$WindTurbines =='y') ) { # selected class 3 and above
+    aoi_actionstable <- aoi_actionstable
+  } else {
+    aoi_actionstable <- aoi_actionstable[ is.na(aoi_actionstable$ConstraintWind) , ]
+  }
+  #remove actions that are only appropiate for shale issues when the AOI is not within the shale region.
+  if( any(aoi_Threats$ShaleGas=='y') | any(aoi_Threats$ShaleGasWell=='y') ) { 
+    aoi_actionstable <- aoi_actionstable
+  } else {
+    aoi_actionstable <- aoi_actionstable[ is.na(aoi_actionstable$ConstraintShale) , ]
+  }  
+  ################
+    
   #aoi_actionstable$OccProb <- as.numeric(aoi_actionstable$OccProb)
   aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==2] <- 0.8
   aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority==3] <- 0.6
@@ -256,25 +272,30 @@ tool_exec <- function(in_params, out_params)  #
   aoi_actionstable_Agg$quant1[aoi_actionstable_Agg$quant %in% 3] <- "High"
   aoi_actionstable_Agg$quant1[aoi_actionstable_Agg$quant %in% 2] <- "Medium"
   aoi_actionstable_Agg$quant1[aoi_actionstable_Agg$quant %in% 1] <- "Low"
-  write.csv(aoi_actionstable_Agg, "actions_by_cat.csv")
-  
+ 
   # sort the individual actions by the priority in summerized categories
-  # get sort order
   TargetOrder <- aoi_actionstable_Agg$Group.1
   actionstable_working <- aoi_actionstable
   actionstable_working$ActionCategory1 <- reorder.factor(actionstable_working$ActionCategory1,new.order=TargetOrder)
   actionstable_working <- actionstable_working %>% arrange(ActionCategory1)
-  actionstable_working <- actionstable_working[c("COATool_Action","ScientificName","ActionCategory1")]
+  actionstable_working <- actionstable_working[c("COATool_Action","CommonName","ActionCategory1")]
   actionstable_working <- unique(actionstable_working)
-  actionstable_working <- aggregate(ScientificName ~., actionstable_working, toString)
+  actionstable_working <- aggregate(CommonName ~., actionstable_working, toString)
 
   # subset for presentation
-  action_results <- actionstable_working[c("COATool_Action","ScientificName")]
+  action_results <- actionstable_working[c("COATool_Action","CommonName")]
   action_results$COATool_Action <- sanitize(action_results$COATool_Action, type="latex")
   # this does the above but for every action
   #aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)
   #write.csv(aoi_actionstable_Agg1, "actions_by_ind.csv")
 
+  ############## Agency Districts ###############
+  print("Looking up Agency Regions with the AOI") # report out to ArcGIS
+  SQLquery_luAgency <- paste("SELECT unique_id, pgc_DistNum, pgc_RegionID, pgc_Region, pgc_District, pfbc_Name, pfbc_Region, pfbc_District, dcnr_DistrictNum, dcnr_DistrictName "," FROM lu_AgencyDistricts ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
+  aoi_Agency <- dbGetQuery(db, statement = SQLquery_luAgency )
+  aoi_Agency$unique_id <- NULL
+  aoi_Agency <- unique(aoi_Agency)
+  
   ##############  report generation  #######################
   print("Generating the PDF report...") # report out to ArcGIS
   setwd(working_directory)
@@ -290,11 +311,14 @@ tool_exec <- function(in_params, out_params)  #
     }
   }
   # disconnect the SQL database
-  dbDisconnect(db)  #### This seems to be causing a crash.
-  #open the pdf
+  dbDisconnect(db)
+  # create and open the pdf
   pdf.path <- paste(working_directory, paste("results_",Sys.Date(), ".pdf",sep=""), sep="/")
   system(paste0('open "', pdf.path, '"'))
   
+  ############# Add statisical information the database ##############################
+  
+  
   # close out tool
   }
-}
+

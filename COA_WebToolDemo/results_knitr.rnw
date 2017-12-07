@@ -192,7 +192,7 @@ dev.off()
 
 <<label=longtable1, echo=FALSE, results='asis'>>=
 actions <- actionstable_working
-actions$ScientificName <- paste("\\textit{",actions$ScientificName,"}", sep="")
+actions$CommonName <- paste("\\textit{",actions$CommonName,"}", sep="")
 actions$COATool_Action <- gsub("&", "and", actions$COATool_Action)
 action_cat <- unique(actions$ActionCategory1)
 cat('\\begin{longtable}{p{7in}}\n')
@@ -205,7 +205,7 @@ for(a in action_cat){
   for(i in 1:nrow(actions)){
     if(actions$ActionCategory1[i] == a){
       cat(paste0(actions$COATool_Action[i], '\\\\ \n'))
-      cat(paste0('\\hspace{5mm}', actions$ScientificName[i], '\\\\ \n'))
+      cat(paste0('\\hspace{5mm}', actions$CommonName[i], '\\\\ \n'))
     }
   }
 }
@@ -216,6 +216,13 @@ cat('\\end{longtable}\n')
 \vspace{10mm}
 
 \noindent\large\textbf{Want more information or have questions? Please contact:} \\
+\noindent\normalsize 
+
+This AOI is within the following PFBC and PGC districts:\\
+<<echo=FALSE, results='asis'>>=
+print( paste("PGC District: ",aoi_Agency$pgc_DistNum,"\\\\ \n", sep="")  )
+print( paste("PFBC District: ",aoi_Agency$pfbc_Name, "\\\\ \n", sep="")  )
+@
 
 \noindent\begin{minipage}{0.1\textwidth}
 \includegraphics[scale=0.35]{pgc}

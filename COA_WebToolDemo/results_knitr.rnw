@@ -10,8 +10,28 @@
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \usepackage{colortbl, xcolor}
 \usepackage{booktabs}
+\usepackage{hyperref}
 
-\geometry{letterpaper, top=0.45in, bottom=0.75in, left=0.75in, right=0.75in}
+\newcommand*{\belowrulesepcolor}[1]{%
+  \noalign{%
+    \kern-\belowrulesep
+    \begingroup
+      \color{#1}%
+      \hrule height\belowrulesep
+    \endgroup
+  }%
+}
+\newcommand*{\aboverulesepcolor}[1]{%
+  \noalign{%
+    \begingroup
+      \color{#1}%
+      \hrule height\aboverulesep
+    \endgroup
+    \kern-\aboverulesep
+  }%
+}
+
+\geometry{letterpaper, top=0.45in, bottom=0.75in, left=0.5in, right=0.5in}
 \pagestyle{fancy} \fancyhf{} \renewcommand\headrulewidth{0pt} %strip default header/footer stuff
 
 %add footers
@@ -24,66 +44,127 @@
 \begin{document}
 
 \noindent\begin{minipage}{0.6\textwidth}
-\LARGE Conservation Action Mapping \\
-\normalsize Pennsylvania State Wildlife Action Plan \\
-Project name: \Sexpr{as.character(project_name)} \\
-Date: \Sexpr{format(Sys.Date(), "%d %b %Y")} \\~\\~\\  
+\LARGE\textbf{Conservation Action Mapping} \\
+\normalsize Pennsylvania Wildlife Action Plan \\
+Project Name: \Sexpr{as.character(project_name)} \\
+Project Date: \Sexpr{format(Sys.Date(), "%d %b %Y")} \\~\\~\\  
 \end{minipage}%
 \hfill
 \noindent\begin{minipage}{0.3\textwidth}\raggedleft
-\includegraphics[width=\linewidth]{logo} \\~\\~\\
+\includegraphics[width=\linewidth]{logo} \\
 \end{minipage}
 
+\noindent\begin{minipage}{0.3\textwidth}
+\framebox(200,125){**Placeholder for AOI Map**}
+\end{minipage}%
+\hfill
+\noindent\begin{minipage}{.6\textwidth}
 \noindent\normalsize \Sexpr{as.character(area_pu_total)} \\
-Counties: \Sexpr{as.character(counties)} \\
-\Sexpr{as.character(w)} \\
-\Sexpr{as.character(v)} \\
-\Sexpr{as.character(u1)} \\
-\Sexpr{as.character(u2)} 
-
-\noindent\normalsize \\
-The following table shows the distribution of habitats across the overlapping planning units. Habitats (i.e. ecological systems) are grouped by the macrogroup. For more information habitats, please see the 2015 Pennsylvania Wildlife Action Plan.\\
-
+Counties: \Sexpr{as.character(str_to_title(counties))} \\
+\Sexpr{as.character(gsub(" --", ":", w))} \\
+\Sexpr{as.character(gsub(" --", ":", v))} \\
 <<echo=FALSE, results='asis'>>=
-keeps <- c("Habitat","acres")
-xt <- xtable(aoi_HabTerr[keeps], 
-             caption = 'Habitat type within area of interest',
-             align="llr")
-names(xt) <- c("Habitat","Area(ac)")
-print(xt,
-      latex.environments= c("flushleft"),
-      caption.placement="top",
-      add.to.row = addtorow,
-      include.rownames=FALSE) 
-
-
+cat('HUC8: ')
+cat(paste0(unique(aoi_HUC$HUC8name), collapse=", ", "\\\\"))
+cat('HUC12: ')
+cat(paste0(aoi_HUC$HUC12name, collapse=", "))
 @
+\vspace{20mm}
+\end{minipage}
 
-\noindent\normalsize 
-\Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) have been identified as either occuring or potentially occurring within the Area of Interest.\\
+\vspace{8mm}
+
+\noindent\Large\textbf{Species of Greatest Conservation Need} \\
+\noindent\normalsize The table below shows \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) that have been identified as either occurring or potentially occurring within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}.\\
 
 <<label=longtable, echo=FALSE, results='asis'>>=
-keeps <- c("SCOMNAME", "SNAME", "SeasonCode", "OccProb")
-sp.xt <- xtable(aoi_sgcnXpu_final[keeps], 
-                caption = 'Occurrence probability of species of greatest conservation need within the chosen area of interest',
-                align= "lp{2.25in}p{2.25in}p{.5in}p{1.4in}") 
-names(sp.xt) <- c("Common Name", "Scientific Name", "Season", "Occurrence Probability")  
-print(sp.xt,
-      floating= FALSE,
-      latex.environments= c("flushleft"),
-      tabular.environment = "longtable",
-      caption.placement= "top",
-      include.rownames= FALSE,
-      hline.after = c(-1,nrow(aoi_sgcn_results)),
-      add.to.row = list(pos = list(0),command = "\\hline \\endhead "))
+sgcn <- aoi_sgcnXpu_final
+sgcn$TaxaGroup <- lu_taxagrp[,3][match(sgcn$TaxaGroup, lu_taxagrp[,1])]
+taxa <- unique(sgcn$TaxaGroup)
+cat('\\begin{longtable}{p{2.5in}p{2in}p{.75in}p{1.5in}}\n')
+cat('\\toprule\n')
+cat('Common Name & Scientific Name & Season & Occurrence Probability \\\\ \n')
+cat('\\midrule\n')
+cat('\\endhead\n')
+for(t in taxa){
+  if(t=="Bird"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.pgc.pa.gov/Wildlife/WildlifeActionPlan/Documents/SWAP-CHAPTER-1-apx14a-birds.pdf}{',t,'}}', '\\\\ \n'))}
+  else if(t=="Fish"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14e-fish.pdf}{',t,'}}', '\\\\ \n'))}
+  else if(t=="Mammal"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.pgc.pa.gov/Wildlife/WildlifeActionPlan/Documents/SWAP-CHAPTER-1-apx14b-mammals.pdf}{',t,'}}', '\\\\ \n'))}
+  else if(t=="Frog" | t=="Salamander"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14c-amp.pdf}{',t,'}}', '\\\\ \n'))}
+  else if(t=="Invertebrate - Mussels"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14f-mussels.pdf}{',t,'}}', '\\\\ \n'))}
+  else if(t=="Lizard" | t=="Snake" | t=="Turtle"){
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14d-reptiles.pdf}{',t,'}}', '\\\\ \n'))}
+  else{
+    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}',t,'}', '\\\\ \n'))}
+  for(i in 1:nrow(sgcn)){
+    if(sgcn$TaxaGroup[i] == t){
+      cat(paste0('\\hspace{5mm}',sgcn$SCOMNAME[i],'&',sgcn$SNAME[i],'&',sgcn$SeasonCode[i],'&',sgcn$OccProb[i],'\\\\ \n'))
+    }
+  }
+}
+cat('\\bottomrule\n')
+cat('\\end{longtable}\n')
 @
-\noindent\normalsize 
-Additionally, the following SGCN are noted as having a low probability of occurence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but a additional survey work should be done to confirm their presence.
-\\
+\vspace*{-4mm}
+\noindent\normalsize Additionally, the following SGCN have been identified as having a low probability of occurrence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence.\\
+\newpage 
+\vspace{8mm}
 
-\vspace{5mm}
-\noindent\normalsize 
-The following chart indicates a priorization of the actions across all SGCN within the Area of Interest. Action categories with high Action Impact Score (AIS) values are considered to have the most benefit(?) for the SGCN at the site. The AIS is calculated as the product of the probability of occurence, SGCN priority, and the Action Priority and ranges from 0 to 1.  \\
+\noindent\Large\textbf{Habitat} \\
+\normalsize The following table shows the distribution of habitats that intersect the planning units within your area of interest. Terrestrial and wetland habitats (i.e. ecological systems) are categorized by their macrogroup. For more information about habitats, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 2} and for complete habitat descriptions, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2-apx21-22.pdf}{Northeast Terrestrial and Aquatic Habitat Descriptions, Appendix 2.1}  \\
+
+<<echo=FALSE, results='asis'>>=
+keeps <- c("Macrogroup", "Habitat", "acres")
+hab <- aoi_HabTerr[keeps]
+macros <- unique(hab$Macrogroup)
+cat('\\setlength{\\LTleft}{0pt}\n')
+cat('\\begin{table}[ht]\n')
+cat('\\centering\n')
+cat('\\begin{tabular}{lr}\n')
+cat('\\hline\n')
+cat('\\rowcolor[gray]{.8}{Terrestrial and Wetland Habitat & Area(ac)} \\\\ \n')
+cat('\\hline\n')
+for(m in macros){
+  cat(paste0('\\multicolumn{2}{l}{',m,'}', '\\\\ \n'))
+  for(i in 1:nrow(hab)){
+    if(hab$Macrogroup[i] == m){
+      cat(paste0('\\hspace{5mm}',hab$Habitat[i],'&',hab$acres[i], '\\\\ \n'))
+    }
+  }
+}
+if(nrow(aoi_HabLotic) == 0){
+  cat('\\hline\n')
+  cat('\\rowcolor[gray]{.8}{Streams and River Habitat & Length(mi)} \\\\ \n')
+  cat('\\hline\n')
+  cat('No stream or river habitat is present in area of interest \\\\ \n')
+  cat('\\hline\n')
+  }  else{
+  cat('\\hline\n')
+  cat('\\rowcolor[gray]{.8}{Streams and River Habitat & Length(mi)} \\\\ \n')
+  cat('\\hline\n')
+    for(i in 1:nrow(aoi_HabLotic)){
+    cat(paste0(aoi_HabLotic$habitat[i], '&', round(aoi_HabLotic$length_km[i], digits=1), '\\\\ \n'))
+  }
+  cat('\\hline\n')
+}
+cat('\\end{tabular}\n')
+cat('\\end{table}\n')
+@
+\vspace*{-3mm}
+\noindent\normalsize **Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.
+
+
+
+\vspace{8mm}
+
+\noindent\Large\textbf{Conservation Actions} \\
+\noindent\normalsize The following bar chart indicates a priorization of the actions across all SGCN within the area of interest. Action categories with high Action Impact Score (AIS) values are considered to have the highest relative benefit(?) for the SGCN within the area of interest. The AIS ranges from 0 to 1, and is calculated as the product of the probability of occurrence, SGCN priority, and the Action Priority. For more information about conservation actions, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-4.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 4}.\\
+
 <<echo=FALSE, results='hide'>>=
 setwd(working_directory)
 # wrap the labels so the chart is smaller
@@ -106,25 +187,30 @@ dev.off()
   \end{raggedleft}
 \end{figure}
 
-\vspace{5mm}
-\noindent\normalsize
+\noindent\normalsize The following table includes more specific actions appropriate for SGCN within the area of interest. Actions are ordered by the relative impact of their broader action category. If an action is appropiate for more than one SGCN, they have been compiled across species.
 
-The following is the list of actions appropiate for each SGCN within the Area of Interest. If an Action is appropiate for more than one SGCN, they have been compiled across species.
 
-<<echo=FALSE, results='asis'>>=
-##
-names(action_results) <- c("Specific Action","ScientificName")
-ac.xt <- xtable(action_results, caption='Recommended conservation actions within the chosen area of interest', align="lp{5.0in}p{2.0in}")
-print(ac.xt,
-      floating=FALSE,
-      booktabs=TRUE,
-      latex.environments= c("flushleft"),
-      tabular.environment= "longtable",
-      caption.placement= "top",
-      add.to.row = addtorow_Actions,
-      include.rownames= FALSE
-      #hline.after = c(-1,nrow(ac.xt))
-)
+<<label=longtable1, echo=FALSE, results='asis'>>=
+actions <- actionstable_working
+actions$ScientificName <- paste("\\textit{",actions$ScientificName,"}", sep="")
+actions$COATool_Action <- gsub("&", "and", actions$COATool_Action)
+action_cat <- unique(actions$ActionCategory1)
+cat('\\begin{longtable}{p{7in}}\n')
+cat('\\toprule\n')
+cat('Recommended Conservation Actions/SGCN Affected \\\\ \n')
+cat('\\midrule\n')
+cat('\\endhead\n')
+for(a in action_cat){
+  cat(paste0('\\multicolumn{1}{l}{\\rowcolor[gray]{.7}',a,'}', '\\\\ \n'))
+  for(i in 1:nrow(actions)){
+    if(actions$ActionCategory1[i] == a){
+      cat(paste0(actions$COATool_Action[i], '\\\\ \n'))
+      cat(paste0('\\hspace{5mm}', actions$ScientificName[i], '\\\\ \n'))
+    }
+  }
+}
+cat('\\bottomrule\n')
+cat('\\end{longtable}\n')
 @
 
 \vspace{10mm}

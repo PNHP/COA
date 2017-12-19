@@ -30,11 +30,11 @@ tool_exec <- function(in_params, out_params)  #
   options(useFancyQuotes = FALSE)
   
   # Chris variables
-  #databasename <- "E:/coa2/coa_bridgetest.sqlite" #Chris' database path
-  #working_directory <- "E:/coa2/COA/COA_WebToolDemo"
+  databasename <- "E:/coa2/coa_bridgetest.sqlite" #Chris' database path
+  working_directory <- "E:/coa2/COA/COA_WebToolDemo"
   # Molly variables
-  databasename <- "C:/coa/coa_bridgetest.sqlite" #Molly's database path
-  working_directory <- "C:/coa/script_tool" #folder location of .rnw script and .png files
+  #databasename <- "C:/coa/coa_bridgetest.sqlite" #Molly's database path
+  #working_directory <- "C:/coa/script_tool" #folder location of .rnw script and .png files
   
   # Latex Formating Variables
   col <- "\\rowcolor[gray]{.7}" # for table row groups  https://en.wikibooks.org/wiki/LaTeX/Colors
@@ -299,6 +299,10 @@ tool_exec <- function(in_params, out_params)  #
   ##############  report generation  #######################
   print("Generating the PDF report...") # report out to ArcGIS
   setwd(working_directory)
+  
+  env <- arc.env()
+  
+  
   #write the pdf
   knit2pdf(paste(working_directory,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
   #delete excess files from the pdf creation

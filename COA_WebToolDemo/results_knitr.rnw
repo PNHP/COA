@@ -12,6 +12,8 @@
 \usepackage{booktabs}
 \usepackage{hyperref}
 
+\graphicspath{{E:/coa2/COA/COA_WebToolDemo/images/}}
+
 \newcommand*{\belowrulesepcolor}[1]{%
   \noalign{%
     \kern-\belowrulesep
@@ -112,7 +114,7 @@ cat('\\end{longtable}\n')
 @
 \vspace*{-4mm}
 \noindent\normalsize Additionally, the following SGCN have been identified as having a low probability of occurrence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence.\\
-\newpage 
+
 \vspace{8mm}
 
 \noindent\Large\textbf{Habitat} \\
@@ -163,29 +165,7 @@ cat('\\end{table}\n')
 \vspace{8mm}
 
 \noindent\Large\textbf{Conservation Actions} \\
-\noindent\normalsize The following bar chart indicates a priorization of the actions across all SGCN within the area of interest. Action categories with high Action Impact Score (AIS) values are considered to have the highest relative benefit(?) for the SGCN within the area of interest. The AIS ranges from 0 to 1, and is calculated as the product of the probability of occurrence, SGCN priority, and the Action Priority. For more information about conservation actions, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-4.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 4}.\\
 
-<<echo=FALSE, results='hide'>>=
-setwd(working_directory)
-# wrap the labels so the chart is smaller
-# Core wrapping function
-wrap.it <- function(x, len){ sapply(x, function(y) paste(strwrap(y, len),collapse = "\n"),USE.NAMES = FALSE) }
-wrap.labels <- function(x, len){ if (is.list(x))  {lapply(x, wrap.it, len)} else {wrap.it(x, len)}}
-wrappedLabels <- wrap.labels(aoi_actionstable_Agg$Group.1,28) # wrap break is at 28 characters, adjust as needed
-#make the bar chart
-png(filename="priorityactions.png", width=7, height=6, units="in", res=400, pointsize=10)
-par(mar=c(10,3,4,2))
-bars <- barplot(aoi_actionstable_Agg$x, col=c("orange"))
-title("Priority of Conservation Action Categories:", adj=0, line=2)
-text(bars, par("usr")[3], labels=wrappedLabels, srt=75, adj=c(1,1),xpd=TRUE, cex=.9)
-dev.off()
-@
-
-\begin{figure}[H]
-  \begin{raggedleft}
-    \includegraphics[scale=1]{priorityactions}
-  \end{raggedleft}
-\end{figure}
 
 \noindent\normalsize The following table includes more specific actions appropriate for SGCN within the area of interest. Actions are ordered by the relative impact of their broader action category. If an action is appropiate for more than one SGCN, they have been compiled across species.
 

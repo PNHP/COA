@@ -301,10 +301,26 @@ tool_exec <- function(in_params, out_params)  #
   setwd(working_directory)
   
   env <- arc.env()
+  print(env$scratchWorkspace)
+  env$scratchWorkspace <- working_directory  # comment this out
+  wdenv <- env$scratchWorkspace
   
+  #library(reticulate)
+  #use_python("C:/Program Files/ArcGIS/Pro/bin/Python/envs/arcgispro-py3")
+  #py_available()
+  #py_module_available(arcpy)
+  #import(arcpy)
+  #py_run_file()
+  
+  output = system2("C:/Python27/ArcGIS10.5/python.exe", args="E:/coa2/COA/COA_WebToolDemo/pathgetter.py", stdout=TRUE)
+  
+  #py_discover_config()
+   # py_config()
+  
+  tmp <- system("C:/Python27/ArcGIS10.5/python.exe -c 'E:/coa2/COA/COA_WebToolDemo/pathgetter.py'", intern=TRUE)
   
   #write the pdf
-  knit2pdf(paste(working_directory,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
+  knit2pdf(paste(wdenv,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
   #delete excess files from the pdf creation
   fn_ext <- c(".tex",".log",".aux",".out")
   for(i in 1:NROW(fn_ext)){
@@ -317,7 +333,7 @@ tool_exec <- function(in_params, out_params)  #
   # disconnect the SQL database
   dbDisconnect(db)
   # create and open the pdf
-  pdf.path <- paste(working_directory, paste("results_",Sys.Date(), ".pdf",sep=""), sep="/")
+  pdf.path <- paste(wdenv, paste("results_",Sys.Date(), ".pdf",sep=""), sep="/")
   system(paste0('open "', pdf.path, '"'))
   
   ############# Add statisical information the database ##############################

@@ -297,22 +297,20 @@ tool_exec <- function(in_params, out_params)  #
   print("Generating the PDF report...") # report out to ArcGIS
   setwd(working_directory)
   
-  env <- arc.env()
-  print(env$scratchWorkspace)
-  env$scratchWorkspace <- working_directory  # comment this out
-  wdenv <- env$scratchWorkspace
+  #env <- arc.env()
+  #print(env$scratchWorkspace)
+  #env$scratchWorkspace <- working_directory  # comment this out
+  #wdenv <- env$scratchWorkspace
   
-  output = system2("C:/Python27/ArcGIS10.5/python.exe", args="E:/coa2/COA/COA_WebToolDemo/pathgetter.py", stdout=TRUE)
+  #output = system2("C:/Python27/ArcGIS10.5/python.exe", args="E:/coa2/COA/COA_WebToolDemo/pathgetter.py", stdout=TRUE)
   
 #  tmp <- system("C:/Python27/ArcGIS10.5/python.exe -c 'E:/coa2/COA/COA_WebToolDemo/pathgetter.py'", intern=TRUE)
   
   #write the pdf
-  
   daytime <-gsub("[^0-9]", "", Sys.time() )    
   username <- gsub("@.*","",recipients)
   
-  
-  knit2pdf(paste(wdenv,"results_knitr.rnw",sep="/"), output=paste("results_",username,"_",daytime, ".tex",sep=""))
+  knit2pdf(paste(working_directory,"results_knitr.rnw",sep="/"), output=paste("results_",username,"_",daytime, ".tex",sep=""))
   #delete excess files from the pdf creation
   fn_ext <- c(".tex",".log",".aux",".out")
   for(i in 1:NROW(fn_ext)){
@@ -325,7 +323,8 @@ tool_exec <- function(in_params, out_params)  #
   # disconnect the SQL database
   dbDisconnect(db)
   # create and open the pdf
-  pdf.path <- paste(wdenv, paste("results_",username,"_",daytime, ".pdf",sep=""), sep="/")
+  ## pdf.path <- paste(wdenv, paste("results_",username,"_",daytime, ".pdf",sep=""), sep="/")
+  pdf.path <- paste(working_directory, paste("results_",username,"_",daytime, ".pdf",sep=""), sep="/")
   # system(paste0('open "', pdf.path, '"'))   ## turn off when emailing results.
 
   
@@ -339,8 +338,8 @@ tool_exec <- function(in_params, out_params)  #
     email <- send.mail(from = sender,
                      to = recipients,
                      subject="COA Tool Results",
-                     body = "Attached are you COA Tool Results.",
-                     smtp = list(host.name = "smtp.googlemail.com", port=465, user.name="pacoatest",passwd="", ssl=TRUE),
+                     body = "Attached are you COA Tool Results.\n Please note that these are draft results for testing purposes.",
+                     smtp = list(host.name = "smtp.googlemail.com", port=465, user.name="pacoatest",passwd="U8ABTLet", ssl=TRUE),
                      authenticate = TRUE,
                      attach.files = pdf.path,
                      send = TRUE)  # change from F to T to get the tool to run

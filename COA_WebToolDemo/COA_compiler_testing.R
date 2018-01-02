@@ -4,28 +4,23 @@ tool_exec <- function(in_params, out_params)  #
   #arc.check_product()
   
   # check and load required libraries  
-  if (!requireNamespace("RSQLite", quietly = TRUE))
-    install.packages("RSQLite")
+  if (!requireNamespace("RSQLite", quietly = TRUE)) install.packages("RSQLite")
   require(RSQLite)
-  if (!requireNamespace("knitr", quietly = TRUE))
-    install.packages("knitr")
+  if (!requireNamespace("knitr", quietly = TRUE)) install.packages("knitr")
   require(knitr)
-  if (!requireNamespace("data.table", quietly = TRUE))
-    install.packages("data.table")
+  if (!requireNamespace("data.table", quietly = TRUE)) install.packages("data.table")
   require(data.table)
-  if (!requireNamespace("xtable", quietly = TRUE))
-    install.packages("xtable")
+  if (!requireNamespace("xtable", quietly = TRUE)) install.packages("xtable")
   require(xtable)
-  if (!requireNamespace("gdata", quietly = TRUE))
-    install.packages("gdata")
+  if (!requireNamespace("gdata", quietly = TRUE)) install.packages("gdata")
   require(gdata)
-  if (!requireNamespace("dplyr", quietly = TRUE))
-    install.packages("dplyr")
+  if (!requireNamespace("dplyr", quietly = TRUE)) install.packages("dplyr")
   require(dplyr)
-  if (!requireNamespace("lettercase", quietly = TRUE))
-    install.packages("lettercase")
+  if (!requireNamespace("lettercase", quietly = TRUE)) install.packages("lettercase")
   require(lettercase)
-  
+  if (!requireNamespace("mailR", quietly = TRUE)) install.packages("mailR")
+  require(mailR)  
+ 
   # options   
   options(useFancyQuotes = FALSE)
   
@@ -40,8 +35,10 @@ tool_exec <- function(in_params, out_params)  #
   col <- "\\rowcolor[gray]{.7}" # for table row groups  https://en.wikibooks.org/wiki/LaTeX/Colors
   
   # define parameters to be used in ArcGIS tool
-  project_name = in_params[[1]]
+  project_name <- in_params[[1]]
   planning_units <- in_params[[2]]
+  recipients <- in_params[[3]]
+  
   #AgencyPersonnel <- in_params[[3]] 
   #project_name <- "Manual Test Project"
   #planning_units <- "C:/coa/planning_unit_test.shp"
@@ -305,22 +302,17 @@ tool_exec <- function(in_params, out_params)  #
   env$scratchWorkspace <- working_directory  # comment this out
   wdenv <- env$scratchWorkspace
   
-  #library(reticulate)
-  #use_python("C:/Program Files/ArcGIS/Pro/bin/Python/envs/arcgispro-py3")
-  #py_available()
-  #py_module_available(arcpy)
-  #import(arcpy)
-  #py_run_file()
-  
   output = system2("C:/Python27/ArcGIS10.5/python.exe", args="E:/coa2/COA/COA_WebToolDemo/pathgetter.py", stdout=TRUE)
   
-  #py_discover_config()
-   # py_config()
-  
-  tmp <- system("C:/Python27/ArcGIS10.5/python.exe -c 'E:/coa2/COA/COA_WebToolDemo/pathgetter.py'", intern=TRUE)
+#  tmp <- system("C:/Python27/ArcGIS10.5/python.exe -c 'E:/coa2/COA/COA_WebToolDemo/pathgetter.py'", intern=TRUE)
   
   #write the pdf
-  knit2pdf(paste(wdenv,"results_knitr.rnw",sep="/"), output=paste("results_",Sys.Date(), ".tex",sep=""))
+  
+  daytime <-gsub("[^0-9]", "", Sys.time() )    
+  username <- gsub("@.*","",recipients)
+  
+  
+  knit2pdf(paste(wdenv,"results_knitr.rnw",sep="/"), output=paste("results_",username,"_",daytime, ".tex",sep=""))
   #delete excess files from the pdf creation
   fn_ext <- c(".tex",".log",".aux",".out")
   for(i in 1:NROW(fn_ext)){
@@ -333,8 +325,27 @@ tool_exec <- function(in_params, out_params)  #
   # disconnect the SQL database
   dbDisconnect(db)
   # create and open the pdf
-  pdf.path <- paste(wdenv, paste("results_",Sys.Date(), ".pdf",sep=""), sep="/")
-  system(paste0('open "', pdf.path, '"'))
+  pdf.path <- paste(wdenv, paste("results_",username,"_",daytime, ".pdf",sep=""), sep="/")
+  # system(paste0('open "', pdf.path, '"'))   ## turn off when emailing results.
+
+  
+  # email the pdf to the user
+# https://myaccount.google.com/lesssecureapps?rfn=27&rfnc=1&eid=-7064655018791181504&et=1&asae=2&pli=1 ### need to turn this on.
+  
+  sender <- "pacoatest@gmail.com" # Replace with a valid address
+  #recipients <- c("ctracey@paconserve.org") # Replace with one or more valid addresses
+  isValidEmail <- function(x) {grepl("\\<[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\>", as.character(x), ignore.case=TRUE)} # move to earlier in the script
+  if (isValidEmail(recipients)==TRUE){ 
+    email <- send.mail(from = sender,
+                     to = recipients,
+                     subject="COA Tool Results",
+                     body = "Attached are you COA Tool Results.",
+                     smtp = list(host.name = "smtp.googlemail.com", port=465, user.name="pacoatest",passwd="", ssl=TRUE),
+                     authenticate = TRUE,
+                     attach.files = pdf.path,
+                     send = TRUE)  # change from F to T to get the tool to run
+  }
+  
   
   ############# Add statisical information the database ##############################
   

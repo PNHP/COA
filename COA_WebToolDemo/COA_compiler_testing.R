@@ -297,58 +297,57 @@ tool_exec <- function(in_params, out_params)  #
   print("Generating the PDF report...") # report out to ArcGIS
   setwd(working_directory)
   
-  #env <- arc.env()
-  #print(env$scratchWorkspace)
-  #env$scratchWorkspace <- working_directory  # comment this out
-  #wdenv <- env$scratchWorkspace
-  
-  #output = system2("C:/Python27/ArcGIS10.5/python.exe", args="E:/coa2/COA/COA_WebToolDemo/pathgetter.py", stdout=TRUE)
-  
-#  tmp <- system("C:/Python27/ArcGIS10.5/python.exe -c 'E:/coa2/COA/COA_WebToolDemo/pathgetter.py'", intern=TRUE)
-  
   #write the pdf
-  daytime <-gsub("[^0-9]", "", Sys.time() )    
-  username <- gsub("@.*","",recipients)
+  daytime <-gsub("[^0-9]", "", Sys.time() )    # makes a report time variable
+  username <- gsub("@.*","",recipients)        # strips out the username from the user's email address
   
   knit2pdf(paste(working_directory,"results_knitr.rnw",sep="/"), output=paste("results_",username,"_",daytime, ".tex",sep=""))
   #delete excess files from the pdf creation
   fn_ext <- c(".tex",".log",".aux",".out")
   for(i in 1:NROW(fn_ext)){
-    fn <- paste("results_",Sys.Date(),fn_ext[i],sep="")
+    fn <- paste("results_",username,"_",daytime, fn_ext[i],sep="")
     if (file.exists(fn)){ 
       file.remove(fn)
       # print(paste("Deleted ", fn,"from directory") )
     }
   }
-  # disconnect the SQL database
-  dbDisconnect(db)
+
   # create and open the pdf
-  ## pdf.path <- paste(wdenv, paste("results_",username,"_",daytime, ".pdf",sep=""), sep="/")
   pdf.path <- paste(working_directory, paste("results_",username,"_",daytime, ".pdf",sep=""), sep="/")
   # system(paste0('open "', pdf.path, '"'))   ## turn off when emailing results.
 
-  
   # email the pdf to the user
-# https://myaccount.google.com/lesssecureapps?rfn=27&rfnc=1&eid=-7064655018791181504&et=1&asae=2&pli=1 ### need to turn this on.
-  
+  # https://myaccount.google.com/lesssecureapps?rfn=27&rfnc=1&eid=-7064655018791181504&et=1&asae=2&pli=1 ### need to turn this on.
   sender <- "pacoatest@gmail.com" # Replace with a valid address
+  emailbody <- "email_body.html"
   #recipients <- c("ctracey@paconserve.org") # Replace with one or more valid addresses
-  isValidEmail <- function(x) {grepl("\\<[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\>", as.character(x), ignore.case=TRUE)} # move to earlier in the script
+  isValidEmail <- function(x) {grepl("\\<[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\>", as.character(x), ignore.case=TRUE)} # move to earlier in the script ??
   if (isValidEmail(recipients)==TRUE){ 
-    email <- send.mail(from = sender,
-                     to = recipients,
-                     subject="COA Tool Results",
-                     body = "Attached are you COA Tool Results.\n Please note that these are draft results for testing purposes.",
-                     smtp = list(host.name = "smtp.googlemail.com", port=465, user.name="pacoatest",passwd="U8ABTLet", ssl=TRUE),
-                     authenticate = TRUE,
-                     attach.files = pdf.path,
-                     send = TRUE)  # change from F to T to get the tool to run
+          email <- send.mail(from=sender,
+          to=recipients,
+          subject= paste("COA Tool Results - ",project_name,sep="")  ,
+          html=TRUE,
+          inline = TRUE,
+          body=emailbody, #"Attached are your COA Tool Results.\n Please note that these are draft results for testing purposes.",
+          smtp=list(host.name="smtp.googlemail.com", port=465, user.name="pacoatest",passwd="U8ABTLet", ssl=TRUE),
+          authenticate=TRUE,
+          attach.files=pdf.path,
+          send=TRUE)  # change from F to T to get the tool to run
   }
+  print("Email sent")
   
+  ############# Add statistical information the database ##############################
+  PlanningUnits <- paste(as.character(selected_pu$unique_id), collapse="|")
+  PlanningUnits <- paste("'",PlanningUnits,"'", sep="")
+  SQLquery <- paste("INSERT INTO results_testing VALUES (", 
+                    paste("'",project_name,"'", sep="")
+                    , ",",PlanningUnits,",",paste("'results_",username,"_",daytime, ".pdf'",sep=""),
+                      ");", sep = "")
+  dbExecute(db, SQLquery)
   
-  ############# Add statisical information the database ##############################
-  
-  
+  # disconnect the SQL database
+  dbDisconnect(db)
+    
   # close out tool
   }
 

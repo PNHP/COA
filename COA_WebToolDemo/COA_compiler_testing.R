@@ -329,7 +329,7 @@ tool_exec <- function(in_params, out_params)  #
           html=TRUE,
           inline = TRUE,
           body=emailbody, #"Attached are your COA Tool Results.\n Please note that these are draft results for testing purposes.",
-          smtp=list(host.name="smtp.googlemail.com", port=465, user.name="pacoatest",passwd="U8ABTLet", ssl=TRUE),
+          smtp=list(host.name="smtp.googlemail.com", port=465, user.name="pacoatest",passwd="", ssl=TRUE),
           authenticate=TRUE,
           attach.files=pdf.path,
           send=TRUE)  # change from F to T to get the tool to run

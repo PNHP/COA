@@ -12,7 +12,8 @@
 \usepackage{booktabs}
 \usepackage{hyperref}
 
-\graphicspath{{E:/coa2/COA/COA_WebToolDemo/images/}}
+\graphicspath{{\Sexpr{as.character(graphics_path)}}}
+
 
 \newcommand*{\belowrulesepcolor}[1]{%
   \noalign{%
@@ -115,6 +116,14 @@ cat('\\end{longtable}\n')
 \vspace*{-4mm}
 \noindent\normalsize Additionally, the following SGCN have been identified as having a low probability of occurrence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence.\\
 
+\vspace{4mm}
+Occurence probability defintions are as follows:
+\begin{itemize}
+\item \underline{High} - Planning units that are attributed as have a high probability of occurrence for a particular SGCN mean that there is a confirmed occurrence or observation of an SGCN within the hexagon.
+\item \underline{Medium} - Planning units attributed as medium are typically based on distribution models or similar datasets. We try to use the upper probabilities (eg. upper third?) of the model in this class.
+\item \underline{Low} - this is similar to the medium probability but the middle third of probabilities are included. We do not typically assign the lower third of a model's probabilities to a SGCN Occurrence probability.
+\end{itemize}
+
 \vspace{8mm}
 
 \noindent\Large\textbf{Habitat} \\
@@ -159,8 +168,19 @@ cat('\\end{table}\n')
 @
 \vspace*{-3mm}
 \noindent\normalsize **Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.
-
-
+\noindent\normalsize
+The following table lists specific habitat requirements for each species.
+<<echo=FALSE, results='asis'>>=
+cat('\\begin{longtable}{p{1.5in}p{5.5in}}\n')
+#cat('\\centering\n')
+cat('\\rowcolor[gray]{.8}{SGCN & Specific Habitat Requirements} \\\\ \n')
+cat('\\hline\n')
+for(i in 1:nrow(aoi_SpecificHab)){
+  cat(paste0(aoi_SpecificHab$SCOMNAME[i] , '&', aoi_SpecificHab$SpecificHabitatRequirements[i]), '\\\\ \n') # paste(aoi_SpecificHab$SCOMNAME[i],"\\break (\\textit{",aoi_SpecificHab$SNAME[i],"})",sep="")
+}
+cat('\\hline\n')
+cat('\\end{longtable}\n')
+@
 
 \vspace{8mm}
 

@@ -1,7 +1,7 @@
 tool_exec <- function(in_params, out_params)  #
 {
-  #library(arcgisbinding)
-  #arc.check_product()
+  # library(arcgisbinding)
+  # arc.check_product()
   
   # check and load required libraries  
   if (!requireNamespace("RSQLite", quietly = TRUE)) install.packages("RSQLite")
@@ -24,12 +24,12 @@ tool_exec <- function(in_params, out_params)  #
   # options   
   options(useFancyQuotes = FALSE)
   
-  # Chris variables
-  databasename <- "E:/coa2/coa_bridgetest.sqlite" #Chris' database path
-  working_directory <- "E:/coa2/COA/COA_WebToolDemo"
-  # Molly variables
-  #databasename <- "C:/coa/coa_bridgetest.sqlite" #Molly's database path
-  #working_directory <- "C:/coa/script_tool" #folder location of .rnw script and .png files
+  
+  ## two lines need your attention. The one directly below (loc_scripts)
+  ## and about line 38 where you choose which polygon file to use
+  
+  loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
+  source(paste(loc_scripts, "0_PathsAndSettings.R", sep = "/"))
   
   # Latex Formating Variables
   col <- "\\rowcolor[gray]{.7}" # for table row groups  https://en.wikibooks.org/wiki/LaTeX/Colors
@@ -39,10 +39,10 @@ tool_exec <- function(in_params, out_params)  #
   planning_units <- in_params[[2]]
   recipients <- in_params[[3]]
   
-  #AgencyPersonnel <- in_params[[3]] 
-  #project_name <- "Manual Test Project"
-  #planning_units <- "C:/coa/planning_unit_test.shp"
-  #planning_units <- "E:/coa2/test_pu1.shp"
+  # AgencyPersonnel <- in_params[[3]] 
+  # project_name <- "Manual Test Project"
+  # planning_units <- "C:/coa/planning_unit_test.shp"
+  # planning_units <- "E:/coa2/test_pu1.shp"
   print(paste("Project Name: ",project_name, sep=""))
   print(date())
   
@@ -223,6 +223,31 @@ tool_exec <- function(in_params, out_params)  #
   keeps <- c("SCOMNAME","SNAME","OccWeight","PriorityWAP")
   aoi_sgcn_results <- aoi_sgcnXpu_final[keeps]
   
+  
+  ############# Specific Habitat Requirements# ##############
+  SQLquery_SpecificHab <- paste("SELECT ELSEASON,SNAME,SCOMNAME,SpecificHabitatRequirements"," FROM lu_SpecificHabitatReq ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")") # 
+  aoi_SpecificHab <- dbGetQuery(db, statement=SQLquery_SpecificHab)
+  
+  
+  
+  ############# Species-Habitat Associations ###############
+  SQLquery_SpHabAssoc <- paste("SELECT ELSEASON,MACR_2015,HABITAT_1,MODIFIER,code,SCOMNAME,SNAME,q"," FROM lu_SGCN_HabAssoc ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")") # 
+  aoi_SpHabAssoc <- dbGetQuery(db, statement=SQLquery_SpHabAssoc)
+  aoi_SpHabAssoc$q <- NULL
+  aoi_SpHabAssoc$HABITAT_1 <- NULL
+  aoi_SpHabAssoc$MODIFIER <- NULL
+  aoi_SpHabAssoc <- unique(aoi_SpHabAssoc)
+  names(aoi_SpHabAssoc)[names(aoi_SpHabAssoc) == 'MACR_2015'] <- 'Macrogroup'
+  aoi_SpHabAssoc1 <- merge(aoi_HabTerr,aoi_SpHabAssoc , by="Macrogroup", all.x = TRUE)
+  aoi_SpHabAssoc1$Habitat <- NULL
+  aoi_SpHabAssoc1$acres <- NULL
+  aoi_SpHabAssoc1$Class <- NULL
+  aoi_SpHabAssoc1$PATTERN <- NULL
+  aoi_SpHabAssoc1$FORMATION <- NULL
+  aoi_SpHabAssoc1$type <- NULL
+  aoi_SpHabAssoc1$code <- NULL
+  aoi_SpHabAssoc1 <- unique(aoi_SpHabAssoc1)
+  
   ############## Actions  ##################################
   print("Looking up Conservation Actions with the AOI") # report out to ArcGIS
   SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason, AgencySpecific, ConstraintWind, ConstraintShale"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
@@ -318,13 +343,14 @@ tool_exec <- function(in_params, out_params)  #
 
   # email the pdf to the user
   # https://myaccount.google.com/lesssecureapps?rfn=27&rfnc=1&eid=-7064655018791181504&et=1&asae=2&pli=1 ### need to turn this on.
-  sender <- "pacoatest@gmail.com" # Replace with a valid address
-  emailbody <- "email_body.html"
+  sender <- "Christopher Tracey <pacoatest@gmail.com>" # Replace with a valid address
+  #emailbody <- "email_body.html"
   #recipients <- c("ctracey@paconserve.org") # Replace with one or more valid addresses
   isValidEmail <- function(x) {grepl("\\<[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\>", as.character(x), ignore.case=TRUE)} # move to earlier in the script ??
   if (isValidEmail(recipients)==TRUE){ 
           email <- send.mail(from=sender,
           to=recipients,
+          replyTo = c("Christopher Tracey <pacoatest@gmail.com>"),
           subject= paste("COA Tool Results - ",project_name,sep="")  ,
           html=TRUE,
           inline = TRUE,
@@ -336,6 +362,7 @@ tool_exec <- function(in_params, out_params)  #
   }
   print("Email sent")
   
+ 
   ############# Add statistical information the database ##############################
   PlanningUnits <- paste(as.character(selected_pu$unique_id), collapse="|")
   PlanningUnits <- paste("'",PlanningUnits,"'", sep="")

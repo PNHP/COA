@@ -343,8 +343,8 @@ tool_exec <- function(in_params, out_params)  #
           html=TRUE,
           inline = TRUE,
           body=emailbody, #"Attached are your COA Tool Results.\n Please note that these are draft results for testing purposes.",  # emailbody, #
-          #smtp=list(host.name="ssrs.reachmail.net", port=465, user.name="PENNSYLV3\\christopher",passwd="h8nhKNvu", ssl=TRUE),
-          smtp=list(host.name="smtp.gmail.com", port=465, user.name="pacoatest@gmail.com",passwd="U8ABTLet", ssl=TRUE),
+          #smtp=list(host.name="ssrs.reachmail.net", port=465, user.name="PENNSYLV3\\christopher",passwd="", ssl=TRUE),
+          smtp=list(host.name="smtp.gmail.com", port=465, user.name="pacoatest@gmail.com",passwd="", ssl=TRUE),
           authenticate=TRUE,
           attach.files=pdf.path,
           send=TRUE)  # change from F to T to get the email to send

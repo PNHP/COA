@@ -21,13 +21,7 @@ tool_exec <- function(in_params, out_params)  #
   if (!requireNamespace("mailR", quietly = TRUE)) install.packages("mailR")
   require(mailR)  
  
-  # options   
-  options(useFancyQuotes = FALSE)
-  
-  
-  ## two lines need your attention. The one directly below (loc_scripts)
-  ## and about line 38 where you choose which polygon file to use
-  
+  ## The line directly below (loc_scripts) needs your attention
   loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
   source(paste(loc_scripts, "0_PathsAndSettings.R", sep = "/"))
   
@@ -81,11 +75,8 @@ tool_exec <- function(in_params, out_params)  #
   # HUC Name lookup
   SQLquery_HUC <- paste("SELECT HUC8, HUC12, HUC8name, HUC12name"," FROM lu_HUCname ","WHERE HUC12 IN (", paste(toString(sQuote(HUC_list)), collapse = ", "), ")")
   aoi_HUC <- dbGetQuery(db, statement = SQLquery_HUC )
-  #print("- - - - - - - - - - - - -")
   w = paste("Physiographic Province -- ",unique(paste(aoi_NaturalBoundaries$PROVINCE,aoi_NaturalBoundaries$SECTION,sep=" - ")) , sep= " ")
-  #print(w)
   v = paste("Ecoregion -- ",unique(aoi_NaturalBoundaries$ECO_NAME), sep= " ")
-  #print(v)
   u1 = paste("HUC8 --",unique(aoi_HUC$HUC8name), sep= " ")
   u2 = paste("HUC12 --",unique(aoi_HUC$HUC12name), sep= " ")
 
@@ -156,7 +147,7 @@ tool_exec <- function(in_params, out_params)  #
   # create SGCNxPU dataframe containing selected planning units
   aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery)
   colnames(aoi_sgcnXpu)[colnames(aoi_sgcnXpu) == 'El_Season'] <- 'ELSeason'
-  aoi_sgcnXpu$AREA <- round((as.numeric(aoi_sgcnXpu$PERCENTAGE) * 0.1),4) # used 0.1 because the percentate ranges from 0-100 so this works to convert to 10acres
+  aoi_sgcnXpu$AREA <- round((as.numeric(aoi_sgcnXpu$PERCENTAGE) * 0.1),4) # used 0.1 because the percentate ranges from 0-100 so this converts to 10acres
   # dissolve table based on elcode and season, keeping all High records  and then med/low with highest summed area within group
   # pick the highest area out of medium and low probabilities
   aoi_sgcnXpu_MedLow <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb!="High",]
@@ -223,30 +214,29 @@ tool_exec <- function(in_params, out_params)  #
   keeps <- c("SCOMNAME","SNAME","OccWeight","PriorityWAP")
   aoi_sgcn_results <- aoi_sgcnXpu_final[keeps]
   
-  
   ############# Specific Habitat Requirements# ##############
   SQLquery_SpecificHab <- paste("SELECT ELSEASON,SNAME,SCOMNAME,SpecificHabitatRequirements"," FROM lu_SpecificHabitatReq ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")") # 
   aoi_SpecificHab <- dbGetQuery(db, statement=SQLquery_SpecificHab)
-  
-  
+  # all additional work is done in the rnw
   
   ############# Species-Habitat Associations ###############
-  SQLquery_SpHabAssoc <- paste("SELECT ELSEASON,MACR_2015,HABITAT_1,MODIFIER,code,SCOMNAME,SNAME,q"," FROM lu_SGCN_HabAssoc ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")") # 
-  aoi_SpHabAssoc <- dbGetQuery(db, statement=SQLquery_SpHabAssoc)
-  aoi_SpHabAssoc$q <- NULL
-  aoi_SpHabAssoc$HABITAT_1 <- NULL
-  aoi_SpHabAssoc$MODIFIER <- NULL
-  aoi_SpHabAssoc <- unique(aoi_SpHabAssoc)
-  names(aoi_SpHabAssoc)[names(aoi_SpHabAssoc) == 'MACR_2015'] <- 'Macrogroup'
-  aoi_SpHabAssoc1 <- merge(aoi_HabTerr,aoi_SpHabAssoc , by="Macrogroup", all.x = TRUE)
-  aoi_SpHabAssoc1$Habitat <- NULL
-  aoi_SpHabAssoc1$acres <- NULL
-  aoi_SpHabAssoc1$Class <- NULL
-  aoi_SpHabAssoc1$PATTERN <- NULL
-  aoi_SpHabAssoc1$FORMATION <- NULL
-  aoi_SpHabAssoc1$type <- NULL
-  aoi_SpHabAssoc1$code <- NULL
-  aoi_SpHabAssoc1 <- unique(aoi_SpHabAssoc1)
+  ### leave out for now....
+  #  SQLquery_SpHabAssoc <- paste("SELECT ELSEASON,MACR_2015,HABITAT_1,MODIFIER,code,SCOMNAME,SNAME,q"," FROM lu_SGCN_HabAssoc ","WHERE ELSeason IN (", paste#(toString(sQuote(elcodes)), collapse = ", "), ")") # 
+  #aoi_SpHabAssoc <- dbGetQuery(db, statement=SQLquery_SpHabAssoc)
+  #aoi_SpHabAssoc$q <- NULL
+  #aoi_SpHabAssoc$HABITAT_1 <- NULL
+  #aoi_SpHabAssoc$MODIFIER <- NULL
+  #aoi_SpHabAssoc <- unique(aoi_SpHabAssoc)
+  #names(aoi_SpHabAssoc)[names(aoi_SpHabAssoc) == 'MACR_2015'] <- 'Macrogroup'
+  #aoi_SpHabAssoc1 <- merge(aoi_HabTerr,aoi_SpHabAssoc , by="Macrogroup", all.x = TRUE)
+  #aoi_SpHabAssoc1$Habitat <- NULL
+  #aoi_SpHabAssoc1$acres <- NULL
+  #aoi_SpHabAssoc1$Class <- NULL
+  #aoi_SpHabAssoc1$PATTERN <- NULL
+  #aoi_SpHabAssoc1$FORMATION <- NULL
+  #aoi_SpHabAssoc1$type <- NULL
+  #aoi_SpHabAssoc1$code <- NULL
+  #aoi_SpHabAssoc1 <- unique(aoi_SpHabAssoc1)
   
   ############## Actions  ##################################
   print("Looking up Conservation Actions with the AOI") # report out to ArcGIS
@@ -321,11 +311,9 @@ tool_exec <- function(in_params, out_params)  #
   ##############  report generation  #######################
   print("Generating the PDF report...") # report out to ArcGIS
   setwd(working_directory)
-  
   #write the pdf
   daytime <-gsub("[^0-9]", "", Sys.time() )    # makes a report time variable
   username <- gsub("@.*","",recipients)        # strips out the username from the user's email address
-  
   knit2pdf(paste(working_directory,"results_knitr.rnw",sep="/"), output=paste("results_",username,"_",daytime, ".tex",sep=""))
   #delete excess files from the pdf creation
   fn_ext <- c(".tex",".log",".aux",".out")
@@ -344,7 +332,7 @@ tool_exec <- function(in_params, out_params)  #
   # email the pdf to the user
   # https://myaccount.google.com/lesssecureapps?rfn=27&rfnc=1&eid=-7064655018791181504&et=1&asae=2&pli=1 ### need to turn this on.
   sender <- "Christopher Tracey <pacoatest@gmail.com>" # Replace with a valid address
-  #emailbody <- "email_body.html"
+  emailbody <- "email_body.html"
   #recipients <- c("ctracey@paconserve.org") # Replace with one or more valid addresses
   isValidEmail <- function(x) {grepl("\\<[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\>", as.character(x), ignore.case=TRUE)} # move to earlier in the script ??
   if (isValidEmail(recipients)==TRUE){ 
@@ -354,15 +342,15 @@ tool_exec <- function(in_params, out_params)  #
           subject= paste("COA Tool Results - ",project_name,sep="")  ,
           html=TRUE,
           inline = TRUE,
-          body=emailbody, #"Attached are your COA Tool Results.\n Please note that these are draft results for testing purposes.",
-          smtp=list(host.name="smtp.googlemail.com", port=465, user.name="pacoatest",passwd="", ssl=TRUE),
+          body=emailbody, #"Attached are your COA Tool Results.\n Please note that these are draft results for testing purposes.",  # emailbody, #
+          #smtp=list(host.name="ssrs.reachmail.net", port=465, user.name="PENNSYLV3\\christopher",passwd="h8nhKNvu", ssl=TRUE),
+          smtp=list(host.name="smtp.gmail.com", port=465, user.name="pacoatest@gmail.com",passwd="U8ABTLet", ssl=TRUE),
           authenticate=TRUE,
           attach.files=pdf.path,
-          send=TRUE)  # change from F to T to get the tool to run
+          send=TRUE)  # change from F to T to get the email to send
   }
   print("Email sent")
   
- 
   ############# Add statistical information the database ##############################
   PlanningUnits <- paste(as.character(selected_pu$unique_id), collapse="|")
   PlanningUnits <- paste("'",PlanningUnits,"'", sep="")

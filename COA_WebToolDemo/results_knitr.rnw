@@ -14,7 +14,6 @@
 
 \graphicspath{{\Sexpr{as.character(graphics_path)}}}
 
-
 \newcommand*{\belowrulesepcolor}[1]{%
   \noalign{%
     \kern-\belowrulesep
@@ -34,30 +33,30 @@
   }%
 }
 
-\geometry{letterpaper, top=0.45in, bottom=0.75in, left=0.5in, right=0.5in}
+\geometry{letterpaper, landscape, top=0.45in, bottom=0.75in, left=0.5in, right=0.5in}
 \pagestyle{fancy} \fancyhf{} \renewcommand\headrulewidth{0pt} %strip default header/footer stuff
 
 %add footers
 \cfoot{
   \small   %small font. The double slashes is newline in fancyhdr
-  Conservation Action Mapping Results (\textit{\Sexpr{as.character(project_name)}}). \\ \ Pennsylvania Wildlife Action Plan
+  Conservation Opportunity Area Tool Results (\textit{\Sexpr{as.character(project_name)}}). \\ \ Pennsylvania Wildlife Action Plan
 }
 \rfoot{p. \thepage}
 
 \begin{document}
 
+\noindent\begin{minipage}{0.3\textwidth}\raggedleft
+\includegraphics[width=\linewidth]{logo} \\
+\end{minipage}
+\hfill
 \noindent\begin{minipage}{0.6\textwidth}
-\LARGE\textbf{Conservation Action Mapping} \\
+\LARGE\textbf{Conservation Opportunity Area Tool Results} \\
 \normalsize Pennsylvania Wildlife Action Plan \\
 Project Name: \Sexpr{as.character(project_name)} \\
 Project Date: \Sexpr{format(Sys.Date(), "%d %b %Y")} \\~\\~\\  
 \end{minipage}%
-\hfill
-\noindent\begin{minipage}{0.3\textwidth}\raggedleft
-\includegraphics[width=\linewidth]{logo} \\
-\end{minipage}
 
-\noindent\begin{minipage}{0.3\textwidth}
+\noindent\begin{minipage}{0.4\textwidth}
 \framebox(200,125){**Placeholder for AOI Map**}
 \end{minipage}%
 \hfill
@@ -78,35 +77,34 @@ cat(paste0(aoi_HUC$HUC12name, collapse=", "))
 \vspace{8mm}
 
 \noindent\Large\textbf{Species of Greatest Conservation Need} \\
-\noindent\normalsize The table below shows \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) that have been identified as either occurring or potentially occurring within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}.\\
-
+\noindent\normalsize \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) that have been identified as either occurring or potentially occurring within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}.\\
 <<label=longtable, echo=FALSE, results='asis'>>=
 sgcn <- aoi_sgcnXpu_final
 sgcn$TaxaGroup <- lu_taxagrp[,3][match(sgcn$TaxaGroup, lu_taxagrp[,1])]
 taxa <- unique(sgcn$TaxaGroup)
-cat('\\begin{longtable}{p{2.5in}p{2in}p{.75in}p{1.5in}}\n')
+cat('\\begin{longtable}{p{2in}p{0.7in}p{0.3in}p{0.3in}p{0.3in}p{0.3in}p{0.8in}p{4.2in}}\n')
 cat('\\toprule\n')
-cat('Common Name & Scientific Name & Season & Occurrence Probability \\\\ \n')
+cat('SGCN Name & Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability & Specific Habitat Requirements \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
 for(t in taxa){
   if(t=="Bird"){
-    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.pgc.pa.gov/Wildlife/WildlifeActionPlan/Documents/SWAP-CHAPTER-1-apx14a-birds.pdf}{',t,'}}', '\\\\ \n'))}
+    cat(paste0('\\multicolumn{8}{l}{\\rowcolor[gray]{.9}','\\href{http://www.pgc.pa.gov/Wildlife/WildlifeActionPlan/Documents/SWAP-CHAPTER-1-apx14a-birds.pdf}{',t,'}}', '\\\\ \n'))}
   else if(t=="Fish"){
-    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14e-fish.pdf}{',t,'}}', '\\\\ \n'))}
+    cat(paste0('\\multicolumn{8}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14e-fish.pdf}{',t,'}}', '\\\\ \n'))}
   else if(t=="Mammal"){
-    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.pgc.pa.gov/Wildlife/WildlifeActionPlan/Documents/SWAP-CHAPTER-1-apx14b-mammals.pdf}{',t,'}}', '\\\\ \n'))}
+    cat(paste0('\\multicolumn{8}{l}{\\rowcolor[gray]{.9}','\\href{http://www.pgc.pa.gov/Wildlife/WildlifeActionPlan/Documents/SWAP-CHAPTER-1-apx14b-mammals.pdf}{',t,'}}', '\\\\ \n'))}
   else if(t=="Frog" | t=="Salamander"){
-    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14c-amp.pdf}{',t,'}}', '\\\\ \n'))}
+    cat(paste0('\\multicolumn{8}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14c-amp.pdf}{',t,'}}', '\\\\ \n'))}
   else if(t=="Invertebrate - Mussels"){
-    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14f-mussels.pdf}{',t,'}}', '\\\\ \n'))}
+    cat(paste0('\\multicolumn{8}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14f-mussels.pdf}{',t,'}}', '\\\\ \n'))}
   else if(t=="Lizard" | t=="Snake" | t=="Turtle"){
-    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14d-reptiles.pdf}{',t,'}}', '\\\\ \n'))}
+    cat(paste0('\\multicolumn{8}{l}{\\rowcolor[gray]{.9}','\\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1-apx14d-reptiles.pdf}{',t,'}}', '\\\\ \n'))}
   else{
-    cat(paste0('\\multicolumn{4}{l}{\\rowcolor[gray]{.9}',t,'}', '\\\\ \n'))}
+    cat(paste0('\\multicolumn{8}{l}{\\rowcolor[gray]{.9}',t,'}', '\\\\ \n'))}
   for(i in 1:nrow(sgcn)){
     if(sgcn$TaxaGroup[i] == t){
-      cat(paste0('\\hspace{5mm}',sgcn$SCOMNAME[i],'&',sgcn$SNAME[i],'&',sgcn$SeasonCode[i],'&',sgcn$OccProb[i],'\\\\ \n'))
+      cat(paste0(paste(sgcn$SCOMNAME[i],"\\newline \\hspace{3mm} (\\textit{",sgcn$SNAME[i],"})",sep=""),'&',sgcn$SeasonCode[i],'&',sgcn$CAT1_glbl_reg[i],'&',sgcn$CAT2_com_sp_com[i],'&',sgcn$CAT3_cons_rare_native[i],'&',sgcn$CAT4_datagaps[i],'&',sgcn$OccProb[i],'&',sgcn$SpecificHabitatRequirements[i],'\\\\ \n'))
     }
   }
 }
@@ -114,20 +112,20 @@ cat('\\bottomrule\n')
 cat('\\end{longtable}\n')
 @
 \vspace*{-4mm}
-\noindent\normalsize Additionally, the following SGCN have been identified as having a low probability of occurrence within the AOI: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence.\\
-
-\vspace{4mm}
+\noindent\normalsize Additionally, habitat may be present for the following SGCN, though surveys are needed to confirm their presence or absence: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence.\\
+\vspace{2mm}
 Occurence probability defintions are as follows:
 \begin{itemize}
-\item \underline{High} - Planning units that are attributed as have a high probability of occurrence for a particular SGCN mean that there is a confirmed occurrence or observation of an SGCN within the hexagon.
-\item \underline{Medium} - Planning units attributed as medium are typically based on distribution models or similar datasets. We try to use the upper probabilities (eg. upper third?) of the model in this class.
-\item \underline{Low} - this is similar to the medium probability but the middle third of probabilities are included. We do not typically assign the lower third of a model's probabilities to a SGCN Occurrence probability.
+ \setlength\itemsep{0em}
+\item \underline{High} - The species has been recorded by an observer within the area of interest.
+\item \underline{Medium} - An observer has not recorded the species within the area of interest, but species distribution models or other data sources indicate strong potential for this species to occur.
+\item \underline{Low} - An observer has not recorded the species within the area of interest and species distribution models do not indicate strong potential. However, habitat may be present for this species, suggesting surveys are needed.
 \end{itemize}
 
-\vspace{8mm}
+\vspace{4mm}
 
 \noindent\Large\textbf{Habitat} \\
-\normalsize The following table shows the distribution of habitats that intersect the planning units within your area of interest. Terrestrial and wetland habitats (i.e. ecological systems) are categorized by their macrogroup. For more information about habitats, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 2} and for complete habitat descriptions, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2-apx21-22.pdf}{Northeast Terrestrial and Aquatic Habitat Descriptions, Appendix 2.1}  \\
+\normalsize The following table shows the distribution of habitats that intersect the planning units within your area of interest. Terrestrial and wetland habitats (i.e. ecological systems) are categorized by their macrogroup. For more information about habitats, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 2} and Appendices. \\
 
 <<echo=FALSE, results='asis'>>=
 keeps <- c("Macrogroup", "Habitat", "acres")
@@ -169,33 +167,17 @@ cat('\\end{table}\n')
 \vspace*{-3mm}
 \noindent\normalsize **Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.
 \noindent\normalsize
-The following table lists specific habitat requirements for each species.
-<<echo=FALSE, results='asis'>>=
-cat('\\begin{longtable}{p{1.5in}p{5.5in}}\n')
-#cat('\\centering\n')
-cat('\\rowcolor[gray]{.8}{SGCN & Specific Habitat Requirements} \\\\ \n')
-cat('\\hline\n')
-for(i in 1:nrow(aoi_SpecificHab)){
-  cat(paste0(aoi_SpecificHab$SCOMNAME[i] , '&', aoi_SpecificHab$SpecificHabitatRequirements[i]), '\\\\ \n') # paste(aoi_SpecificHab$SCOMNAME[i],"\\break (\\textit{",aoi_SpecificHab$SNAME[i],"})",sep="")
-}
-cat('\\hline\n')
-cat('\\end{longtable}\n')
-@
-
 \vspace{8mm}
 
 \noindent\Large\textbf{Conservation Actions} \\
 
-
-\noindent\normalsize The following table includes more specific actions appropriate for SGCN within the area of interest. Actions are ordered by the relative impact of their broader action category. If an action is appropiate for more than one SGCN, they have been compiled across species.
-
-
+\noindent\normalsize The following table includes specific actions for SGCN within the area of interest. Actions are ordered by the relative impact of their broader action category. If an action is appropiate for more than one SGCN, they have been compiled across species.
 <<label=longtable1, echo=FALSE, results='asis'>>=
 actions <- actionstable_working
 actions$CommonName <- paste("\\textit{",actions$CommonName,"}", sep="")
 actions$COATool_Action <- gsub("&", "and", actions$COATool_Action)
 action_cat <- unique(actions$ActionCategory1)
-cat('\\begin{longtable}{p{7in}}\n')
+cat('\\begin{longtable}{p{10in}}\n')
 cat('\\toprule\n')
 cat('Recommended Conservation Actions/SGCN Affected \\\\ \n')
 cat('\\midrule\n')
@@ -214,10 +196,55 @@ cat('\\end{longtable}\n')
 @
 
 \vspace{10mm}
+\noindent\Large\textbf{Research Needs} \\
+\noindent\normalsize The following table includes research needs for the SGCN present at the site. Please note that the specific research needs may not be applicable at this particular AOI. 
+<<label=longtable3, echo=FALSE, results='asis'>>=
+research <- aoi_Research
+research$SCOMNAME <- paste("\\textit{",research$SCOMNAME,"}", sep="")
+#actions$COATool_Action <- gsub("&", "and", actions$COATool_Action) # replaces the ampersand with a real word
+#action_cat <- unique(actions$ActionCategory1)
+cat('\\begin{longtable}{p{2.5in}p{7in}}\n')
+cat('\\toprule\n')
+cat('species & research needs \\\\ \n')
+cat('\\midrule\n')
+cat('\\endhead\n')
+#for(a in action_cat){
+#  cat(paste0('\\multicolumn{1}{l}{\\rowcolor[gray]{.7}',a,'}', '\\\\ \n'))
+  for(i in 1:nrow(research)){
+    #if(actions$ActionCategory1[i] == a){
+      cat(paste0(research$SCOMNAME[i],'&',research$ResearchQues_Edited[i],'\\\\ \n'))
+      #cat(paste0('\\hspace{5mm}', research$SCOMNAME[i], '\\\\ \n'))
+    #}
+  }
+#}
+cat('\\bottomrule\n')
+cat('\\end{longtable}\n')
+@
+\vspace{10mm}
+\noindent\Large\textbf{Survey Needs} \\
+\noindent\normalsize The following table includes survey needs for the SGCN present at the site. Please note that the specific survey needs may not be applicable at this particular AOI. 
+<<label=longtable4, echo=FALSE, results='asis'>>=
+survey <- aoi_Survey
+cat('\\begin{longtable}{p{2.5in}p{7in}}\n')
+cat('\\toprule\n')
+cat('species & research needs \\\\ \n')
+cat('\\midrule\n')
+cat('\\endhead\n')
+#for(a in action_cat){
+#  cat(paste0('\\multicolumn{1}{l}{\\rowcolor[gray]{.7}',a,'}', '\\\\ \n'))
+  for(i in 1:nrow(survey)){
+    #if(actions$ActionCategory1[i] == a){
+      cat(paste0(survey$SCOMNAME[i],'&',survey$NumSurveyQuestion_Edited[i],'\\\\ \n'))
+      #cat(paste0('\\hspace{5mm}', survey$SCOMNAME[i], '\\\\ \n'))
+    #}
+  }
+#}
+cat('\\bottomrule\n')
+cat('\\end{longtable}\n')
+@
 
 \noindent\large\textbf{Want more information or have questions? Please contact:} \\
 \noindent\normalsize 
-
 This AOI is within the following PFBC and PGC districts:\\
 <<echo=FALSE, results='asis'>>=
 print( paste("PGC District: ",aoi_Agency$pgc_DistNum,"\\\\ \n", sep="")  )

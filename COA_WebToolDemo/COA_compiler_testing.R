@@ -117,12 +117,9 @@ tool_exec <- function(in_params, out_params)  #
   
   # join SGCN name data sgcn_aoi table
   elcodes <- aoi_sgcnXpu_final$ELSeason
-  SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, SENSITV_SP, Environment, TaxaGroup, ELSeason, Agency, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps, WebAddress "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+  SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, SENSITV_SP, Environment, TaxaGroup, TaxaDisplay, ELSeason, Agency, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps, WebAddress "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
 
-  
-  
-  
   # before the merge, set the priority for the SGCN based on the highest value in a number of categories
   aoi_sgcn[, "CAT_min"] <- apply(aoi_sgcn[, 10:13], 1, min) # get the minumum across categories
   aoi_sgcn$PriorityWAP <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse
@@ -146,9 +143,15 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_final$SeasonCode[aoi_sgcnXpu_final$SeasonCode=="y"] <- "Year-round"
   # move sensitive species to their own taxagroup
   aoi_sgcnXpu_final$TaxaGroup[aoi_sgcnXpu_final$SENSITV_SP=="Y"] <- "SenSp"
-  ## add a line to join the more general taxagroups  
-  SQLquery_taxagrp <- paste("SELECT code, taxagroup, taxadisplay"," FROM lu_taxagrp ")
-  lu_taxagrp <- dbGetQuery(db, statement=SQLquery_taxagrp)
+  aoi_sgcnXpu_final$TaxaDisplay <- as.character(aoi_sgcnXpu_final$TaxaDisplay)
+  aoi_sgcnXpu_final$TaxaDisplay[aoi_sgcnXpu_final$SENSITV_SP=="Y"] <- "Sensitive Species"
+  # DELETE THIS
+  # add a line to join the more general taxagroups  
+  ####SQLquery_taxagrp <- paste("SELECT code, taxagroup, taxadisplay"," FROM lu_taxagrp ")
+  ####lu_taxagrp <- dbGetQuery(db, statement=SQLquery_taxagrp)
+  
+  
+  
   ## Join the specific habitat requirements to the SGCN table
   SQLquery_SpecificHab <- paste("SELECT ELSEASON,SNAME,SCOMNAME,SpecificHabitatRequirements"," FROM lu_SpecificHabitatReq ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")") # 
   aoi_SpecificHab <- dbGetQuery(db, statement=SQLquery_SpecificHab)
@@ -156,24 +159,27 @@ tool_exec <- function(in_params, out_params)  #
   aoi_SpecificHab <- aoi_SpecificHab[keeps]
   # merge 
   aoi_sgcnXpu_final <- merge(aoi_sgcnXpu_final, aoi_SpecificHab, by.x="ELSeason", by.y="ELSEASON")
+  
+  
   # resort to the SWAP order
   SWAPorder <- as.matrix( SGCN_SortOrder ) # loads from the 0_PathsAndSettings.r file
-  TaxaGrpInAOI <- unique(aoi_sgcnXpu_final$TaxaGroup)
+  TaxaGrpInAOI <- unique(aoi_sgcnXpu_final$TaxaDisplay)
   SWAPorder1 <- SWAPorder[(SWAPorder %in% TaxaGrpInAOI),]
-  aoi_sgcnXpu_final <- aoi_sgcnXpu_final
-  aoi_sgcnXpu_final$TaxaGroup <- reorder.factor(aoi_sgcnXpu_final$TaxaGroup,new.order=SWAPorder1)
-  aoi_sgcnXpu_final <- aoi_sgcnXpu_final %>% arrange(TaxaGroup)
+  ###aoi_sgcnXpu_final <- aoi_sgcnXpu_final
+  aoi_sgcnXpu_final$TaxaDisplay <- reorder.factor(aoi_sgcnXpu_final$TaxaDisplay,new.order=SWAPorder1)
+  aoi_sgcnXpu_final <- aoi_sgcnXpu_final %>% arrange(TaxaDisplay)
 
   # deal with sensitive species
   ## setDT(aoi_sgcn)[SENSITV_SP=="Y" && Agency==AgDis, SNAME:=paste0("[[ ",SNAME," ]]")]
   ##setDT(aoi_sgcn)[SENSITV_SP=="Y" & Agency!=AgDis, SNAME:="SENSITIVE SPECIES", SCOMNAME:="SENSITIVE SPECIES"] # paste0("[[ ",SNAME," ]]")
-  aoi_sgcnXpu_final$SCOMNAME<-ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & aoi_sgcnXpu_final$Agency!=AgDis,"SENSITIVE SPECIES",aoi_sgcnXpu_final$SCOMNAME)
-  aoi_sgcnXpu_final$SNAME<-ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & aoi_sgcnXpu_final$Agency!=AgDis,"",aoi_sgcnXpu_final$SNAME)
-  aoi_sgcnXpu_final$CAT1_glbl_reg <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & aoi_sgcnXpu_final$Agency!=AgDis,"",aoi_sgcnXpu_final$CAT1_glbl_reg)
-  aoi_sgcnXpu_final$CAT2_com_sp_com <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & aoi_sgcnXpu_final$Agency!=AgDis,"",aoi_sgcnXpu_final$CAT2_com_sp_com)
-  aoi_sgcnXpu_final$CAT3_cons_rare_native <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & aoi_sgcnXpu_final$Agency!=AgDis,"",aoi_sgcnXpu_final$CAT3_cons_rare_native)
-  aoi_sgcnXpu_final$CAT4_datagaps <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & aoi_sgcnXpu_final$Agency!=AgDis,"",aoi_sgcnXpu_final$CAT4_datagaps)
-  aoi_sgcnXpu_final$SpecificHabitatRequirements <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & aoi_sgcnXpu_final$Agency!=AgDis,"Specific Habitat Requirements not listed due to species sensitivity",aoi_sgcnXpu_final$SpecificHabitatRequirements)
+  aoi_sgcnXpu_final$SCOMNAME<-ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"SENSITIVE SPECIES",aoi_sgcnXpu_final$SCOMNAME)
+  aoi_sgcnXpu_final$SNAME<-ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$SNAME)
+  aoi_sgcnXpu_final$SeasonCode <-ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$SeasonCode )
+  aoi_sgcnXpu_final$CAT1_glbl_reg <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$CAT1_glbl_reg)
+  aoi_sgcnXpu_final$CAT2_com_sp_com <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$CAT2_com_sp_com)
+  aoi_sgcnXpu_final$CAT3_cons_rare_native <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$CAT3_cons_rare_native)
+  aoi_sgcnXpu_final$CAT4_datagaps <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$CAT4_datagaps)
+  aoi_sgcnXpu_final$SpecificHabitatRequirements <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"Specific Habitat Requirements not listed due to species sensitivity",aoi_sgcnXpu_final$SpecificHabitatRequirements)
   
     # subset to needed columns
   keeps <- c("SCOMNAME","SNAME","OccWeight","PriorityWAP","SpecificHabitatRequirements", "CAT1_glbl_reg", "CAT2_com_sp_com", "CAT3_cons_rare_native", "CAT4_datagaps")  
@@ -236,22 +242,25 @@ tool_exec <- function(in_params, out_params)  #
   
   ############## Actions  ##################################
   print("Looking up Conservation Actions with the AOI") # report out to ArcGIS
-  SQLquery_actions <- paste("SELECT ELCODE, CommonName, ScientificName, Sensitive, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,COATool_Action, ActionPriority, ELSeason, AgencySpecific, ConstraintWind, ConstraintShale"," FROM lu_actions ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
+  SQLquery_actions <- paste("SELECT ELSeason, SCOMNAME, SNAME, IUCNThreatLv1, ThreatCategory, EditedThreat, ActionLv1, ActionCategory1,ActionLV2, ActionCategory2,COATool_ActionsFINAL, ActionPriority, AgencySpecific, ConstraintWind, ConstraintShale"," FROM lu_actionsLevel2 ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_actions <- dbGetQuery(db, statement=SQLquery_actions)
   # create a table version of the actions.
-  aoi_actions <- merge(aoi_actions,aoi_sgcnXpu_final,by="ELSeason")
-  aoi_actionstable <- aoi_actions[,c("ScientificName","CommonName","ELSeason","EditedThreat","Sensitive","ActionLv1","ActionCategory1","COATool_Action","ActionPriority","PriorityWAP","OccWeight","AgencySpecific","ConstraintWind","ConstraintShale" )]
-  
-# remove actions that are agency specific
-# if (AgDis=="PFBC") { 
-#   aoi_actionstable <- aoi_actionstable[aoi_actionstable$AgencySpecific!="PGC", ] 
-# } else if (AgDis=="PGC") { 
-#   aoi_actionstable <- aoi_actionstable[aoi_actionstable$AgencySpecific!="PFBC", ] 
-# } else {
-#   aoi_actionstable <- aoi_actionstable[is.na(aoi_actionstable$AgencySpecific), ]
-# }
-#  } else if (AgDis=="PGC") {  
+  aoi_actions <- merge(aoi_actions,aoi_sgcnXpu_final[,c("ELSeason","PriorityWAP","OccWeight","SENSITV_SP")],by="ELSeason")
+  aoi_actionstable <- aoi_actions[,c("SNAME","SCOMNAME","ELSeason","EditedThreat","SENSITV_SP","ActionLv1","ActionCategory1","ActionLV2", "ActionCategory2","COATool_ActionsFINAL", "ActionPriority","PriorityWAP","OccWeight","AgencySpecific","ConstraintWind","ConstraintShale" )]
 
+  # set blanks to NA
+  aoi_actionstable$ConstraintWind[aoi_actionstable$ConstraintWind==""] <- NA
+  aoi_actionstable$ConstraintShale[aoi_actionstable$ConstraintShale==""] <- NA
+    
+  # remove actions that are agency specific
+  if (AgDis=="PFBC") { 
+    aoi_actionstable <- aoi_actionstable[aoi_actionstable$AgencySpecific!="PGC", ] 
+  } else if (AgDis=="PGC") { 
+    aoi_actionstable <- aoi_actionstable[aoi_actionstable$AgencySpecific!="PFBC", ] 
+  } else {
+    aoi_actionstable <- aoi_actionstable[is.na(aoi_actionstable$AgencySpecific), ]
+  }
+  
   #remove actions that are only appropiate for wind issues when the AOI is not within the wind region.
   if(max(aoi_Threats$WindCapability)>2 | any(aoi_Threats$WindTurbines =='y') ) { # selected class 3 and above
     aoi_actionstable <- aoi_actionstable
@@ -273,7 +282,7 @@ tool_exec <- function(in_params, out_params)  #
   aoi_actionstable$FinalPriority <- aoi_actionstable$OccWeight * aoi_actionstable$ActionPriority * aoi_actionstable$PriorityWAP
   
   #Aggregate the Actions
-  aoi_actionstable_Agg <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$ActionCategory1),FUN=sum)
+  aoi_actionstable_Agg <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$ActionCategory2),FUN=sum)
   aoi_actionstable_Agg <- aoi_actionstable_Agg[order(-aoi_actionstable_Agg$x),]
   # create a quantile scaled value of the AIS in order to assign "High","Medium", and "Low" priorities to the action group
   aoi_actionstable_Agg$quant <- with(aoi_actionstable_Agg, .bincode(x, breaks=qu <- quantile(x, probs=seq(0,1,1/3),na.rm=TRUE),(labels=(as.numeric(gsub("%.*","",names(qu))))/100)[-1], include.lowest=TRUE))
@@ -284,30 +293,51 @@ tool_exec <- function(in_params, out_params)  #
   # sort the individual actions by the priority in summerized categories
   TargetOrder <- aoi_actionstable_Agg$Group.1
   actionstable_working <- aoi_actionstable
-  actionstable_working$ActionCategory1 <- reorder.factor(actionstable_working$ActionCategory1,new.order=TargetOrder)
-  actionstable_working <- actionstable_working %>% arrange(ActionCategory1)
-  actionstable_working <- actionstable_working[c("COATool_Action","CommonName","ActionCategory1")]
+  actionstable_working$ActionCategory2 <- reorder.factor(actionstable_working$ActionCategory2,new.order=TargetOrder)
+  actionstable_working$ActionCategory2 <- as.character(actionstable_working$ActionCategory2)
+  actionstable_working <- actionstable_working %>% arrange(ActionCategory2)
+  actionstable_working <- actionstable_working[c("COATool_ActionsFINAL","SCOMNAME","ActionCategory2")]
   actionstable_working <- unique(actionstable_working)
-  actionstable_working <- aggregate(CommonName ~., actionstable_working, toString)
-
+  actionstable_working <- aggregate(SCOMNAME ~., actionstable_working, toString) ## This needs to be modified to also aggregate the AIS
+  # add in AIS
+  actionstable_working$AIS <- aoi_actionstable_Agg[,4][match(actionstable_working$ActionCategory2, aoi_actionstable_Agg[,1])] 
+  
   # subset for presentation
-  action_results <- actionstable_working[c("COATool_Action","CommonName")]
+  action_results <- actionstable_working[c("COATool_ActionsFINAL","SCOMNAME","AIS")]
+  
   action_results$COATool_Action <- sanitize(action_results$COATool_Action, type="latex")
   # this does the above but for every action
   #aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)
   #write.csv(aoi_actionstable_Agg1, "actions_by_ind.csv")
 
+  
+  
+  
+  
   ############## Research Needs #################
   print("Looking up Research Needs with the AOI") # report out to ArcGIS
   SQLquery_luResearch <-  paste("SELECT ELSeason, ResearchQues_Edited, SCOMNAME, AgencySpecific "," FROM lu_SGCNresearch ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_Research <- dbGetQuery(db, statement = SQLquery_luResearch )  
+  # merge taxonomic and survey information from the SGCN table to here
+  aoi_Research$SCOMNAME <- NULL
+  SGCNcol <- c("ELSeason","SNAME","SCOMNAME","SENSITV_SP","Agency")
+  aoi_Research <- merge(aoi_sgcn[SGCNcol],aoi_Research,by="ELSeason")
+  aoi_Research$SCOMNAME <- ifelse(aoi_Research$SENSITV_SP=="Y" & (aoi_Research$Agency!=AgDis|is.na(AgDis)),"SENSITIVE SPECIES",aoi_Research$SCOMNAME)
+  aoi_Research$SNAME <- ifelse(aoi_Research$SENSITV_SP=="Y" & (aoi_Research$Agency!=AgDis|is.na(AgDis)),"",aoi_Research$SNAME)
+  aoi_Research$ResearchQues_Edited <- ifelse(aoi_Research$SENSITV_SP=="Y" & (aoi_Research$Agency!=AgDis|is.na(AgDis)),"Research Needs not listed for species sensitivity reasons",aoi_Research$ResearchQues_Edited)
     
   ############## Survey Needs #################
   print("Looking up Survey Needs with the AOI") # report out to ArcGIS
   SQLquery_luSurvey <-  paste("SELECT ELSeason, NumSurveyQuestion_Edited, SCOMNAME, AgencySpecific "," FROM lu_SGCNsurvey ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_Survey <- dbGetQuery(db, statement = SQLquery_luSurvey ) 
   aoi_Survey <- aoi_Survey[aoi_Survey$NumSurveyQuestion_Edited!="No survey needs at this time.", ]
-  
+  # merge taxonomic and survey information from the SGCN table to here
+  aoi_Survey$SCOMNAME <- NULL
+  SGCNcol <- c("ELSeason","SNAME","SCOMNAME","SENSITV_SP","Agency")
+  aoi_Survey <- merge(aoi_sgcn[SGCNcol],aoi_Survey,by="ELSeason")
+  aoi_Survey$SCOMNAME <- ifelse(aoi_Survey$SENSITV_SP=="Y" & (aoi_Survey$Agency!=AgDis|is.na(AgDis)),"SENSITIVE SPECIES",aoi_Survey$SCOMNAME)
+  aoi_Survey$SNAME <- ifelse(aoi_Survey$SENSITV_SP=="Y" & (aoi_Survey$Agency!=AgDis|is.na(AgDis)),"",aoi_Survey$SNAME)
+  aoi_Survey$NumSurveyQuestion_Edited <- ifelse(aoi_Survey$SENSITV_SP=="Y" & (aoi_Survey$Agency!=AgDis|is.na(AgDis)),"Survey Needs not listed for species sensitivity reasons",aoi_Survey$NumSurveyQuestion_Edited) 
   
   ############## Agency Districts ###############
   ## do we want to add PGC/PFBC district information to the table here???
@@ -353,7 +383,7 @@ tool_exec <- function(in_params, out_params)  #
           inline = TRUE,
           body=emailbody, #"Attached are your COA Tool Results.\n Please note that these are draft results for testing purposes.",  # emailbody, #
           #smtp=list(host.name="ssrs.reachmail.net", port=465, user.name="PENNSYLV3\\christopher",passwd="", ssl=TRUE),
-          smtp=list(host.name="smtp.gmail.com", port=465, user.name="pacoatest@gmail.com",passwd="", ssl=TRUE),
+          smtp=list(host.name="smtp.gmail.com", port=465, user.name="pacoatest@gmail.com",passwd="U8ABTLet", ssl=TRUE),
           authenticate=TRUE,
           attach.files=pdf.path,
           send=TRUE)  # change from F to T to get the email to send

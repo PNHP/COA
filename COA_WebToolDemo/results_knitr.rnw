@@ -80,8 +80,8 @@ cat(paste0(aoi_HUC$HUC12name, collapse=", "))
 \noindent\normalsize \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) that have been identified as either occurring or potentially occurring within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}.\\
 <<label=longtable, echo=FALSE, results='asis'>>=
 sgcn <- aoi_sgcnXpu_final
-sgcn$TaxaGroup <- lu_taxagrp[,3][match(sgcn$TaxaGroup, lu_taxagrp[,1])]
-taxa <- unique(sgcn$TaxaGroup)
+##sgcn$TaxaGroup <- lu_taxagrp[,3][match(sgcn$TaxaGroup, lu_taxagrp[,1])]  ## no longer needed
+taxa <- unique(sgcn$TaxaDisplay)
 cat('\\begin{longtable}{p{2in}p{0.7in}p{0.3in}p{0.3in}p{0.3in}p{0.3in}p{0.8in}p{4.2in}}\n')
 cat('\\toprule\n')
 cat('SGCN Name & Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability & Specific Habitat Requirements \\\\ \n')
@@ -103,8 +103,8 @@ for(t in taxa){
   else{
     cat(paste0('\\multicolumn{8}{l}{\\rowcolor[gray]{.9}',t,'}', '\\\\ \n'))}
   for(i in 1:nrow(sgcn)){
-    if(sgcn$TaxaGroup[i] == t){
-      cat(paste0(paste(sgcn$SCOMNAME[i],"\\newline \\hspace{3mm} (\\textit{",sgcn$SNAME[i],"})",sep=""),'&',sgcn$SeasonCode[i],'&',sgcn$CAT1_glbl_reg[i],'&',sgcn$CAT2_com_sp_com[i],'&',sgcn$CAT3_cons_rare_native[i],'&',sgcn$CAT4_datagaps[i],'&',sgcn$OccProb[i],'&',sgcn$SpecificHabitatRequirements[i],'\\\\ \n'))
+    if(sgcn$TaxaDisplay[i] == t){
+      cat(paste0(paste(sgcn$SCOMNAME[i],"\\newline \\hspace{5mm} (\\textit{",sgcn$SNAME[i],"})",sep=""),'&',sgcn$SeasonCode[i],'&',sgcn$CAT1_glbl_reg[i],'&',sgcn$CAT2_com_sp_com[i],'&',sgcn$CAT3_cons_rare_native[i],'&',sgcn$CAT4_datagaps[i],'&',sgcn$OccProb[i],'&',sgcn$SpecificHabitatRequirements[i],'\\\\ \n'))  ### NEED ADD Code to remove () from this if sensitive
     }
   }
 }
@@ -170,24 +170,24 @@ cat('\\end{table}\n')
 \vspace{8mm}
 
 \noindent\Large\textbf{Conservation Actions} \\
-
 \noindent\normalsize The following table includes specific actions for SGCN within the area of interest. Actions are ordered by the relative impact of their broader action category. If an action is appropiate for more than one SGCN, they have been compiled across species.
 <<label=longtable1, echo=FALSE, results='asis'>>=
 actions <- actionstable_working
 actions$CommonName <- paste("\\textit{",actions$CommonName,"}", sep="")
 actions$COATool_Action <- gsub("&", "and", actions$COATool_Action)
-action_cat <- unique(actions$ActionCategory1)
-cat('\\begin{longtable}{p{10in}}\n')
+action_cat <- unique(actions[c("ActionCategory2","AIS")] )
+#action_cat <- unique(actions$ActionCategory2)
+cat('\\begin{longtable}{p{7in}p{2in}}\n')
 cat('\\toprule\n')
-cat('Recommended Conservation Actions/SGCN Affected \\\\ \n')
+cat('Recommended Conservation Actions & SGCN Affected \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
-for(a in action_cat){
-  cat(paste0('\\multicolumn{1}{l}{\\rowcolor[gray]{.7}',a,'}', '\\\\ \n'))
+for(a in 1:nrow(action_cat)){
+  cat(paste0('\\multicolumn{2}{l}{\\rowcolor[gray]{.7}',action_cat$ActionCategory2[a],'\\hspace{40mm} ',action_cat$AIS[a],' Action Impact Score }', '\\\\ \n'))  
   for(i in 1:nrow(actions)){
-    if(actions$ActionCategory1[i] == a){
-      cat(paste0(actions$COATool_Action[i], '\\\\ \n'))
-      cat(paste0('\\hspace{5mm}', actions$CommonName[i], '\\\\ \n'))
+    if(actions$ActionCategory2[i] == action_cat$ActionCategory2[a]){
+      cat(paste0(actions$COATool_ActionsFINAL[i],' & ',actions$SCOMNAME[i], '\\\\ \n'))
+      #cat(paste0('\\hspace{5mm}', actions$SCOMNAME[i], '\\\\ \n'))
     }
   }
 }
@@ -205,7 +205,7 @@ research$SCOMNAME <- paste("\\textit{",research$SCOMNAME,"}", sep="")
 #action_cat <- unique(actions$ActionCategory1)
 cat('\\begin{longtable}{p{2.5in}p{7in}}\n')
 cat('\\toprule\n')
-cat('species & research needs \\\\ \n')
+cat('SGCN & Research Needs \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
 #for(a in action_cat){

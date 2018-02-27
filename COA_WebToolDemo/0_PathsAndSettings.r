@@ -14,3 +14,8 @@ SGCN_SortOrder <- c("Bird","Mammal","Amphibian","Snake","Turtle","Lizard","Frog"
 
 # Latex Formating Variables  ##  not sure if this is needed anymore.
 col <- "\\rowcolor[gray]{.7}" # for table row groups  https://en.wikibooks.org/wiki/LaTeX/Colors
+
+# functions
+sanitizeLatexS <- function(str) {
+  gsub('([#$%><&~_\\^\\\\{}])', '\\\\\\\\\\1', str, perl = TRUE);
+}

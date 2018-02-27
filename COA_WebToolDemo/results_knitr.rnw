@@ -3,7 +3,12 @@
 \usepackage{geometry}
 \usepackage{fancyhdr}     %for headers,footers
 \usepackage{underscore}  %needed if any text has underscores
+\usepackage[T1]{fontenc} 
 \usepackage[utf8]{inputenc} 
+\usepackage{lmodern}
+\usepackage{newunicodechar}
+\newunicodechar{ﬁ}{fi}
+\newunicodechar{ﬀ}{ff}
 \usepackage[singlelinecheck=false, justification=raggedright]{caption}
 \usepackage{longtable}
 \usepackage{float}
@@ -11,6 +16,7 @@
 \usepackage{colortbl, xcolor}
 \usepackage{booktabs}
 \usepackage{hyperref}
+\usepackage{enumitem}
 
 \graphicspath{{\Sexpr{as.character(graphics_path)}}}
 
@@ -77,14 +83,24 @@ cat(paste0(aoi_HUC$HUC12name, collapse=", "))
 \vspace{8mm}
 
 \noindent\Large\textbf{Species of Greatest Conservation Need} \\
-\noindent\normalsize \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) that have been identified as either occurring or potentially occurring within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}.\\
+\noindent\normalsize \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) that have been identified as either occurring or potentially occurring within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}. \\
+
+Occurence probability defintions are as follows:
+\vspace{-\topsep}
+\begin{itemize}
+ \setlength\itemsep{0em}
+\item \underline{High} - The species has been recorded by an observer within the area of interest.
+\item \underline{Medium} - An observer has not recorded the species within the area of interest, but species distribution models or other data sources indicate strong potential for this species to occur.
+\item \underline{Low} - An observer has not recorded the species within the area of interest and species distribution models do not indicate strong potential. However, habitat may be present for this species, suggesting surveys are needed.
+\end{itemize}
+
 <<label=longtable, echo=FALSE, results='asis'>>=
 sgcn <- aoi_sgcnXpu_final
 ##sgcn$TaxaGroup <- lu_taxagrp[,3][match(sgcn$TaxaGroup, lu_taxagrp[,1])]  ## no longer needed
 taxa <- unique(sgcn$TaxaDisplay)
 cat('\\begin{longtable}{p{2in}p{0.7in}p{0.3in}p{0.3in}p{0.3in}p{0.3in}p{0.8in}p{4.2in}}\n')
 cat('\\toprule\n')
-cat('SGCN Name & Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability & Specific Habitat Requirements \\\\ \n')
+cat('SGCN Name & SGCN Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability & Specific Habitat Requirements \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
 for(t in taxa){
@@ -114,13 +130,7 @@ cat('\\end{longtable}\n')
 \vspace*{-4mm}
 \noindent\normalsize Additionally, habitat may be present for the following SGCN, though surveys are needed to confirm their presence or absence: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence.\\
 \vspace{2mm}
-Occurence probability defintions are as follows:
-\begin{itemize}
- \setlength\itemsep{0em}
-\item \underline{High} - The species has been recorded by an observer within the area of interest.
-\item \underline{Medium} - An observer has not recorded the species within the area of interest, but species distribution models or other data sources indicate strong potential for this species to occur.
-\item \underline{Low} - An observer has not recorded the species within the area of interest and species distribution models do not indicate strong potential. However, habitat may be present for this species, suggesting surveys are needed.
-\end{itemize}
+
 
 \vspace{4mm}
 
@@ -196,23 +206,24 @@ cat('\\end{longtable}\n')
 @
 
 \vspace{10mm}
-\noindent\Large\textbf{Research Needs} \\
-\noindent\normalsize The following table includes research needs for the SGCN present at the site. Please note that the specific research needs may not be applicable at this particular AOI. 
+\noindent\Large\textbf{Research and Survey Needs} \\
+\noindent\normalsize The following table includes research and survey needs for the SGCN present at the site. Please note that the specific research or survey needs may not be applicable at this particular AOI. 
+
 <<label=longtable3, echo=FALSE, results='asis'>>=
-research <- aoi_Research
+research <- aoi_ResearchSurvey
 research$SCOMNAME <- paste("\\textit{",research$SCOMNAME,"}", sep="")
 #actions$COATool_Action <- gsub("&", "and", actions$COATool_Action) # replaces the ampersand with a real word
 #action_cat <- unique(actions$ActionCategory1)
-cat('\\begin{longtable}{p{2.5in}p{7in}}\n')
+cat('\\begin{longtable}{p{1.5in}p{4in}p{4in}}\n')
 cat('\\toprule\n')
-cat('SGCN & Research Needs \\\\ \n')
+cat('SGCN & Research Needs & Survey Needs \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
 #for(a in action_cat){
 #  cat(paste0('\\multicolumn{1}{l}{\\rowcolor[gray]{.7}',a,'}', '\\\\ \n'))
   for(i in 1:nrow(research)){
     #if(actions$ActionCategory1[i] == a){
-      cat(paste0(research$SCOMNAME[i],'&',research$ResearchQues_Edited[i],'\\\\ \n'))
+      cat(paste0(research$SCOMNAME[i],'& \\vspace{-\\topsep}\\begin{itemize}[topsep=0pt]\\setlength\\itemsep{0em}\\item ',research$ResearchQues_Edited[i],'\\end{itemize} & \\vspace{-\\topsep}\\begin{itemize}[topsep=0pt]\\setlength\\itemsep{0em}\\item ',research$NumSurveyQuestion[i],'\\end{itemize} \\\\ \n'))
       #cat(paste0('\\hspace{5mm}', research$SCOMNAME[i], '\\\\ \n'))
     #}
   }
@@ -220,29 +231,10 @@ cat('\\endhead\n')
 cat('\\bottomrule\n')
 cat('\\end{longtable}\n')
 @
-\vspace{10mm}
-\noindent\Large\textbf{Survey Needs} \\
-\noindent\normalsize The following table includes survey needs for the SGCN present at the site. Please note that the specific survey needs may not be applicable at this particular AOI. 
-<<label=longtable4, echo=FALSE, results='asis'>>=
-survey <- aoi_Survey
-cat('\\begin{longtable}{p{2.5in}p{7in}}\n')
-cat('\\toprule\n')
-cat('species & research needs \\\\ \n')
-cat('\\midrule\n')
-cat('\\endhead\n')
-#for(a in action_cat){
-#  cat(paste0('\\multicolumn{1}{l}{\\rowcolor[gray]{.7}',a,'}', '\\\\ \n'))
-  for(i in 1:nrow(survey)){
-    #if(actions$ActionCategory1[i] == a){
-      cat(paste0(survey$SCOMNAME[i],'&',survey$NumSurveyQuestion_Edited[i],'\\\\ \n'))
-      #cat(paste0('\\hspace{5mm}', survey$SCOMNAME[i], '\\\\ \n'))
-    #}
-  }
-#}
-cat('\\bottomrule\n')
-cat('\\end{longtable}\n')
-@
 
+
+
+\vspace{10mm}
 \noindent\large\textbf{Want more information or have questions? Please contact:} \\
 \noindent\normalsize 
 This AOI is within the following PFBC and PGC districts:\\

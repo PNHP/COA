@@ -19,7 +19,9 @@ tool_exec <- function(in_params, out_params)  #
   if (!requireNamespace("lettercase", quietly = TRUE)) install.packages("lettercase")
   require(lettercase)
   if (!requireNamespace("mailR", quietly = TRUE)) install.packages("mailR")
-  require(mailR)  
+  require(mailR)
+  if (!requireNamespace("Hmisc", quietly = TRUE)) install.packages("Hmisc")
+  require(Hmisc)
  
   ## The line directly below (loc_scripts) needs your attention
   loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
@@ -131,6 +133,7 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="High"] <- 1
   # drop all the low occurence probability values from the table
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb=="Low"), ]
+  aoi_sgcnXpu_LowOccProbELSeason <- aoi_sgcnXpu_LowOccProb[c("ELSeason")] # for use later in the script to remove from Survey and Research needs table.
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_LowOccProb[c("SCOMNAME","SNAME")]
   ## get a list of Low Occ Prob species to put into a text section in the report
   aoi_sgcnXpu_LowOccProb$name <-paste(aoi_sgcnXpu_LowOccProb$SCOMNAME," (\\textit{",aoi_sgcnXpu_LowOccProb$SNAME,"})",sep="")
@@ -184,6 +187,8 @@ tool_exec <- function(in_params, out_params)  #
     # subset to needed columns
   keeps <- c("SCOMNAME","SNAME","OccWeight","PriorityWAP","SpecificHabitatRequirements", "CAT1_glbl_reg", "CAT2_com_sp_com", "CAT3_cons_rare_native", "CAT4_datagaps")  
   aoi_sgcn_results <- aoi_sgcnXpu_final[keeps]
+  
+  ###aoi_sgcn_results$SpecificHabitatRequirements <- sanitizeLatexS(aoi_sgcn_results$SpecificHabitatRequirements)
   
   ############# Habitats  ##################################
   print("Looking up Habitats with the AOI") # report out to ArcGIS
@@ -312,21 +317,22 @@ tool_exec <- function(in_params, out_params)  #
 
   
   
-  
-  
-  ############## Research Needs #################
+  ################ RESEARCH & SURVEY NEEDS ##################################
+  # Research Needs Query and Table Generation
   print("Looking up Research Needs with the AOI") # report out to ArcGIS
   SQLquery_luResearch <-  paste("SELECT ELSeason, ResearchQues_Edited, SCOMNAME, AgencySpecific "," FROM lu_SGCNresearch ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_Research <- dbGetQuery(db, statement = SQLquery_luResearch )  
-  # merge taxonomic and survey information from the SGCN table to here
+    # merge taxonomic and survey information from the SGCN table to here
   aoi_Research$SCOMNAME <- NULL
   SGCNcol <- c("ELSeason","SNAME","SCOMNAME","SENSITV_SP","Agency")
   aoi_Research <- merge(aoi_sgcn[SGCNcol],aoi_Research,by="ELSeason")
   aoi_Research$SCOMNAME <- ifelse(aoi_Research$SENSITV_SP=="Y" & (aoi_Research$Agency!=AgDis|is.na(AgDis)),"SENSITIVE SPECIES",aoi_Research$SCOMNAME)
   aoi_Research$SNAME <- ifelse(aoi_Research$SENSITV_SP=="Y" & (aoi_Research$Agency!=AgDis|is.na(AgDis)),"",aoi_Research$SNAME)
   aoi_Research$ResearchQues_Edited <- ifelse(aoi_Research$SENSITV_SP=="Y" & (aoi_Research$Agency!=AgDis|is.na(AgDis)),"Research Needs not listed for species sensitivity reasons",aoi_Research$ResearchQues_Edited)
-    
-  ############## Survey Needs #################
+  # aggregate functions
+  aoi_Research_Agg <- setNames(aggregate(aoi_Research$ResearchQues_Edited, list(aoi_Research$ELSeason), paste, collapse="\\item "), c("ELSeason", "ResearchQues_Edited"))
+  aoi_Research_Agg <- merge(aoi_Research_Agg, unique(aoi_Research[c("ELSeason","SNAME","SCOMNAME","SENSITV_SP","Agency","AgencySpecific")]),by="ELSeason", all = TRUE)
+  # Survey Needs Query and Table Generation
   print("Looking up Survey Needs with the AOI") # report out to ArcGIS
   SQLquery_luSurvey <-  paste("SELECT ELSeason, NumSurveyQuestion_Edited, SCOMNAME, AgencySpecific "," FROM lu_SGCNsurvey ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_Survey <- dbGetQuery(db, statement = SQLquery_luSurvey ) 
@@ -338,7 +344,11 @@ tool_exec <- function(in_params, out_params)  #
   aoi_Survey$SCOMNAME <- ifelse(aoi_Survey$SENSITV_SP=="Y" & (aoi_Survey$Agency!=AgDis|is.na(AgDis)),"SENSITIVE SPECIES",aoi_Survey$SCOMNAME)
   aoi_Survey$SNAME <- ifelse(aoi_Survey$SENSITV_SP=="Y" & (aoi_Survey$Agency!=AgDis|is.na(AgDis)),"",aoi_Survey$SNAME)
   aoi_Survey$NumSurveyQuestion_Edited <- ifelse(aoi_Survey$SENSITV_SP=="Y" & (aoi_Survey$Agency!=AgDis|is.na(AgDis)),"Survey Needs not listed for species sensitivity reasons",aoi_Survey$NumSurveyQuestion_Edited) 
-  
+  # aggregate functions
+  aoi_Survey_Agg <- setNames(aggregate(aoi_Survey$NumSurveyQuestion, list(aoi_Survey$ELSeason), paste, collapse="\\item "), c("ELSeason", "NumSurveyQuestion"))
+  # merge the two tables together for the report
+  aoi_ResearchSurvey <- merge(aoi_Research_Agg,aoi_Survey_Agg,by="ELSeason",all=TRUE)
+  aoi_ResearchSurvey <- aoi_ResearchSurvey[!( aoi_ResearchSurvey$ELSeason %in% aoi_sgcnXpu_LowOccProbELSeason$ELSeason), ]
   ############## Agency Districts ###############
   ## do we want to add PGC/PFBC district information to the table here???
   print("Looking up Agency Regions with the AOI") # report out to ArcGIS

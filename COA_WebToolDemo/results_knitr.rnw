@@ -96,10 +96,10 @@ Occurence probability defintions are as follows:
 
 <<label=longtable, echo=FALSE, results='asis'>>=
 sgcn <- aoi_sgcnXpu_final
-##sgcn$TaxaGroup <- lu_taxagrp[,3][match(sgcn$TaxaGroup, lu_taxagrp[,1])]  ## no longer needed
 taxa <- unique(sgcn$TaxaDisplay)
 cat('\\begin{longtable}{p{2in}p{0.7in}p{0.3in}p{0.3in}p{0.3in}p{0.3in}p{0.8in}p{4.2in}}\n')
 cat('\\toprule\n')
+#cat(' &  & \\multicolumn{4}{SGCN Priority} &  &  \\\\ \n')   # NEED to FIGURE OUT HOW TO GROUP THESE
 cat('SGCN Name & SGCN Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability & Specific Habitat Requirements \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
@@ -128,26 +128,30 @@ cat('\\bottomrule\n')
 cat('\\end{longtable}\n')
 @
 \vspace*{-4mm}
-\noindent\normalsize Additionally, habitat may be present for the following SGCN, though surveys are needed to confirm their presence or absence: \Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence.\\
-\vspace{2mm}
 
+<<echo=FALSE, results='asis'>>=
+if(is.data.frame(aoi_sgcnXpu_LowOccProb) && nrow(aoi_sgcnXpu_LowOccProb)!=0){
+cat(paste0('\\noindent\\normalsize Additionally, habitat may be present for the following SGCN, though surveys are needed to confirm their presence or absence:', '\\Sexpr{aoi_sgcnXpu_LowOccProb}. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence.\\
+\vspace{2mm} \\\\ \n'))
+}  
+@
 
 \vspace{4mm}
 
 \noindent\Large\textbf{Habitat} \\
 \normalsize The following table shows the distribution of habitats that intersect the planning units within your area of interest. Terrestrial and wetland habitats (i.e. ecological systems) are categorized by their macrogroup. For more information about habitats, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 2} and Appendices. \\
 
-<<echo=FALSE, results='asis'>>=
+
+<<label=longtablehab, echo=FALSE, results='asis'>>=
 keeps <- c("Macrogroup", "Habitat", "acres")
 hab <- aoi_HabTerr[keeps]
 macros <- unique(hab$Macrogroup)
-cat('\\setlength{\\LTleft}{0pt}\n')
-cat('\\begin{table}[ht]\n')
-cat('\\centering\n')
-cat('\\begin{tabular}{lr}\n')
-cat('\\hline\n')
+
+cat('\\begin{longtable}{p{4in}p{1in}{r}}\n')
+cat('\\toprule\n')
 cat('\\rowcolor[gray]{.8}{Terrestrial and Wetland Habitat & Area(ac)} \\\\ \n')
-cat('\\hline\n')
+cat('\\midrule\n')
+cat('\\endhead\n')
 for(m in macros){
   cat(paste0('\\multicolumn{2}{l}{',m,'}', '\\\\ \n'))
   for(i in 1:nrow(hab)){
@@ -171,8 +175,9 @@ if(nrow(aoi_HabLotic) == 0){
   }
   cat('\\hline\n')
 }
-cat('\\end{tabular}\n')
-cat('\\end{table}\n')
+cat('\\bottomrule\n')
+cat('\\end{longtable}\n')
+
 @
 \vspace*{-3mm}
 \noindent\normalsize **Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.
@@ -187,7 +192,7 @@ actions$CommonName <- paste("\\textit{",actions$CommonName,"}", sep="")
 actions$COATool_Action <- gsub("&", "and", actions$COATool_Action)
 action_cat <- unique(actions[c("ActionCategory2","AIS")] )
 #action_cat <- unique(actions$ActionCategory2)
-cat('\\begin{longtable}{p{7in}p{2in}}\n')
+cat('\\begin{longtable}{p{7in}p{2in}{l}}\n')
 cat('\\toprule\n')
 cat('Recommended Conservation Actions & SGCN Affected \\\\ \n')
 cat('\\midrule\n')

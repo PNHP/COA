@@ -40,6 +40,7 @@ tool_exec <- function(in_params, out_params)  #
   # project_name <- "Manual Test Project"
   # planning_units <- "C:/coa/planning_unit_test.shp"
   # planning_units <- "E:/coa2/test_pu1.shp"
+  # planning_units <- "E:/coa2/test_pu1_DevoidOfSGCN.shp"
   # AgencyPersonnel <- "67est1866"   ### delete this one
   if(!is.null(AgencyPersonnel)){
     AgDis <- codetable[match(AgencyPersonnel,codetable$password),1]
@@ -92,10 +93,12 @@ tool_exec <- function(in_params, out_params)  #
   ##############  SGCN  ########################################
   # build query to select planning units within area of interest from SGCNxPU table
   print("Looking up SGCN with the AOI") # report out to ArcGIS
-  SQLquery <- paste("SELECT unique_id, El_Season, OccProb, PERCENTAGE"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
+  SQLquery <- paste("SELECT unique_id, ELSeason, OccProb, PERCENTAGE"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   # create SGCNxPU dataframe containing selected planning units
   aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery)
-  colnames(aoi_sgcnXpu)[colnames(aoi_sgcnXpu) == 'El_Season'] <- 'ELSeason'
+  
+  
+  
   aoi_sgcnXpu$AREA <- round((as.numeric(aoi_sgcnXpu$PERCENTAGE) * 0.1),4) # used 0.1 because the percentate ranges from 0-100 so this converts to 10acres
   # dissolve table based on elcode and season, keeping all High records  and then med/low with highest summed area within group
   # pick the highest area out of medium and low probabilities
@@ -136,8 +139,10 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_LowOccProbELSeason <- aoi_sgcnXpu_LowOccProb[c("ELSeason")] # for use later in the script to remove from Survey and Research needs table.
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_LowOccProb[c("SCOMNAME","SNAME")]
   ## get a list of Low Occ Prob species to put into a text section in the report
-  aoi_sgcnXpu_LowOccProb$name <-paste(aoi_sgcnXpu_LowOccProb$SCOMNAME," (\\textit{",aoi_sgcnXpu_LowOccProb$SNAME,"})",sep="")
-  aoi_sgcnXpu_LowOccProb <- paste(aoi_sgcnXpu_LowOccProb$name, collapse = ", ")  # we should develop something to add an ' , and' to the last entry
+  if(is.data.frame(aoi_sgcnXpu_LowOccProb) && nrow(aoi_sgcnXpu_LowOccProb)!=0){
+    aoi_sgcnXpu_LowOccProb$name <-paste(aoi_sgcnXpu_LowOccProb$SCOMNAME," (\\textit{",aoi_sgcnXpu_LowOccProb$SNAME,"})",sep="")
+    aoi_sgcnXpu_LowOccProb <- paste(aoi_sgcnXpu_LowOccProb$name, collapse = ", ")  # we should develop something to add an ' , and' to the last entry 
+  } 
   aoi_sgcnXpu_final <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb!="Low"), ]
   # replace the breeding codes with full names
   aoi_sgcnXpu_final$SeasonCode[aoi_sgcnXpu_final$SeasonCode=="b"] <- "Breeding"

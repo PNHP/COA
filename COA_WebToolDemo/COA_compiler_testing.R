@@ -96,18 +96,17 @@ tool_exec <- function(in_params, out_params)  #
   SQLquery <- paste("SELECT unique_id, ELSeason, OccProb, PERCENTAGE"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   # create SGCNxPU dataframe containing selected planning units
   aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery)
-
   aoi_sgcnXpu$AREA <- round((as.numeric(aoi_sgcnXpu$PERCENTAGE) * 0.1),4) # used 0.1 because the percentate ranges from 0-100 so this converts to 10acres
   # dissolve table based on elcode and season, keeping all High records  and then med/low with highest summed area within group
   # pick the highest area out of medium and low probabilities
-  aoi_sgcnXpu_MedLow <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb!="High",]
+  aoi_sgcnXpu_MedLow <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb!="Confirmed",]
   aoi_sgcnXpu_MedLow <- aggregate(aoi_sgcnXpu_MedLow$AREA~ELSeason+OccProb,aoi_sgcnXpu_MedLow,FUN=sum)
   aoi_sgcnXpu_MedLow <- do.call(rbind,lapply(split(aoi_sgcnXpu_MedLow, aoi_sgcnXpu_MedLow$ELSeason), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu_MedLow$AREA`),]))
   colnames(aoi_sgcnXpu_MedLow)[colnames(aoi_sgcnXpu_MedLow) == 'aoi_sgcnXpu_MedLow$AREA'] <- 'AREA'
   
   # subset the high values out of the DF
-  if ( length(which(aoi_sgcnXpu$OccProb=="High") > 0 ) ){
-    aoi_sgcnXpu_High <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb=="High",]
+  if ( length(which(aoi_sgcnXpu$OccProb=="Confirmed") > 0 ) ){
+    aoi_sgcnXpu_High <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb=="Confirmed",]
     aoi_sgcnXpu_High <- aggregate(aoi_sgcnXpu_High$AREA~ELSeason+OccProb,aoi_sgcnXpu_High,FUN=sum)
     colnames(aoi_sgcnXpu_High)[colnames(aoi_sgcnXpu_High) == 'aoi_sgcnXpu_High$AREA'] <- 'AREA'  
     # merge the two together
@@ -130,8 +129,8 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_final <- merge(aoi_sgcnXpu_final, aoi_sgcn) 
   # add a weight based on the Occurence probability
   aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Low"] <- 0.6
-  aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Medium"] <- 0.8
-  aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="High"] <- 1
+  aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Probable"] <- 0.8
+  aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Confirmed"] <- 1
   # drop all the low occurence probability values from the table
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb=="Low"), ]
   aoi_sgcnXpu_LowOccProbELSeason <- aoi_sgcnXpu_LowOccProb[c("ELSeason")] # for use later in the script to remove from Survey and Research needs table.

@@ -87,7 +87,15 @@ cat('PFBC District:',aoi_Agency$pfbc_Name, '\\\\ \n', sep=" ")
 \begin{itemize}
  \setlength\itemsep{0em}
 \item \underline{Confirmed} - The species has been documented within the area of interest.
-\item \underline{Probable} - The species has not been documented within the area of interest, but species distribution models or other data sources indicate strong potential for its occurrence..
+\item \underline{Probable} - The species has not been documented within the area of interest, but species distribution models or other data sources indicate strong potential for its occurrence.
+\end{itemize}
+\noindent\normalsize SWAP Priority categories are as follows:
+\begin{itemize}
+ \setlength\itemsep{0em}
+\item \underline{1} - Contribute to the conservation of globally or regionally important species.
+\item \underline{2} - Prevent common species from becoming at-risk.
+\item \underline{3} - Maintain rare native species.
+\item \underline{4} - Reduce knowledge gaps to better assess conservation status of species.
 \end{itemize}
 
 <<label=longtable, echo=FALSE, results='asis'>>=
@@ -95,7 +103,8 @@ sgcn <- aoi_sgcnXpu_final
 taxa <- unique(sgcn$TaxaDisplay)
 cat('\\begin{longtable}{p{2in}p{0.7in}p{0.3in}p{0.3in}p{0.3in}p{0.3in}p{0.8in}p{4.2in}}\n')
 cat('\\toprule\n')
-#cat(' &  & \\multicolumn{4}{SGCN Priority} &  &  \\\\ \n')   # NEED to FIGURE OUT HOW TO GROUP THESE
+cat(' &  & \\multicolumn{4}{c}{SGCN Priority} &  &  \\\\ \n')   
+cat('\\cmidrule(lr){3-6} \\\\ \n')
 cat('SGCN Name & SGCN Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability & Specific Habitat Requirements \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
@@ -176,14 +185,12 @@ cat('\\end{longtable}\n')
 \noindent\normalsize
 
 <<echo=FALSE, results = "asis">>=
+  if (!is.na(report_SeasonPool)||!is.na(report_Cave)) cat('In addition to the above mapped habitats, the following small-patch habitats have been noted within the Area of interest.')
   if (!is.na(report_SeasonPool)) cat(report_SeasonPool)
   if (!is.na(report_Cave)) cat(report_Cave)
 @
 
-
 \vspace{8mm}
-
-
 
 \pagebreak
 \noindent\Large\textbf{Conservation Actions} \\

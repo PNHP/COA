@@ -41,13 +41,13 @@ tool_exec <- function(in_params, out_params)  #
   # planning_units <- "C:/coa/planning_unit_test.shp"
   # planning_units <- "E:/coa2/test_pu1.shp"
   # planning_units <- "E:/coa2/test_pu1_DevoidOfSGCN.shp"
-  # AgencyPersonnel <- "67est1866"   ### delete this one
+  # AgencyPersonnel <- NULL   ### delete values this one
   if(!is.null(AgencyPersonnel)){
     AgDis <- codetable[match(AgencyPersonnel,codetable$password),1]
     #AgDis <- paste("You are viewing this output as",AgDis,"staff and some sensitive species may be displayed.",sep=" ")
-  }else{
-    AgDis <- NA
-  }
+  }else if(is.null(AgencyPersonnel)){
+    AgDis <- "public"
+  } 
   print(AgDis) ### remove  # probably should insert something into SQL lite if the passcode is used
   
   print(paste("Project Name: ",project_name, sep=""))
@@ -121,7 +121,6 @@ tool_exec <- function(in_params, out_params)  #
   elcodes <- aoi_sgcnXpu_final$ELSeason
   SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, SENSITV_SP, Environment, TaxaGroup, TaxaDisplay, ELSeason, Agency, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps, WebAddress "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
-
   # before the merge, set the priority for the SGCN based on the highest value in a number of categories
   aoi_sgcn[, "CAT_min"] <- apply(aoi_sgcn[, 10:13], 1, min) # get the minumum across categories
   aoi_sgcn$PriorityWAP <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse
@@ -225,14 +224,17 @@ tool_exec <- function(in_params, out_params)  #
   # special habitats such as seasonal pools and caves
     SQLquery_HabSpecial <- paste("SELECT unique_id, SpecialHabitat"," FROM lu_SpecialHabitats ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)),collapse = ", "), ")")
     aoi_HabSpecial <- dbGetQuery(db, statement = SQLquery_HabSpecial)
-    report_SeasonPool <- NA
-    report_Cave <- NA
-    if(is.data.frame(aoi_HabSpecial) && nrow(aoi_HabSpecial)!=0){
-      if(any(aoi_HabSpecial$SpecialHabitat=="Seasonal Pool")){
-        report_SeasonPool <- "One or more seasonal pools are located within this area of interest."
-      } 
-      if(any(aoi_HabSpecial$SpecialHabitat=="Cave")){
-        report_Cave <- "One or more caves are located within this area of interest."
+    report_SeasonPool <- NA # initialize so it exists
+    report_Cave <- NA # initialize so it exists
+ 
+    if (AgDis!="public") { # Sensitivity Filter
+      if(is.data.frame(aoi_HabSpecial) && nrow(aoi_HabSpecial)!=0){
+        if(any(aoi_HabSpecial$SpecialHabitat=="Seasonal Pool")){
+          report_SeasonPool <- "One or more seasonal pools are located within this area of interest."
+        } 
+        if(any(aoi_HabSpecial$SpecialHabitat=="Cave")){
+          report_Cave <- "One or more caves are located within this area of interest."
+        }
       }
     }
     # pass this to the knitr for inclusion in the report.
@@ -267,7 +269,7 @@ tool_exec <- function(in_params, out_params)  #
   } else if (AgDis=="PGC") { 
     aoi_actionstable <- aoi_actionstable[aoi_actionstable$AgencySpecific!="PFBC", ] 
   } else {
-    aoi_actionstable <- aoi_actionstable[is.na(aoi_actionstable$AgencySpecific), ]
+    aoi_actionstable <- aoi_actionstable[aoi_actionstable$AgencySpecific!="PFBC"||aoi_actionstable$AgencySpecific!="PGC", ] # is.na(aoi_actionstable$AgencySpecific)
   }
   
   #remove actions that are only appropiate for wind issues when the AOI is not within the wind region.
@@ -326,11 +328,6 @@ tool_exec <- function(in_params, out_params)  #
   agg2 <- rbind(agg,agg1)
   agg2 <- aggregate(agg2$Count, by=list(AIS=agg2$AIS), FUN=sum)
   ##merge(actionstable_working, agg2, by="AIS", all=TRUE)
-  
-  # this does the above but for every action
-  #aoi_actionstable_Agg1 <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$COATool_Action),FUN=sum)
-  #write.csv(aoi_actionstable_Agg1, "actions_by_ind.csv")
-
 
   
   ################ RESEARCH & SURVEY NEEDS ##################################
@@ -365,9 +362,6 @@ tool_exec <- function(in_params, out_params)  #
   # merge the two tables together for the report
   aoi_ResearchSurvey <- merge(aoi_Research_Agg,aoi_Survey_Agg,by="ELSeason",all=TRUE)
   aoi_ResearchSurvey <- aoi_ResearchSurvey[!( aoi_ResearchSurvey$ELSeason %in% aoi_sgcnXpu_LowOccProbELSeason$ELSeason), ]
-  
-  
-  
   
   ############## Agency Districts ###############
   ## do we want to add PGC/PFBC district information to the table here???

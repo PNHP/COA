@@ -11,6 +11,9 @@
 \newunicodechar{ﬀ}{ff}
 \usepackage[singlelinecheck=false, justification=raggedright]{caption}
 \usepackage{longtable}
+\usepackage[para]{threeparttablex}
+\usepackage{multicol}
+\usepackage{array}
 \usepackage{multirow}
 \usepackage{float}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
@@ -85,30 +88,38 @@ cat('PFBC District:',aoi_Agency$pfbc_Name, '\\\\ \n', sep=" ")
 \end{minipage}
 \vspace{8mm}
 \noindent\Large\textbf{Species of Greatest Conservation Need} \\
-\noindent\normalsize A total of \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) either occur or potentially occur within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}. Occurence probability defintions are as follows:
-\vspace{-\topsep}
-\begin{itemize}
- \setlength\itemsep{0em}
-\item \underline{Confirmed} - The species has been documented within the area of interest.
-\item \underline{Probable} - The species has not been documented within the area of interest, but species distribution models or other data sources indicate strong potential for its occurrence.
-\end{itemize}
-\noindent\normalsize SWAP Priority categories are as follows:
-\begin{itemize}
- \setlength\itemsep{0em}
-\item \underline{1} - Contribute to the conservation of globally or regionally important species.
-\item \underline{2} - Prevent common species from becoming at-risk.
-\item \underline{3} - Maintain rare native species.
-\item \underline{4} - Reduce knowledge gaps to better assess conservation status of species.
-\end{itemize}
+\noindent\normalsize A total of \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) either occur or potentially occur within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}. %Occurence probability defintions are as follows:
+%\vspace{-\topsep}
+%\begin{itemize}
+% \setlength\itemsep{0em}
+%\item \underline{Confirmed} - The species has been documented within the area of interest.
+%\item \underline{Probable} - The species has not been documented within the area of interest, but species distribution models or other data sources indicate strong potential for its occurrence.
+%\end{itemize}
+%\noindent\normalsize SWAP Priority categories are as follows:
+%\begin{itemize}
+% \setlength\itemsep{0em}
+%\item \underline{1} - Contribute to the conservation of globally or regionally important species.
+%\item \underline{2} - Prevent common species from becoming at-risk.
+%\item \underline{3} - Maintain rare native species.
+%\item \underline{4} - Reduce knowledge gaps to better assess conservation status of species.
+%\end{itemize}
 
 <<label=longtable, echo=FALSE, results='asis'>>=
 sgcn <- aoi_sgcnXpu_final
 taxa <- unique(sgcn$TaxaDisplay)
+cat('\\begin{ThreePartTable}')
+cat('\\renewcommand\\TPTminimum{\\textwidth}')
+cat('\\begin{TableNotes}[flushleft]\n')
+#cat('\\setlength{\\multicolsep}{0cm}')
+cat('\\footnotesize')
+cat('\\item[a] SGCN Priority values are defined as follows:  \\underline{CAT1} - Contribute to the conservation of globally or regionally important species; \\underline{CAT2} - Prevent common species from becoming at-risk; \\underline{CAT3} - Maintain rare native species; \\underline{CAT4} - Reduce knowledge gaps to better assess conservation status of species. Please refer to the \\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1} for more details. \\newline\n')
+cat('\\item[b] Occurence probability values are defined as follows: \\underline{Confirmed} - The species has been documented within the area of interest; \\underline{Probable} - The species has not been documented within the area of interest, but species distribution models or other data sources indicate strong potential for its occurrence.\\newline\n')
+cat('\\end{TableNotes}\n')
 cat('\\begin{longtable}{p{2in}p{0.7in}p{0.3in}p{0.3in}p{0.3in}p{0.3in}p{0.8in}p{4.2in}}\n')
 cat('\\toprule\n')
-cat(' &  & \\multicolumn{4}{c}{SGCN Priority} &  &  \\\\ \n')   
+cat(' &  & \\multicolumn{4}{c}{SGCN Priority\\tnote{a}} &  &  \\\\ \n')   
 cat('\\cmidrule(lr){3-6} \\\\ \n')
-cat('SGCN Name & SGCN Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability & Specific Habitat Requirements \\\\ \n')
+cat('SGCN Name & SGCN\\newline Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability\\tnote{b} & Specific Habitat Requirements \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
 for(t in taxa){
@@ -133,9 +144,14 @@ for(t in taxa){
   }
 }
 cat('\\bottomrule\n')
+#cat('\\multicolumn{4}')
+cat('\\insertTableNotes\n')
+cat('\\endlastfoot\n')
 cat('\\end{longtable}\n')
+cat('\\end{ThreePartTable}')
 @
-\vspace*{-4mm}
+%\vspace*{-4mm}
+\vspace{8mm}
 <<echo=FALSE, results='asis'>>=
 if(!is.null(aoi_sgcnXpu_LowOccProb)){
   cat('\\noindent\\normalsize Additionally, habitat may be present for the following SGCN, though surveys are needed to confirm their presence or absence: ',aoi_sgcnXpu_LowOccProb,'. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence. \\vspace{2mm} \\\\ \n',sep="")
@@ -204,7 +220,7 @@ cat('\\end{longtable}\n')
 
 actions <- actionstable_working
 actions$AIS <- as.character(actions$AIS)
-cat('\\begin{longtable}{p{1in}p{6in}p{2in}{l}}\n')
+cat('\\begin{longtable}{p{0.6in}p{6.4in}p{2in}{l}}\n')
 cat('\\toprule\n')
 cat('AIS & Recommended Conservation Actions & SGCN Affected \\\\ \n')
 cat('\\midrule\n')
@@ -218,7 +234,6 @@ cat(paste0('\\multirow{',agg$Count[a]+1,'}{*}{',agg$AIS[a],'} & \\multicolumn{2}
     }
   }    
 }
-
 
 cat('\\bottomrule\n')
 cat('\\end{longtable}\n')

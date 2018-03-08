@@ -11,6 +11,7 @@
 \newunicodechar{ﬀ}{ff}
 \usepackage[singlelinecheck=false, justification=raggedright]{caption}
 \usepackage{longtable}
+\usepackage{multirow}
 \usepackage{float}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \usepackage{colortbl, xcolor}
@@ -196,25 +197,35 @@ cat('\\end{longtable}\n')
 \noindent\Large\textbf{Conservation Actions} \\
 \noindent\normalsize The following table includes specific actions for SGCN within the area of interest. Actions are ordered by the relative impact of their broader action category. If an action is appropiate for more than one SGCN, they have been compiled across species.
 
-<<label=longtable1, echo=FALSE, results='asis'>>=
+
+%#$#$#$#$#$#$# begintemp
+
+<<label=longtabletemp, echo=FALSE, results='asis'>>=
+
 actions <- actionstable_working
-action_cat <- unique(actions[c("ActionCategory2","AIS")] )
-cat('\\begin{longtable}{p{7in}p{2in}{l}}\n')
+actions$AIS <- as.character(actions$AIS)
+cat('\\begin{longtable}{p{1in}p{6in}p{2in}{l}}\n')
 cat('\\toprule\n')
-cat('Recommended Conservation Actions & SGCN Affected \\\\ \n')
+cat('AIS & Recommended Conservation Actions & SGCN Affected \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
-for(a in 1:nrow(action_cat)){
-  cat(paste0('\\multicolumn{2}{l}{\\rowcolor[gray]{.7}',action_cat$ActionCategory2[a],'\\hspace{40mm} ',action_cat$AIS[a],' Action Impact Score }', '\\\\ \n'))  
+
+for(a in 1:nrow(agg)){
+cat(paste0('\\multirow{',agg$Count[a]+1,'}{*}{',agg$AIS[a],'} & \\multicolumn{2}{l}{\\rowcolor[gray]{.7}',agg$ActionCategory2[a],'}  \\\\ \n'))  
   for(i in 1:nrow(actions)){
-    if(actions$ActionCategory2[i] == action_cat$ActionCategory2[a]){
-      cat(paste0(actions$COATool_ActionsFINAL[i],' & ',actions$SCOMNAME[i], '\\\\ \n'))
+    if(actions$ActionCategory2[i] == agg$ActionCategory2[a]){
+      cat(paste0(' & ',actions$COATool_ActionsFINAL[i],' & ',actions$SCOMNAME[i], '\\\\ \n'))
     }
-  }
+  }    
 }
+
+
 cat('\\bottomrule\n')
 cat('\\end{longtable}\n')
 @
+% #$#$$#$#$# end temp
+
+
 \vspace{10mm}
 \noindent\Large\textbf{Research and Survey Needs} \\
 \noindent\normalsize The following table includes research and survey needs for the SGCN present at the site. Please note that the specific research or survey needs may not be applicable at this particular AOI. 
@@ -227,7 +238,9 @@ cat('\\midrule\n')
 cat('\\endhead\n')
 for(i in 1:nrow(research)){
   cat(paste0(research$SCOMNAME[i],'&'))
+
   if (!is.na(research$ResearchQues_Edited[i])) {cat(paste0('\\vspace{-\\topsep}\\begin{itemize}[topsep=0pt]\\setlength\\itemsep{0em}\\item ',research$ResearchQues_Edited[i],'\\end{itemize} & ')) } else if (is.na(research$ResearchQues_Edited[i])) {cat(paste0('&'))}
+  
   if (!is.na(research$NumSurveyQuestion[i])) {cat(paste0('\\vspace{-\\topsep}\\begin{itemize}[topsep=0pt]\\setlength\\itemsep{0em}\\item ',research$NumSurveyQuestion[i],'\\end{itemize} \\\\ \n')) } else if (is.na(research$NumSurveyQuestion[i])) { cat('\\\\ \n') }
   cat('\\midrule\n')
 }

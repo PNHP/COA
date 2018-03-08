@@ -58,6 +58,9 @@
 \normalsize Pennsylvania Wildlife Action Plan \\
 Project Name: \Sexpr{as.character(project_name)} \\
 Project Date: \Sexpr{format(Sys.Date(), "%d %b %Y")} \\~\\~\\  
+<<echo=FALSE, results='asis'>>=
+if (AgDis=="PFBC"|AgDis=="PFBC") cat('\\textbf{Agency Version -- Sensitive species listed} \\\\')
+@
 \end{minipage}%
 
 \noindent\begin{minipage}{0.4\textwidth}
@@ -77,10 +80,9 @@ cat('\\\\ \n')
 cat('PGC District:',aoi_Agency$pgc_DistNum,'\\\\ \n', sep=" ")  
 cat('PFBC District:',aoi_Agency$pfbc_Name, '\\\\ \n', sep=" ")
 @
-\vspace{20mm}
+\vspace{2mm}
 \end{minipage}
 \vspace{8mm}
-
 \noindent\Large\textbf{Species of Greatest Conservation Need} \\
 \noindent\normalsize A total of \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) either occur or potentially occur within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}. Occurence probability defintions are as follows:
 \vspace{-\topsep}
@@ -142,7 +144,6 @@ if(!is.null(aoi_sgcnXpu_LowOccProb)){
 \pagebreak
 \noindent\Large\textbf{Habitat} \\
 \normalsize The following table shows the distribution of habitats that intersect the planning units within your area of interest. Terrestrial and wetland habitats (i.e. ecological systems) are categorized by their macrogroup. For more information about habitats, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-2.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 2} and Appendices. \\
-
 <<label=longtablehab, echo=FALSE, results='asis'>>=
 keeps <- c("Macrogroup", "Habitat", "acres")
 hab <- aoi_HabTerr[keeps]
@@ -176,11 +177,11 @@ if(nrow(aoi_HabLotic) == 0){
   }
   cat('\\hline\n')
 }
+
 cat('\\bottomrule\n')
+##cat('\\multicolumn{2}{l}{**Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.\n}') 
 cat('\\end{longtable}\n')
 @
-\vspace*{-3mm}
-\noindent\normalsize **Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.
 \vspace{5mm}
 \noindent\normalsize
 
@@ -191,14 +192,13 @@ cat('\\end{longtable}\n')
 @
 
 \vspace{8mm}
-
 \pagebreak
 \noindent\Large\textbf{Conservation Actions} \\
 \noindent\normalsize The following table includes specific actions for SGCN within the area of interest. Actions are ordered by the relative impact of their broader action category. If an action is appropiate for more than one SGCN, they have been compiled across species.
+
 <<label=longtable1, echo=FALSE, results='asis'>>=
 actions <- actionstable_working
 action_cat <- unique(actions[c("ActionCategory2","AIS")] )
-#action_cat <- unique(actions$ActionCategory2)
 cat('\\begin{longtable}{p{7in}p{2in}{l}}\n')
 cat('\\toprule\n')
 cat('Recommended Conservation Actions & SGCN Affected \\\\ \n')
@@ -209,43 +209,35 @@ for(a in 1:nrow(action_cat)){
   for(i in 1:nrow(actions)){
     if(actions$ActionCategory2[i] == action_cat$ActionCategory2[a]){
       cat(paste0(actions$COATool_ActionsFINAL[i],' & ',actions$SCOMNAME[i], '\\\\ \n'))
-      #cat(paste0('\\hspace{5mm}', actions$SCOMNAME[i], '\\\\ \n'))
     }
   }
 }
 cat('\\bottomrule\n')
 cat('\\end{longtable}\n')
 @
-
 \vspace{10mm}
 \noindent\Large\textbf{Research and Survey Needs} \\
 \noindent\normalsize The following table includes research and survey needs for the SGCN present at the site. Please note that the specific research or survey needs may not be applicable at this particular AOI. 
 <<label=longtable3, echo=FALSE, results='asis'>>=
 research <- aoi_ResearchSurvey
-#action_cat <- unique(actions$ActionCategory1)
 cat('\\begin{longtable}{p{1.5in}p{4in}p{4in}}\n')
 cat('\\toprule\n')
 cat('SGCN & Research Needs & Survey Needs \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
-#for(a in action_cat){
-#  cat(paste0('\\multicolumn{1}{l}{\\rowcolor[gray]{.7}',a,'}', '\\\\ \n'))
-  for(i in 1:nrow(research)){
-    #if(actions$ActionCategory1[i] == a){
-      cat(paste0(research$SCOMNAME[i],'&'))
-      if (!is.na(research$ResearchQues_Edited[i])) {cat(paste0('\\vspace{-\\topsep}\\begin{itemize}[topsep=0pt]\\setlength\\itemsep{0em}\\item ',research$ResearchQues_Edited[i],'\\end{itemize} & ')) } else if (is.na(research$ResearchQues_Edited[i])) {cat(paste0('&'))}
-      if (!is.na(research$NumSurveyQuestion[i])) {cat(paste0('\\vspace{-\\topsep}\\begin{itemize}[topsep=0pt]\\setlength\\itemsep{0em}\\item ',research$NumSurveyQuestion[i],'\\end{itemize} \\\\ \n')) } else if (is.na(research$NumSurveyQuestion[i])) { cat('\\\\ \n') }
-      #cat(paste0('\\hspace{5mm}', research$SCOMNAME[i], '\\\\ \n'))
-    #}
-   cat('\\midrule\n')
-  }
-#}
+for(i in 1:nrow(research)){
+  cat(paste0(research$SCOMNAME[i],'&'))
+  if (!is.na(research$ResearchQues_Edited[i])) {cat(paste0('\\vspace{-\\topsep}\\begin{itemize}[topsep=0pt]\\setlength\\itemsep{0em}\\item ',research$ResearchQues_Edited[i],'\\end{itemize} & ')) } else if (is.na(research$ResearchQues_Edited[i])) {cat(paste0('&'))}
+  if (!is.na(research$NumSurveyQuestion[i])) {cat(paste0('\\vspace{-\\topsep}\\begin{itemize}[topsep=0pt]\\setlength\\itemsep{0em}\\item ',research$NumSurveyQuestion[i],'\\end{itemize} \\\\ \n')) } else if (is.na(research$NumSurveyQuestion[i])) { cat('\\\\ \n') }
+  cat('\\midrule\n')
+}
 cat('\\bottomrule\n')
 cat('\\end{longtable}\n')
 @
 
 \vspace{10mm}
 \noindent\large\textbf{Want more information or have questions? Please contact:} \\
+\vspace{5mm}
 \noindent\normalsize 
 \noindent\begin{minipage}{0.1\textwidth}
 \includegraphics[scale=0.35]{pgc}

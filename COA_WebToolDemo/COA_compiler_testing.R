@@ -38,9 +38,9 @@ tool_exec <- function(in_params, out_params)  #
   
   ## move this to an if statement
   # project_name <- "Manual Test Project"
-  # planning_units <- "C:/coa/planning_unit_test.shp"
   # planning_units <- "E:/coa2/test_pu1.shp"
   # planning_units <- "E:/coa2/test_pu1_DevoidOfSGCN.shp"
+  # planning_units <- "E:/coa2/test_pu_FrickPark.shp"
   # AgencyPersonnel <- NULL   ### delete values this one
   if(!is.null(AgencyPersonnel)){
     AgDis <- codetable[match(AgencyPersonnel,codetable$password),1]
@@ -306,15 +306,14 @@ tool_exec <- function(in_params, out_params)  #
   actionstable_working$AIS <- reorder.factor(actionstable_working$AIS,new.order=HMLorder)
   actionstable_working <- actionstable_working %>% arrange(AIS)
   
+  actionCatOrder <- as.matrix(unique(actionstable_working$ActionCategory2)) # for use down a few lines
   # get the count of cats
-  agg <- aggregate(data=actionstable_working, ActionCategory2~AIS, function(x) length(unique(x)))
-  colnames(agg) <- c("AIS", "Count")
-  agg1 <- as.data.frame(table(data=actionstable_working$AIS))
-  colnames(agg1) <- c("AIS", "Count")
-  agg2 <- rbind(agg,agg1)
-  agg2 <- aggregate(agg2$Count, by=list(AIS=agg2$AIS), FUN=sum)
-  ##merge(actionstable_working, agg2, by="AIS", all=TRUE)
-
+  library(plyr)
+  agg <- count(actionstable_working, c('ActionCategory2','AIS'))
+  colnames(agg) <- c("ActionCategory2","AIS", "Count")
+  agg$ActionCategory2 <- reorder.factor(agg$ActionCategory2,new.order=actionCatOrder)
+  agg <- agg %>% arrange(ActionCategory2)
+  
   ################ RESEARCH & SURVEY NEEDS ##################################
   # Research Needs Query and Table Generation
   print("Looking up Research Needs with the AOI") # report out to ArcGIS

@@ -9,6 +9,9 @@ graphics_path <- "E:/coa2/COA/COA_WebToolDemo/images/"
 # set options   
 options(useFancyQuotes = FALSE)
 
+#manual run variables
+#recipients <- c("ctracey@paconserve.org") # Replace with one or more valid addresses
+
 # variables and such
 SGCN_SortOrder <- c("Bird","Mammal","Amphibian","Snake","Turtle","Lizard","Frog","Salamander","Fish","Invertebrate - Mussels","Invertebrate - Butterflies","Invertebrate - Moths","Invertebrate - Dragonflies and Damselflies","Invertebrate - Bees","Invertebrate - Cave Invertebrates","Invertebrate - Freshwater Snails","Invertebrate - Terrestrial Snails","Invertebrate - Crayfishes","Invertebrate - Spiders","Invertebrate - Beetles","Invertebrate - True bugs","Invertebrate - Grasshoppers","Invertebrate - Caddisflies","Invertebrate - Craneflies","Invertebrate - Sawflies","Invertebrate - Sponges","Invertebrate - Stoneflies","Invertebrate - Mayflies","Sensitive Species") 
 

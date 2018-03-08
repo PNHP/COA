@@ -88,21 +88,7 @@ cat('PFBC District:',aoi_Agency$pfbc_Name, '\\\\ \n', sep=" ")
 \end{minipage}
 \vspace{8mm}
 \noindent\Large\textbf{Species of Greatest Conservation Need} \\
-\noindent\normalsize A total of \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) either occur or potentially occur within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}. %Occurence probability defintions are as follows:
-%\vspace{-\topsep}
-%\begin{itemize}
-% \setlength\itemsep{0em}
-%\item \underline{Confirmed} - The species has been documented within the area of interest.
-%\item \underline{Probable} - The species has not been documented within the area of interest, but species distribution models or other data sources indicate strong potential for its occurrence.
-%\end{itemize}
-%\noindent\normalsize SWAP Priority categories are as follows:
-%\begin{itemize}
-% \setlength\itemsep{0em}
-%\item \underline{1} - Contribute to the conservation of globally or regionally important species.
-%\item \underline{2} - Prevent common species from becoming at-risk.
-%\item \underline{3} - Maintain rare native species.
-%\item \underline{4} - Reduce knowledge gaps to better assess conservation status of species.
-%\end{itemize}
+\noindent\normalsize A total of \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) either occur or potentially occur within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}. 
 
 <<label=longtable, echo=FALSE, results='asis'>>=
 sgcn <- aoi_sgcnXpu_final
@@ -110,7 +96,6 @@ taxa <- unique(sgcn$TaxaDisplay)
 cat('\\begin{ThreePartTable}')
 cat('\\renewcommand\\TPTminimum{\\textwidth}')
 cat('\\begin{TableNotes}[flushleft]\n')
-#cat('\\setlength{\\multicolsep}{0cm}')
 cat('\\footnotesize')
 cat('\\item[a] SGCN Priority values are defined as follows:  \\underline{CAT1} - Contribute to the conservation of globally or regionally important species; \\underline{CAT2} - Prevent common species from becoming at-risk; \\underline{CAT3} - Maintain rare native species; \\underline{CAT4} - Reduce knowledge gaps to better assess conservation status of species. Please refer to the \\href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1} for more details. \\newline\n')
 cat('\\item[b] Occurence probability values are defined as follows: \\underline{Confirmed} - The species has been documented within the area of interest; \\underline{Probable} - The species has not been documented within the area of interest, but species distribution models or other data sources indicate strong potential for its occurrence.\\newline\n')
@@ -144,7 +129,6 @@ for(t in taxa){
   }
 }
 cat('\\bottomrule\n')
-#cat('\\multicolumn{4}')
 cat('\\insertTableNotes\n')
 cat('\\endlastfoot\n')
 cat('\\end{longtable}\n')
@@ -166,9 +150,17 @@ keeps <- c("Macrogroup", "Habitat", "acres")
 hab <- aoi_HabTerr[keeps]
 hab <- hab[order(-hab$acres),]
 macros <- unique(hab$Macrogroup)
+cat('\\begin{ThreePartTable}\n')
+
+cat('\\renewcommand\\TPTminimum{5in}\n')
+cat('\\begin{TableNotes}[flushleft]\n')
+cat('\\footnotesize')
+cat('\\item[a] Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.\\newline\n ')
+cat('\\end{TableNotes}\n')
+
 cat('\\begin{longtable}{p{4in}p{1in}{r}}\n')
 cat('\\toprule\n')
-cat('\\rowcolor[gray]{.8}{Terrestrial and Wetland Habitat & Area(ac)} \\\\ \n')
+cat('\\rowcolor[gray]{.8}{Terrestrial and Wetland Habitat\\tnote{a} & Area(ac)} \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
 for(m in macros){
@@ -181,7 +173,7 @@ for(m in macros){
 }
 if(nrow(aoi_HabLotic) == 0){
   cat('\\hline\n')
-  cat('\\rowcolor[gray]{.8}{Streams and River Habitat & Length(mi)} \\\\ \n')
+  cat('\\rowcolor[gray]{.8}{Streams and River Habitat\\tnote{a} & Length(mi)} \\\\ \n')
   cat('\\hline\n')
   cat('No stream or river habitat is present in area of interest \\\\ \n')
   cat('\\hline\n')
@@ -196,8 +188,12 @@ if(nrow(aoi_HabLotic) == 0){
 }
 
 cat('\\bottomrule\n')
-##cat('\\multicolumn{2}{l}{**Note that due to data source and scale, not all features (eg. streams, wetlands, etc) observed on the ground will be documented in tables.\n}') 
+
+cat('\\insertTableNotes\n')
+cat('\\endlastfoot\n')
+
 cat('\\end{longtable}\n')
+cat('\\end{ThreePartTable}\n')
 @
 \vspace{5mm}
 \noindent\normalsize

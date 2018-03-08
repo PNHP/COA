@@ -277,10 +277,13 @@ tool_exec <- function(in_params, out_params)  #
   aoi_actionstable$ActionPriority[aoi_actionstable$ActionPriority=="NA"] <- 0
   aoi_actionstable$ActionPriority <- as.numeric(aoi_actionstable$ActionPriority)
   aoi_actionstable$FinalPriority <- aoi_actionstable$OccWeight * aoi_actionstable$ActionPriority * aoi_actionstable$PriorityWAP
-  
   # delete 'No conservation actions recommended' from table
   aoi_actionstable <- aoi_actionstable[aoi_actionstable$COATool_ActionsFINAL!="No conservation actions recommended.",]
 
+  ############################### SENSITVE SPECIES CODE HERE
+  aoi_actionstable <- merge(aoi_actionstable,aoi_sgcn[,c("ELSeason","Agency")],by=c("ELSeason"))
+  aoi_actionstable$SCOMNAME <-ifelse(aoi_actionstable$SENSITV_SP=="Y" & (aoi_actionstable$Agency!=AgDis|is.na(AgDis)),"SENSITIVE SPECIES",aoi_actionstable$SCOMNAME)
+  aoi_actionstable$COATool_ActionsFINAL <-ifelse(aoi_actionstable$SENSITV_SP=="Y" & (aoi_actionstable$Agency!=AgDis|is.na(AgDis)),"\\textit{Action not displayed due to species sensitivity.}",aoi_actionstable$COATool_ActionsFINAL)
   #Aggregate the Actions
   aoi_actionstable_Agg <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$ActionCategory2),FUN=sum)
   aoi_actionstable_Agg <- aoi_actionstable_Agg[order(-aoi_actionstable_Agg$x),]

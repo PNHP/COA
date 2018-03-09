@@ -130,12 +130,27 @@ tool_exec <- function(in_params, out_params)  #
   # drop all the low occurence probability values from the table
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb=="Low"), ]
   aoi_sgcnXpu_LowOccProbELSeason <- aoi_sgcnXpu_LowOccProb[c("ELSeason")] # for use later in the script to remove from Survey and Research needs table.
+  # remove sensitive species
+  aoi_sgcnXpu_LowOccProb$SCOMNAME <- ifelse(aoi_sgcnXpu_LowOccProb$SENSITV_SP=="Y" & (aoi_sgcnXpu_LowOccProb$Agency!=AgDis|is.na(AgDis)),"Sensitive Species",aoi_sgcnXpu_LowOccProb$SCOMNAME)
+  aoi_sgcnXpu_LowOccProb$SNAME <- ifelse(aoi_sgcnXpu_LowOccProb$SENSITV_SP=="Y" & (aoi_sgcnXpu_LowOccProb$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_LowOccProb$SNAME)  
+ 
+  #sort order
+  SWAPorder <- as.matrix(SGCN_SortOrder) # loads from the 0_PathsAndSettings.r file
+  TaxaGrpLowInAOI <- unique(aoi_sgcnXpu_LowOccProb$TaxaDisplay)
+  SWAPorder2 <- SWAPorder[(SWAPorder %in% TaxaGrpLowInAOI),]
+  aoi_sgcnXpu_LowOccProb$TaxaDisplay <- reorder.factor(aoi_sgcnXpu_LowOccProb$TaxaDisplay,new.order=SWAPorder2)
+  aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_LowOccProb %>% arrange(TaxaDisplay) 
+   
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_LowOccProb[c("SCOMNAME","SNAME")]
   ## get a list of Low Occ Prob species to put into a text section in the report
   if(is.data.frame(aoi_sgcnXpu_LowOccProb) && nrow(aoi_sgcnXpu_LowOccProb)!=0){
     aoi_sgcnXpu_LowOccProb$name <-paste(aoi_sgcnXpu_LowOccProb$SCOMNAME," (\\textit{",aoi_sgcnXpu_LowOccProb$SNAME,"})",sep="")
     aoi_sgcnXpu_LowOccProb <- paste(aoi_sgcnXpu_LowOccProb$name, collapse = ", ")  # we should develop something to add an ' , and' to the last entry 
   } 
+  
+  
+  
+  
   aoi_sgcnXpu_final <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb!="Low"), ]
   # replace the breeding codes with full names
   aoi_sgcnXpu_final$SeasonCode[aoi_sgcnXpu_final$SeasonCode=="b"] <- "Breeding"
@@ -161,14 +176,14 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_final <- aoi_sgcnXpu_final %>% arrange(TaxaDisplay)
 
   # deal with sensitive species
-  aoi_sgcnXpu_final$SCOMNAME<-ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"SENSITIVE SPECIES",aoi_sgcnXpu_final$SCOMNAME)
+  aoi_sgcnXpu_final$SCOMNAME<-ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"Sensitive Species",aoi_sgcnXpu_final$SCOMNAME)
   aoi_sgcnXpu_final$SNAME<-ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$SNAME)
   aoi_sgcnXpu_final$SeasonCode <-ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$SeasonCode )
   aoi_sgcnXpu_final$CAT1_glbl_reg <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$CAT1_glbl_reg)
   aoi_sgcnXpu_final$CAT2_com_sp_com <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$CAT2_com_sp_com)
   aoi_sgcnXpu_final$CAT3_cons_rare_native <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$CAT3_cons_rare_native)
   aoi_sgcnXpu_final$CAT4_datagaps <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_final$CAT4_datagaps)
-  aoi_sgcnXpu_final$SpecificHabitatRequirements <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"Specific Habitat Requirements not listed due to species sensitivity",aoi_sgcnXpu_final$SpecificHabitatRequirements)
+  aoi_sgcnXpu_final$SpecificHabitatRequirements <- ifelse(aoi_sgcnXpu_final$SENSITV_SP=="Y" & (aoi_sgcnXpu_final$Agency!=AgDis|is.na(AgDis)),"Specific Habitat Requirements not listed due to species sensitivity.",aoi_sgcnXpu_final$SpecificHabitatRequirements)
   
   # subset to needed columns
   aoi_sgcn_results <- aoi_sgcnXpu_final[c("SCOMNAME","SNAME","OccWeight","PriorityWAP","SpecificHabitatRequirements", "CAT1_glbl_reg", "CAT2_com_sp_com", "CAT3_cons_rare_native", "CAT4_datagaps")]
@@ -282,7 +297,7 @@ tool_exec <- function(in_params, out_params)  #
 
   ############################### SENSITVE SPECIES CODE HERE
   aoi_actionstable <- merge(aoi_actionstable,aoi_sgcn[,c("ELSeason","Agency")],by=c("ELSeason"))
-  aoi_actionstable$SCOMNAME <-ifelse(aoi_actionstable$SENSITV_SP=="Y" & (aoi_actionstable$Agency!=AgDis|is.na(AgDis)),"SENSITIVE SPECIES",aoi_actionstable$SCOMNAME)
+  aoi_actionstable$SCOMNAME <-ifelse(aoi_actionstable$SENSITV_SP=="Y" & (aoi_actionstable$Agency!=AgDis|is.na(AgDis)),"Sensitive Species",aoi_actionstable$SCOMNAME)
   aoi_actionstable$COATool_ActionsFINAL <-ifelse(aoi_actionstable$SENSITV_SP=="Y" & (aoi_actionstable$Agency!=AgDis|is.na(AgDis)),"\\textit{Action not displayed due to species sensitivity.}",aoi_actionstable$COATool_ActionsFINAL)
   #Aggregate the Actions
   aoi_actionstable_Agg <- aggregate(aoi_actionstable$FinalPriority, by=list(aoi_actionstable$ActionCategory2),FUN=sum)
@@ -323,7 +338,7 @@ tool_exec <- function(in_params, out_params)  #
   SQLquery_luResearch <-  paste("SELECT ELSeason, ResearchQues_Edited, AgencySpecific "," FROM lu_SGCNresearch ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_Research <- dbGetQuery(db, statement = SQLquery_luResearch )  
   aoi_Research <- merge(aoi_sgcn[c("ELSeason","SNAME","SCOMNAME","SENSITV_SP","Agency")],aoi_Research,by="ELSeason") # merge taxonomic and survey information from the SGCN table to here
-  aoi_Research$SCOMNAME <- ifelse(aoi_Research$SENSITV_SP=="Y" & (aoi_Research$Agency!=AgDis|is.na(AgDis)),"SENSITIVE SPECIES",aoi_Research$SCOMNAME)
+  aoi_Research$SCOMNAME <- ifelse(aoi_Research$SENSITV_SP=="Y" & (aoi_Research$Agency!=AgDis|is.na(AgDis)),"Sensitive Species",aoi_Research$SCOMNAME)
   aoi_Research$SNAME <- ifelse(aoi_Research$SENSITV_SP=="Y" & (aoi_Research$Agency!=AgDis|is.na(AgDis)),"",aoi_Research$SNAME)
   aoi_Research$ResearchQues_Edited <- ifelse(aoi_Research$SENSITV_SP=="Y" & (aoi_Research$Agency!=AgDis|is.na(AgDis)),"Research Needs not listed for species sensitivity reasons",aoi_Research$ResearchQues_Edited)
   # aggregate functions
@@ -336,7 +351,7 @@ tool_exec <- function(in_params, out_params)  #
   aoi_Survey <- aoi_Survey[aoi_Survey$NumSurveyQuestion_Edited!="No survey needs at this time.", ]
   # merge taxonomic and survey information from the SGCN table to here
   aoi_Survey <- merge(aoi_sgcn[c("ELSeason","SNAME","SCOMNAME","SENSITV_SP","Agency")],aoi_Survey,by="ELSeason")
-  aoi_Survey$SCOMNAME <- ifelse(aoi_Survey$SENSITV_SP=="Y" & (aoi_Survey$Agency!=AgDis|is.na(AgDis)),"SENSITIVE SPECIES",aoi_Survey$SCOMNAME)
+  aoi_Survey$SCOMNAME <- ifelse(aoi_Survey$SENSITV_SP=="Y" & (aoi_Survey$Agency!=AgDis|is.na(AgDis)),"Sensitive Species",aoi_Survey$SCOMNAME)
   aoi_Survey$SNAME <- ifelse(aoi_Survey$SENSITV_SP=="Y" & (aoi_Survey$Agency!=AgDis|is.na(AgDis)),"",aoi_Survey$SNAME)
   aoi_Survey$NumSurveyQuestion_Edited <- ifelse(aoi_Survey$SENSITV_SP=="Y" & (aoi_Survey$Agency!=AgDis|is.na(AgDis)),"Survey Needs not listed for species sensitivity reasons",aoi_Survey$NumSurveyQuestion_Edited) 
   # aggregate functions
@@ -344,7 +359,7 @@ tool_exec <- function(in_params, out_params)  #
   # merge the two tables together for the report
   aoi_ResearchSurvey <- merge(aoi_Research_Agg,aoi_Survey_Agg,by="ELSeason",all=TRUE)
   aoi_ResearchSurvey <- aoi_ResearchSurvey[!( aoi_ResearchSurvey$ELSeason %in% aoi_sgcnXpu_LowOccProbELSeason$ELSeason), ]  # deletes ones with a low occurrence probability
-  aoi_ResearchSurvey<-aoi_ResearchSurvey[aoi_ResearchSurvey$SCOMNAME!="SENSITIVE SPECIES",] # remove species that are sensitive from the table, based on the PGC/PFC login
+  aoi_ResearchSurvey<-aoi_ResearchSurvey[aoi_ResearchSurvey$SCOMNAME!="Sensitive Species",] # remove species that are sensitive from the table, based on the PGC/PFC login
   
   ############## Agency Districts ###############
   print("Looking up Agency Regions with the AOI") # report out to ArcGIS

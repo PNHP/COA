@@ -86,7 +86,6 @@ cat('PFBC District:',aoi_Agency$pfbc_Name, '\\\\ \n', sep=" ")
 @
 \vspace{2mm}
 \end{minipage}
-\vspace{8mm}
 \noindent\Large\textbf{Species of Greatest Conservation Need} \\
 \noindent\normalsize A total of \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) either occur or potentially occur within your area of interest. For more information about SGCN, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}. 
 
@@ -138,7 +137,7 @@ cat('\\end{ThreePartTable}')
 \vspace{8mm}
 <<echo=FALSE, results='asis'>>=
 if(!is.null(aoi_sgcnXpu_LowOccProb)){
-  cat('\\noindent\\normalsize Additionally, habitat may be present for the following SGCN, though surveys are needed to confirm their presence or absence: ',aoi_sgcnXpu_LowOccProb,'. Habitat may be present for them, but additional survey work needs to be conducted to confirm their presence. \\vspace{2mm} \\\\ \n',sep="")
+  cat('\\noindent\\normalsize Additionally, habitat may be present for the following SGCN, though surveys are needed to confirm their presence or absence: ',aoi_sgcnXpu_LowOccProb,'.   \\\\ \n',sep="")
 }  
 @
 \vspace{4mm}
@@ -218,7 +217,7 @@ actions <- actionstable_working
 actions$AIS <- as.character(actions$AIS)
 cat('\\begin{longtable}{p{0.6in}p{6.4in}p{2in}{l}}\n')
 cat('\\toprule\n')
-cat('AIS & Recommended Conservation Actions & SGCN Affected \\\\ \n')
+cat('AIS & Recommended Conservation Actions & SGCN Benefitting \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n')
 

@@ -133,7 +133,8 @@ tool_exec <- function(in_params, out_params)  #
   # remove sensitive species
   aoi_sgcnXpu_LowOccProb$SCOMNAME <- ifelse(aoi_sgcnXpu_LowOccProb$SENSITV_SP=="Y" & (aoi_sgcnXpu_LowOccProb$Agency!=AgDis|is.na(AgDis)),"Sensitive Species",aoi_sgcnXpu_LowOccProb$SCOMNAME)
   aoi_sgcnXpu_LowOccProb$SNAME <- ifelse(aoi_sgcnXpu_LowOccProb$SENSITV_SP=="Y" & (aoi_sgcnXpu_LowOccProb$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_LowOccProb$SNAME)  
- 
+  aoi_sgcnXpu_LowOccProb$TaxaDisplay <- ifelse(aoi_sgcnXpu_LowOccProb$SENSITV_SP=="Y" & (aoi_sgcnXpu_LowOccProb$Agency!=AgDis|is.na(AgDis)),"Sensitive Species",aoi_sgcnXpu_LowOccProb$TaxaDisplay)
+  
   #sort order
   SWAPorder <- as.matrix(SGCN_SortOrder) # loads from the 0_PathsAndSettings.r file
   TaxaGrpLowInAOI <- unique(aoi_sgcnXpu_LowOccProb$TaxaDisplay)
@@ -144,13 +145,13 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_LowOccProb[c("SCOMNAME","SNAME")]
   ## get a list of Low Occ Prob species to put into a text section in the report
   if(is.data.frame(aoi_sgcnXpu_LowOccProb) && nrow(aoi_sgcnXpu_LowOccProb)!=0){
-    aoi_sgcnXpu_LowOccProb$name <-paste(aoi_sgcnXpu_LowOccProb$SCOMNAME," (\\textit{",aoi_sgcnXpu_LowOccProb$SNAME,"})",sep="")
+    aoi_sgcnXpu_LowOccProb$name <- paste(aoi_sgcnXpu_LowOccProb$SCOMNAME," (\\textit{",aoi_sgcnXpu_LowOccProb$SNAME,"})",sep="")
     aoi_sgcnXpu_LowOccProb <- paste(aoi_sgcnXpu_LowOccProb$name, collapse = ", ")  # we should develop something to add an ' , and' to the last entry 
   } 
+  # replace "()" after sensitive species 
+  aoi_sgcnXpu_LowOccProb <- gsub("Sensitive Species (\\textit{})", "Sensitive Species", aoi_sgcnXpu_LowOccProb, fixed=TRUE)
   
-  
-  
-  
+  # remove the low values from the  whole table
   aoi_sgcnXpu_final <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb!="Low"), ]
   # replace the breeding codes with full names
   aoi_sgcnXpu_final$SeasonCode[aoi_sgcnXpu_final$SeasonCode=="b"] <- "Breeding"

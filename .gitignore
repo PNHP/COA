@@ -56,3 +56,7 @@ vignettes/*.pdf
 *.tex
 
 
+*.tfw
+t_t42.tif
+*.tif
+Thumbs.db

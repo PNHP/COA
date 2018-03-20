@@ -37,7 +37,7 @@ outTable = r'H:\Projects\COA_SpeciesData\COA_SGCN_SDM_Tables.gdb'
 
 species_intersects = []
 
-# loop for each county
+# loop for each SDM layer
 for fc in featureclasses:
     print fc + " started at: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     join_features = os.path.join(arcpy.env.workspace, fc)
@@ -47,7 +47,6 @@ for fc in featureclasses:
 
     # tabulate intersection between PU and SGCN layers
     arcpy.TabulateIntersection_analysis(target_features, "unique_id", join_features, intersect, classFeatures)
-
 
     # delete PUs that have less than 10% overlapping SGCN - THIS SHOULD ONLY BE DONE FOR TERRESTRIAL SPECIES. NOT AQUATIC SPECIES.
     if species_type == 'terrestrial':
@@ -75,8 +74,8 @@ for fc in featureclasses:
     species_intersects.append(intersect)
     print fc + " finished at: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-# merge county SGCNxPU datasets and delete identical
-#merge = arcpy.Merge_management(species_intersects, os.path.join(outTable, "SGCN_SDMxPU_", species_type))
+#merge county SGCNxPU datasets and delete identical
+merge = arcpy.Merge_management(species_intersects, os.path.join(outTable, "SGCN_SDMxPU_", species_type))
 #arcpy.DeleteIdentical_management(merge, ["unique_id", "ELCODE", "SeasonCode", "OccProb"])
 
 print "end time: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

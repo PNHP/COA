@@ -1,7 +1,7 @@
 tool_exec <- function(in_params, out_params)  #
 {
-  # library(arcgisbinding)
-  # arc.check_product()
+  #library(arcgisbinding)
+  #arc.check_product()
   
   # check and load required libraries  
   if (!requireNamespace("RSQLite", quietly = TRUE)) install.packages("RSQLite")
@@ -24,7 +24,8 @@ tool_exec <- function(in_params, out_params)  #
   require(Hmisc)
  
   ## The line directly below (loc_scripts) needs your attention
-  loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
+  #loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
+  loc_scripts <- "C:/coa/script_tool"
   source(paste(loc_scripts, "0_PathsAndSettings.R", sep = "/"))
   setwd(working_directory)
   # get a list of the codes for viewing of senstive species
@@ -38,7 +39,7 @@ tool_exec <- function(in_params, out_params)  #
   
   ## move this to an if statement
   # project_name <- "Manual Test Project"
-  # planning_units <- "E:/coa2/test_pu1.shp"
+  # planning_units <- "C:/coa/planning_unit_test.shp"
   # planning_units <- "E:/coa2/test_pu1_DevoidOfSGCN.shp"
   # planning_units <- "E:/coa2/test_pu_FrickPark.shp"
   # AgencyPersonnel <- NULL   ### delete values this one

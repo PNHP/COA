@@ -26,11 +26,11 @@ from operator import itemgetter
 # Set tools to overwrite existing outputs
 arcpy.env.overwriteOutput = True
 
-target_features = r'W:\Heritage\Heritage_Projects\1332_PGC_COA\COA_FileGDB\SGCN_data.gdb\PlanningUnits\PlanningUnit_Hex10acre' # planning polygon unit
-join_features = r'W:\Heritage\Heritage_Projects\1332_PGC_COA\COA_DataToServer.gdb\SGCN_Occ' # SGCN occurrence probability layer - should be polygon layer
-outGDB = r'C:\Users\mmoore\Documents\ArcGIS\output.gdb' # the output path and name of SGCN table
-scratch = r'C:\Users\mmoore\Documents\ArcGIS\output.gdb'
-counties = r'W:\LYRS\Boundaries_Political\County Hollow.lyr'
+target_features = r'Database Connections\COA.Working.pgh-gis0.sde\COA.DBO.PlanningUnits\COA.DBO.PlanningUnit_Hex10acre' # planning polygon unit
+join_features = r'Database Connections\COA.Working.pgh-gis0.sde\COA.DBO.COA_SGCN\COA.DBO.SGCN_OccFinal' # SGCN occurrence probability layer - should be polygon layer
+outGDB = r'C:\Users\mmoore\Documents\ArcGIS\SGCNxPU.gdb' # the output path and name of SGCN table
+scratch = r'C:\Users\mmoore\Documents\ArcGIS\COA.gdb'
+counties = r'Database Connections\COA.Working.pgh-gis0.sde\COA.DBO.OtherData\COA.DBO.CountyBuffer'
 
 #target_features = arcpy.GetParameterAsText(0) # planning polygon unit
 #join_features = arcpy.GetParameterAsText(1) # SGCN occurrence probability layer - should be polygon layer
@@ -55,7 +55,7 @@ for county in county_list:
 
     # Calculate intersection between Target Feature and Join Features and produces output table
     intersect = os.path.join(outGDB, county)
-    classFeatures = ["ELCODE", "SeasonCode", "OccProb"]
+    classFeatures = ["ELSeason", "OccProb"]
     arcpy.TabulateIntersection_analysis(pu_lyr, "unique_id", join_features, intersect, classFeatures)
     merge_list.append(intersect)
 
@@ -70,16 +70,16 @@ with arcpy.da.UpdateCursor(merge, "PERCENTAGE") as cursor:
         else:
             cursor.deleteRow()
 
-# add field to combine ELCODE and SeasonCode to have unique pairing to use in pivot table output
-arcpy.AddField_management(merge, "El_Season", "TEXT", "", "", 50)
-expression = """!ELCODE! + "_" + !SeasonCode!"""
-arcpy.CalculateField_management(merge, "El_Season", expression, "PYTHON_9.3")
+#add field to combine ELCODE and SeasonCode to have unique pairing to use in pivot table output
+#arcpy.AddField_management(merge, "El_Season", "TEXT", "", "", 50)
+#expression = """!ELCODE! + "_" + !SeasonCode!"""
+#arcpy.CalculateField_management(merge, "El_Season", expression, "PYTHON_9.3")
 
 # tabular dissolve to delete records with identical unique id, ELCODE_season, and Occurrence Probability fields
-arcpy.DeleteIdentical_management(merge, ["unique_id", "El_Season", "OccProb"])
+arcpy.DeleteIdentical_management(merge, ["unique_id", "ELSeason", "OccProb"])
 
 # groupby iterator used to keep records with highest proportion overlap
-case_fields = ["unique_id", "ELCODE", "SeasonCode"] # defining fields within which to create groups
+case_fields = ["unique_id", "ELSeason"] # defining fields within which to create groups
 max_field = "PERCENTAGE" # define field to sort within groups
 sql_orderby = "ORDER BY {}, {} DESC".format(",".join(case_fields), max_field) # sql code to order by case fields and max field within unique groups
 

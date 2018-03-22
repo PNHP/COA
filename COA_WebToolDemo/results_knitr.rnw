@@ -67,7 +67,7 @@ cat('HUC8: ',paste0(paste0(unique(aoi_HUC$HUC8name), collapse=", "), "\\\\"))
 cat('HUC12: ',paste0(paste0(aoi_HUC$HUC12name, collapse=", "), "\\\\"))
 cat('Protected Land: ',paste0(paste0(unique(aoi_ProtectedLand$site_nm), collapse=", ") ),'\\textit{Note: At least one of the 10-acre planning units overlaps the above protected conservation land. Refer to the maps for more details.}','\\\\')
 cat('\\\\ \n')
-cat('PGC District:',aoi_Agency$pgc_DistNum,'\\\\ \n', sep=" ")  
+cat('PGC Region:',aoi_Agency$pgc_Region ,'\\\\ \n', sep=" ")  
 cat('PFBC District:',aoi_Agency$pfbc_Name, '\\\\ \n', sep=" ")
 @
 \vspace{2mm}
@@ -75,6 +75,7 @@ cat('PFBC District:',aoi_Agency$pfbc_Name, '\\\\ \n', sep=" ")
 \noindent\Large\textbf{Species of Greatest Conservation Need} \\
 \noindent\normalsize A total of \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) either occur or potentially occur within your area of interest. For more information about SGCN and prioritization categories, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}. 
 
+\Needspace{5\baselineskip}
 <<label=longtable, echo=FALSE, results='asis'>>=
 sgcn <- aoi_sgcnXpu_final
 taxa <- unique(sgcn$TaxaDisplay)
@@ -85,13 +86,13 @@ cat('\\footnotesize')
 cat('\\item[a] Priority scores for SGCN in Pennsylvania by prioritization category. Prioritization values range from 1 to 6, with 1 being highest priority species and 6 being lowest priority species. Species scoring a 1,2, or 3 in any category are the highest priorities for focused conservation action. Prioritization categories are defined as: \\underline{CAT1} - Contribute to the conservation of globally or regionally important species; \\underline{CAT2} - Prevent common species from becoming at-risk; \\underline{CAT3} - Maintain rare native species; \\underline{CAT4} - Reduce knowledge gaps to better assess conservation status of species.\\newline\n')
 cat('\\item[b] Occurence probability values are defined as follows: \\underline{Confirmed} - The species has been documented within the area of interest; \\underline{Probable} - The species has not been documented within the area of interest, but species distribution models or other data sources indicate strong potential for its occurrence.\\newline\n')
 cat('\\end{TableNotes}\n')
-cat('\\begin{longtable}{p{2in}p{0.7in}C{0.3in}C{0.3in}C{0.3in}C{0.3in}p{0.8in}p{4.2in}}\n')
+cat('\\begin{longtable}{p{2in}C{0.7in}C{0.3in}C{0.3in}C{0.3in}C{0.3in}C{0.8in}p{4.2in}}\n')
 cat('\\toprule\n')
 cat(' &  & \\multicolumn{4}{c}{SGCN Priority\\tnote{a}} &  &  \\\\ \n')   
 cat('\\cmidrule(lr){3-6} \\\\ \n')
 cat('SGCN Name & SGCN\\newline Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability\\tnote{b} & Specific Habitat Requirements \\\\ \n')
 cat('\\midrule\n')
-cat('\\endhead\n')
+cat('\\endhead\n') # cat('\\endfirsthead\n') will cause headers not to appear on subsequent pages
 for(t in taxa){
   if(t=="Bird"){
     cat(paste0('\\multicolumn{8}{l}{\\rowcolor[gray]{.85}','\\href{http://www.pgc.pa.gov/Wildlife/WildlifeActionPlan/Documents/SWAP-CHAPTER-1-apx14a-birds.pdf}{',t,'}}', '\\\\ \n'))}
@@ -248,8 +249,17 @@ cat('\\end{longtable}\n')
 
 \vspace{10mm}
 \noindent\large\textbf{Want more information or have questions? Please contact:} \\
-\vspace{5mm}
+\vspace{2mm}
 \noindent\normalsize 
+For additonal information about the SGCN and Conservation Actions in this report, please contact:
+\begin{itemize}
+\item For birds and mammals, please contact the Regional Wildlife Diversity Biologist at the Pennsylvania Game Commissoin, \Sexpr{lu_PGC$pgc_Region} Regional Office, \Sexpr{lu_PGC$address}, \Sexpr{lu_PGC$city}, PA \Sexpr{lu_PGC$zip}, \Sexpr{lu_PGC$phone}.
+\item For fish, reptiles and amphibians, and freshwater mussels...
+\end{itemize}
+\vspace{2mm}
+\noindent\normalsize 
+For other inquires in regard to this tool or the Pennsylvania Wildlife Action Plan, please contact:
+
 \noindent\begin{minipage}{0.1\textwidth}
 \includegraphics[scale=0.35]{pgc}
 \end{minipage}%

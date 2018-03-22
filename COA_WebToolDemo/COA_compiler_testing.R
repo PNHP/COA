@@ -22,10 +22,12 @@ tool_exec <- function(in_params, out_params)  #
   require(mailR)
   if (!requireNamespace("Hmisc", quietly = TRUE)) install.packages("Hmisc")
   require(Hmisc)
- 
+  if (!requireNamespace("plyr", quietly = TRUE)) install.packages("plyr")
+  require(plyr)  
+
   ## The line directly below (loc_scripts) needs your attention
   #loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
-  loc_scripts <- "C:/coa/script_tool"
+  loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
   source(paste(loc_scripts, "0_PathsAndSettings.R", sep = "/"))
   setwd(working_directory)
   # get a list of the codes for viewing of senstive species
@@ -57,16 +59,13 @@ tool_exec <- function(in_params, out_params)  #
   pu <- arc.open(planning_units)
   selected_pu <- arc.select(pu)
   area_pu_total <- paste("Project Area: ",nrow(selected_pu)*10," acres ","(",nrow(selected_pu), " planning units selected) ", sep="") 
-  # create list of unique ids for selected planning units
-  pu_list <- selected_pu$unique_id
+  pu_list <- selected_pu$unique_id   # create list of unique ids for selected planning units in the database queries
   
   # create connection to sqlite database
   db <- dbConnect(SQLite(), dbname = databasename)
   
-  ############## County Names and Other details ########################
-  # get a list of the unique county FIPs from the PUID field
+  ############## County Names and Other details ######################### get a list of the unique county FIPs from the PUID field
   county_FIPS <- substr(pu_list,1,3)
-  # connect to the database and lookup the county name
   SQLquery_county <- paste("SELECT COUNTY_NAM, FIPS_COUNT"," FROM lu_CountyName ","WHERE FIPS_COUNT IN (", paste(toString(sQuote(county_FIPS)), collapse = ", "), ")")
   aoi_county <- dbGetQuery(db, statement = SQLquery_county )
   counties <-  paste(aoi_county$COUNTY_NAM," COUNTY", sep="") 
@@ -90,8 +89,7 @@ tool_exec <- function(in_params, out_params)  #
   u1 = paste("HUC8 --",unique(aoi_HUC$HUC8name), sep= " ")
   u2 = paste("HUC12 --",unique(aoi_HUC$HUC12name), sep= " ")
 
-  ##############  SGCN  ########################################
-  # build query to select planning units within area of interest from SGCNxPU table
+  ##############  SGCN  ######################################## build query to select planning units within area of interest from SGCNxPU table
   print("Looking up SGCN with the AOI") # report out to ArcGIS
   SQLquery <- paste("SELECT unique_id, ELSeason, OccProb, PERCENTAGE"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery) # create SGCNxPU dataframe containing selected planning units
@@ -102,7 +100,6 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_MedLow <- aggregate(aoi_sgcnXpu_MedLow$AREA~ELSeason+OccProb,aoi_sgcnXpu_MedLow,FUN=sum)
   aoi_sgcnXpu_MedLow <- do.call(rbind,lapply(split(aoi_sgcnXpu_MedLow, aoi_sgcnXpu_MedLow$ELSeason), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu_MedLow$AREA`),]))
   colnames(aoi_sgcnXpu_MedLow)[colnames(aoi_sgcnXpu_MedLow) == 'aoi_sgcnXpu_MedLow$AREA'] <- 'AREA'
-  
   # subset the high values out of the DF
   if ( length(which(aoi_sgcnXpu$OccProb=="Confirmed") > 0 ) ){
     aoi_sgcnXpu_High <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb=="Confirmed",]
@@ -132,10 +129,10 @@ tool_exec <- function(in_params, out_params)  #
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb=="Low"), ]
   aoi_sgcnXpu_LowOccProbELSeason <- aoi_sgcnXpu_LowOccProb[c("ELSeason")] # for use later in the script to remove from Survey and Research needs table.
   # remove sensitive species
-  aoi_sgcnXpu_LowOccProb$SCOMNAME <- ifelse(aoi_sgcnXpu_LowOccProb$SENSITV_SP=="Y" & (aoi_sgcnXpu_LowOccProb$Agency!=AgDis|is.na(AgDis)),"Sensitive Species",aoi_sgcnXpu_LowOccProb$SCOMNAME)
-  aoi_sgcnXpu_LowOccProb$SNAME <- ifelse(aoi_sgcnXpu_LowOccProb$SENSITV_SP=="Y" & (aoi_sgcnXpu_LowOccProb$Agency!=AgDis|is.na(AgDis)),"",aoi_sgcnXpu_LowOccProb$SNAME)  
-  aoi_sgcnXpu_LowOccProb$TaxaDisplay <- ifelse(aoi_sgcnXpu_LowOccProb$SENSITV_SP=="Y" & (aoi_sgcnXpu_LowOccProb$Agency!=AgDis|is.na(AgDis)),"Sensitive Species",aoi_sgcnXpu_LowOccProb$TaxaDisplay)
-  
+  if (aoi_sgcnXpu_LowOccProb$SENSITV_SP=="Y" & (aoi_sgcnXpu_LowOccProb$Agency!=AgDis|is.na(AgDis))) {
+    aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_LowOccProb[which(aoi_sgcnXpu_LowOccProb$SENSITV_SP!="Y"),]
+  }
+
   #sort order
   SWAPorder <- as.matrix(SGCN_SortOrder) # loads from the 0_PathsAndSettings.r file
   TaxaGrpLowInAOI <- unique(aoi_sgcnXpu_LowOccProb$TaxaDisplay)
@@ -147,11 +144,16 @@ tool_exec <- function(in_params, out_params)  #
   ## get a list of Low Occ Prob species to put into a text section in the report
   if(is.data.frame(aoi_sgcnXpu_LowOccProb) && nrow(aoi_sgcnXpu_LowOccProb)!=0){
     aoi_sgcnXpu_LowOccProb$name <- paste(aoi_sgcnXpu_LowOccProb$SCOMNAME," (\\textit{",aoi_sgcnXpu_LowOccProb$SNAME,"})",sep="")
+    if(nrow(aoi_sgcnXpu_LowOccProb)>1){
+      newname <- tail(aoi_sgcnXpu_LowOccProb$name, 1)
+      aoi_sgcnXpu_LowOccProb$name <- replace(aoi_sgcnXpu_LowOccProb$name, length(aoi_sgcnXpu_LowOccProb$name), paste("and ",newname,sep=""))  
+    }
     aoi_sgcnXpu_LowOccProb <- paste(aoi_sgcnXpu_LowOccProb$name, collapse = ", ")  # we should develop something to add an ' , and' to the last entry 
   } 
+
   # replace "()" after sensitive species 
   aoi_sgcnXpu_LowOccProb <- gsub("Sensitive Species (\\textit{})", "Sensitive Species", aoi_sgcnXpu_LowOccProb, fixed=TRUE)
-  
+
   # remove the low values from the  whole table
   aoi_sgcnXpu_final <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb!="Low"), ]
   # replace the breeding codes with full names
@@ -248,8 +250,6 @@ tool_exec <- function(in_params, out_params)  #
   print("Looking up Protected Land with the AOI") # report out to ArcGIS  
   SQLquery_luProtectedLand <- paste("SELECT unique_id, site_nm, manager, owner_typ", " FROM lu_ProtectedLands_25 ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   aoi_ProtectedLand <- dbGetQuery(db, statement = SQLquery_luProtectedLand )
-  #aoi_ProtectedLand <- unique(aoi_ProtectedLand$site_nm)  
-  #aoi_ProtectedLand <- paste(aoi_ProtectedLand, collapse = ", ")
 
   ############## THREATS ###############
   print("Looking up Threats with the AOI") # report out to ArcGIS
@@ -328,7 +328,6 @@ tool_exec <- function(in_params, out_params)  #
   
   actionCatOrder <- as.matrix(unique(actionstable_working$ActionCategory2)) # for use down a few lines
   # get the count of cats
-  library(plyr)
   agg <- count(actionstable_working, c('ActionCategory2','AIS'))
   colnames(agg) <- c("ActionCategory2","AIS", "Count")
   agg$ActionCategory2 <- reorder.factor(agg$ActionCategory2,new.order=actionCatOrder)
@@ -369,6 +368,13 @@ tool_exec <- function(in_params, out_params)  #
   aoi_Agency <- dbGetQuery(db, statement = SQLquery_luAgency )
   aoi_Agency$unique_id <- NULL
   aoi_Agency <- unique(aoi_Agency)
+  
+  pgcRegion <- unique(aoi_Agency$pgc_Region)
+  SQLquery_luAgencyPGC <- paste("SELECT pgc_Region, address, city, zip, phone, email "," FROM lu_PGC_RegionName ","WHERE pgc_Region=\"",pgcRegion,"\"",sep="") 
+  lu_PGC <- dbGetQuery(db, statement = SQLquery_luAgencyPGC )
+  
+  
+  
   #####################################################################################################################
   ##############  report generation  #######################
   print("Generating the PDF report...") # report out to ArcGIS

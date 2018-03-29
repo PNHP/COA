@@ -27,7 +27,7 @@ tool_exec <- function(in_params, out_params)  #
 
   ## The line directly below (loc_scripts) needs your attention
   #loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
-  loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
+  loc_scripts <- "C:/coa/script_tool"
   source(paste(loc_scripts, "0_PathsAndSettings.R", sep = "/"))
   setwd(working_directory)
   # get a list of the codes for viewing of senstive species

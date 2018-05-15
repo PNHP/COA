@@ -198,7 +198,7 @@ cat('\\end{ThreePartTable}\n')
 \vspace{8mm}
 \pagebreak
 \noindent\Large\textbf{Conservation Actions} \\
-\noindent\normalsize The following table includes specific actions for SGCN within the area of interest. Actions are ordered by the relative impact of their broader action category. If an action is appropiate for more than one SGCN, they have been compiled across species.
+\noindent\normalsize The following table includes specific actions for SGCN within the area of interest. If an action is appropiate for more than one SGCN, they have been compiled across species. Actions are ordered by an Action Impact Score (AIS) which prioritorizes the actions by the relative impact of their broader action category. The AIS calculated as a function of SGCN Priority, Occurence Probability, and Action Priority.
 
 <<label=longtabletemp, echo=FALSE, results='asis'>>=
 

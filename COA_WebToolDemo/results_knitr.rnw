@@ -53,11 +53,11 @@ if (AgDis=="PFBC"|AgDis=="PFBC") cat('\\textbf{Agency Version -- Sensitive speci
 \end{minipage}%
 
 \noindent\begin{minipage}{0.4\textwidth}
-\framebox(200,125){**Placeholder for AOI Map**}
+\framebox(225,130){**Placeholder for AOI Map**}
+\vspace{12mm}
 \end{minipage}%
 \hfill
 \noindent\begin{minipage}{.6\textwidth}
-\vspace{5mm}
 \noindent\normalsize \Sexpr{as.character(area_pu_total)} \\
 Counties: \Sexpr{as.character(str_to_title(counties))} \\
 \Sexpr{as.character(gsub(" --", ":", w))} \\
@@ -65,17 +65,20 @@ Counties: \Sexpr{as.character(str_to_title(counties))} \\
 <<echo=FALSE, results='asis'>>=
 cat('HUC8: ',paste0(paste0(unique(aoi_HUC$HUC8name), collapse=", "), "\\\\"))
 cat('HUC12: ',paste0(paste0(aoi_HUC$HUC12name, collapse=", "), "\\\\"))
-cat('Protected Land: ',paste0(paste0(unique(aoi_ProtectedLand$site_nm), collapse=", ") ),'\\textit{Note: At least one of the 10-acre planning units overlaps the above protected conservation land. Refer to the maps for more details.}','\\\\')
-cat('\\\\ \n')
+if(nrow(aoi_ProtectedLand)==0){
+  cat('Protected Land: none of the 10-acre planning units overlap protected conservation land by more than 10 percent. Refer to maps for more details. \\\\ \n')
+  }
+if(nrow(aoi_ProtectedLand)>0){
+cat('Protected Land: ',paste0(paste0(unique(aoi_ProtectedLand$site_nm), collapse=", ") ),'\\newline \\textit{Note: at least one of the 10-acre planning units overlaps the above protected conservation land by more than 10 percent. Refer to the maps for more details.}','\\\\ \n')}
 cat('PGC Region:',aoi_Agency$pgc_Region ,'\\\\ \n', sep=" ")  
 cat('PFBC District:',aoi_Agency$pfbc_Name, '\\\\ \n', sep=" ")
 @
-\vspace{2mm}
+\vspace{12mm}
 \end{minipage}
-\noindent\Large\textbf{Species of Greatest Conservation Need} \\
-\noindent\normalsize A total of \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) either occur or potentially occur within your area of interest. For more information about SGCN and prioritization categories, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}. 
 
-\Needspace{5\baselineskip}
+\noindent\Large\textbf{Species of Greatest Conservation Need} \\
+\noindent\normalsize A total of \Sexpr{nrow(aoi_sgcnXpu_final)} Species of Greatest Conservation Need (SGCN) either occur or potentially occur within your area of interest. For more information about SGCN and prioritization categories, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-1.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 1}. For more information about references cited, please see the \href{http://www.fishandboat.com/Resource/Documents/SWAP-CHAPTER-9.pdf}{2015 Pennsylvania Wildlife Action Plan, Chapter 9, Literature Cited}
+
 <<label=longtable, echo=FALSE, results='asis'>>=
 sgcn <- aoi_sgcnXpu_final
 taxa <- unique(sgcn$TaxaDisplay)
@@ -90,7 +93,7 @@ cat('\\begin{longtable}{p{2in}C{0.7in}C{0.3in}C{0.3in}C{0.3in}C{0.3in}C{0.8in}p{
 cat('\\toprule\n')
 cat(' &  & \\multicolumn{4}{c}{SGCN Priority\\tnote{a}} &  &  \\\\ \n')   
 cat('\\cmidrule(lr){3-6} \\\\ \n')
-cat('SGCN Name & SGCN\\newline Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability\\tnote{b} & Specific Habitat Requirements \\\\ \n')
+cat('SGCN Name & SGCN Season & CAT1 & CAT2 & CAT3 & CAT4 & Occurrence Probability\\tnote{b} & Specific Habitat Requirements \\\\ \n')
 cat('\\midrule\n')
 cat('\\endhead\n') # cat('\\endfirsthead\n') will cause headers not to appear on subsequent pages
 for(t in taxa){
@@ -192,7 +195,7 @@ cat('\\end{ThreePartTable}\n')
 @
 \begin{center}
 \vspace{-10mm}
-\framebox(450,175){**Placeholder for habitat map**}
+\framebox(400,175){**Placeholder for habitat map**}
 \end{center}
 
 \vspace{8mm}
@@ -205,7 +208,7 @@ cat('\\end{ThreePartTable}\n')
 actions <- actionstable_working
 actions$AIS <- as.character(actions$AIS)
 agg$AIS <- as.character(agg$AIS)
-cat('\\begin{longtable}{p{0.6in}p{6in}L{2.4in}}\n')
+cat('\\begin{longtable}{p{0.6in}p{6.5in}L{2.4in}}\n')
 cat('\\toprule\n')
 cat('AIS & Recommended Conservation Actions & SGCN Benefitting \\\\ \n')
 cat('\\midrule\n')
@@ -248,18 +251,14 @@ cat('\\end{longtable}\n')
 @
 
 \vspace{10mm}
-\noindent\large\textbf{Want more information or have questions? Please contact:} \\
-\vspace{2mm}
-\noindent\normalsize 
-For additonal information about the SGCN and Conservation Actions in this report, please contact:
+\noindent\large\textbf{For additonal information about the SGCN and Conservation Actions in this report, please use the following contacts:}
 \begin{itemize}
 \item For birds and mammals, please contact the Regional Wildlife Diversity Biologist at the Pennsylvania Game Commissoin, \Sexpr{lu_PGC$pgc_Region} Regional Office, \Sexpr{lu_PGC$address}, \Sexpr{lu_PGC$city}, PA \Sexpr{lu_PGC$zip}, \Sexpr{lu_PGC$phone}.
-\item For fish, reptiles and amphibians, and freshwater mussels...
+\item For fish, reptiles and amphibians, and freshwater mussels, please contact...
 \end{itemize}
-\vspace{2mm}
-\noindent\normalsize 
-For other inquires in regard to this tool or the Pennsylvania Wildlife Action Plan, please contact:
-
+\vspace{4mm}
+\noindent\textbf{For other inquires in regard to this tool or the Pennsylvania Wildlife Action Plan, please contact:} \hfill
+\vspace{4mm}
 \noindent\begin{minipage}{0.1\textwidth}
 \includegraphics[scale=0.35]{pgc}
 \end{minipage}%

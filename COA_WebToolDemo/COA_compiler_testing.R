@@ -26,7 +26,6 @@ tool_exec <- function(in_params, out_params)  #
   require(plyr)  
 
   ## The line directly below (loc_scripts) needs your attention
-  #loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
   loc_scripts <- "E:/coa2/COA/COA_WebToolDemo"
   source(paste(loc_scripts, "0_PathsAndSettings.R", sep = "/"))
   setwd(working_directory)
@@ -93,14 +92,17 @@ tool_exec <- function(in_params, out_params)  #
   print("Looking up SGCN with the AOI") # report out to ArcGIS
   SQLquery <- paste("SELECT unique_id, ELSeason, OccProb, PERCENTAGE"," FROM lu_sgcnXpu_all ","WHERE unique_id IN (", paste(toString(sQuote(pu_list)), collapse = ", "), ")")
   aoi_sgcnXpu <- dbGetQuery(db, statement = SQLquery) # create SGCNxPU dataframe containing selected planning units
-  aoi_sgcnXpu$AREA <- round((as.numeric(aoi_sgcnXpu$PERCENTAGE) * 0.1),4) # used 0.1 because the percentate ranges from 0-100 so this converts to 10acres
-  # dissolve table based on elcode and season, keeping all High records  and then med/low with highest summed area within group
-  # pick the highest area out of medium and low probabilities
-  aoi_sgcnXpu_MedLow <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb!="Confirmed",]
-  aoi_sgcnXpu_MedLow <- aggregate(aoi_sgcnXpu_MedLow$AREA~ELSeason+OccProb,aoi_sgcnXpu_MedLow,FUN=sum)
-  aoi_sgcnXpu_MedLow <- do.call(rbind,lapply(split(aoi_sgcnXpu_MedLow, aoi_sgcnXpu_MedLow$ELSeason), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu_MedLow$AREA`),]))
-  colnames(aoi_sgcnXpu_MedLow)[colnames(aoi_sgcnXpu_MedLow) == 'aoi_sgcnXpu_MedLow$AREA'] <- 'AREA'
-  # subset the high values out of the DF
+  aoi_sgcnXpu$AREA <- round((as.numeric(aoi_sgcnXpu$PERCENTAGE) * 0.1),4) # used 0.1 because the percentage ranges from 0-100 so this converts to 10acres
+  
+  # dissolve table based on elcode and season, keeping all High(Confirmed) records and then Medium(Probable)/Low with highest summed area within group
+  # pick the highest area out of Medium and Low probabilities
+  # The next few lines of code creates a seperate table for the Medium(Probable) and Low Occurence Probability records. 
+  aoi_sgcnXpu_MedLow <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb!="Confirmed",] #MB# subset anything that isn't confirmed--eg. Medium and Low. 
+  aoi_sgcnXpu_MedLow <- aggregate(aoi_sgcnXpu_MedLow$AREA~ELSeason+OccProb,aoi_sgcnXpu_MedLow,FUN=sum) # this sums up the area by each species and occurence probability if the SGCN is present in more than one planning unit. This effectively strips out the PUID for the occurences.
+  aoi_sgcnXpu_MedLow <- do.call(rbind,lapply(split(aoi_sgcnXpu_MedLow, aoi_sgcnXpu_MedLow$ELSeason), function(chunk) chunk[which.max(chunk$`aoi_sgcnXpu_MedLow$AREA`),])) # this keeps Medium(Probable) or Low records for each SGCN based on whether the total area is greater for the Medium(Probable) or the Low probability values. For example, if you have 4acres of a Planning Unit as Medium for a particular SGCN, and the rest of the PU is tagged as Low, the final table for this Area of Interest would only have the Low entry, with the Medium(Probable) area dropped.
+  colnames(aoi_sgcnXpu_MedLow)[colnames(aoi_sgcnXpu_MedLow) == 'aoi_sgcnXpu_MedLow$AREA'] <- 'AREA' # this renames a column that gets a wierd name.
+
+  # subset the high values out of the DF if there are high values present and joins to the Medium/Low DF, if not it just uses the MedLow as the final.
   if ( length(which(aoi_sgcnXpu$OccProb=="Confirmed") > 0 ) ){
     aoi_sgcnXpu_High <- aoi_sgcnXpu[aoi_sgcnXpu$OccProb=="Confirmed",]
     aoi_sgcnXpu_High <- aggregate(aoi_sgcnXpu_High$AREA~ELSeason+OccProb,aoi_sgcnXpu_High,FUN=sum)
@@ -113,19 +115,20 @@ tool_exec <- function(in_params, out_params)  #
     aoi_sgcnXpu_final <- aoi_sgcnXpu_MedLow
   }
   
-  # join SGCN name data sgcn_aoi table
+  # join SGCN name/rank/status/taxonomy data sgcn_aoi table. This pulls info from the SGCN lookup table  
   elcodes <- aoi_sgcnXpu_final$ELSeason
   SQLquery_lookupSGCN <- paste("SELECT ELCODE, SCOMNAME, SNAME, GRANK, SRANK, SeasonCode, SENSITV_SP, Environment, TaxaGroup, TaxaDisplay, ELSeason, Agency, CAT1_glbl_reg, CAT2_com_sp_com, CAT3_cons_rare_native, CAT4_datagaps, WebAddress "," FROM lu_SGCN ","WHERE ELSeason IN (", paste(toString(sQuote(elcodes)), collapse = ", "), ")")
   aoi_sgcn <- dbGetQuery(db, statement=SQLquery_lookupSGCN)
-  # before the merge, set the priority for the SGCN based on the highest value in a number of categories
-  aoi_sgcn[, "CAT_min"] <- apply(aoi_sgcn[, 10:13], 1, min) # get the minumum across categories
-  aoi_sgcn$PriorityWAP <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse
-  aoi_sgcnXpu_final <- merge(aoi_sgcnXpu_final, aoi_sgcn) # merge species information to the planning units
+  # before the merge, set the SGCN priority for the SGCN based on the highest value in a number of categories.I can't recall why we did this before the merge
+  aoi_sgcn[, "CAT_min"] <- apply(aoi_sgcn[, 10:13], 1, min) # get the minumum across categories. The 10:13 refer to the column index of the CAT1_glbl_reg,...,Cat4_datagaps columns.  This selects the lowest (highest priority) value in any of the four columns.
+  aoi_sgcn$PriorityWAP <- 1 / as.numeric(aoi_sgcn$CAT_min) # take the inverse to make a number weight from 0.167 to 1.
+  
+    aoi_sgcnXpu_final <- merge(aoi_sgcnXpu_final, aoi_sgcn) # merge species information to the planning units from the db query above.
   # add a weight based on the Occurence probability
   aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Low"] <- 0.6
-  aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Probable"] <- 0.8
-  aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Confirmed"] <- 1
-  # drop all the low occurence probability values from the table
+  aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Probable"] <- 0.8  # This used be called Medium and now is Probable
+  aoi_sgcnXpu_final$OccWeight[aoi_sgcnXpu_final$OccProb=="Confirmed"] <- 1 # This used to be called High, but is now Confirmed
+  # Extract the low occurrence probability values from the table for use in low probability species list. There are deleted from aoi_sgcnXpu_final later in the script.
   aoi_sgcnXpu_LowOccProb <- aoi_sgcnXpu_final[ which(aoi_sgcnXpu_final$OccProb=="Low"), ]
   aoi_sgcnXpu_LowOccProbELSeason <- aoi_sgcnXpu_LowOccProb[c("ELSeason")] # for use later in the script to remove from Survey and Research needs table.
   # remove sensitive species
